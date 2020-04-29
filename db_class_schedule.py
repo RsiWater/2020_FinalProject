@@ -34,10 +34,10 @@ class Schedule:
         self.end=end
     def get_end(self):
         return self.end
-    def set_query(self,query):        #set要求(修改時使用)
-        self.query=query
-    def get_query(self):
-        return self.query
+    # def set_query(self,query):        #set要求(修改時使用)
+    #     self.query=query
+    # def get_query(self):
+    #     return self.query
     def set_number(self):        #set id(insert時使用)
         self.number=random.randint(1,100000)
     def get_number(self):
@@ -58,7 +58,8 @@ class Schedule:
         self.con.execute('delete from schedule_record where id={};'.format(self.key))
         self.con.commit()
     def update(self):
-        self.con.execute('update schedule_record set {} where id={};'.format(self.query,self.key))
+        self.con.execute('delete from schedule_record where id={};'.format(self.key))
+        self.con.execute('insert into schedule_record(事情,年,月,日,開始時間,結束時間,id)values("{}",{},{},{},{},{},{});'.format(self.todo,self.year,self.month,self.day,self.start,self.end,self.key))
         self.con.commit()
     def select(self):
         datas=[]

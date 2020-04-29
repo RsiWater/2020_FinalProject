@@ -55,10 +55,10 @@ class Account:
         self.key=key
     def get_key(self):
         return self.key
-    def set_query(self,query):        #set要求(修改時使用)
-        self.query=query
-    def get_query(self):
-        return self.query
+    # def set_query(self,query):        #set要求(修改時使用)
+    #     self.query=query
+    # def get_query(self):
+    #     return self.query
     # def set_selectnum(self,selectnum):  #set選取到的id(查詢時使用)
     #     self.selectnum=selectnum
     # def get_selectnum(self):
@@ -75,7 +75,8 @@ class Account:
         self.con.execute('delete from record where id={};'.format(self.key))
         self.con.commit()
     def update(self):
-        self.con.execute('update record set {} where id={};'.format(self.query,self.key))
+        self.con.execute('delete from record where id={};'.format(self.key))
+        self.con.execute('insert into record(金額,年,月,日,分類,細項,位置,發票,備註,收支屬性,id)values({},{},{},{},"{}","{}","{}","{}","{}",{},{});'.format(self.money,self.year,self.month,self.day,self.item,self.detail,self.position,self.receipt,self.note,self.status,self.key))
         self.con.commit()
     def select(self):
         datas=[]
