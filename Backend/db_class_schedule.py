@@ -8,6 +8,7 @@ class Schedule:
     todo,dbfile,query='','',''
     year,month,day,con,number,key=0,0,0,0,0,0
     start,end=0.0,0.0
+    operationCode = 0
 
 
     def set_todo(self, todo):  #set事情
@@ -48,6 +49,27 @@ class Schedule:
         self.key=key
     def get_key(self):
         return self.key
+    def set_operationCode(self, code):
+        self.operationCode = code
+    def get_operaionCode(self):
+        return self.operationCode
+
+    def operateAction(self):
+        if self.operationCode == 0: # 新增
+            self.insert()
+            print("insert success.")
+        elif self.operationCode == 1: # 刪除
+            self.key = self.number
+            self.delete()
+            print("delete success.")
+        elif self.operationCode == 2: # 修改
+            self.key = self.number
+            self.delete()
+            self.insert()
+            print("modify success.")
+        elif self.operationCode == 3: # 查詢
+            self.select()
+            print("select success.")
 
 
     def __init__(self):

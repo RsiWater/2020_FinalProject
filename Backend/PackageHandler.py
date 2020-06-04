@@ -1,5 +1,43 @@
 from db_class_account import *
 from db_class_schedule import *
+from DB_Classes import *
+
+def classifyPackage(package):
+    packageType = package[:3].decode("utf-8")
+    
+    if packageType == 'acc':
+        rcv_package = decodeAccountPackage(package[3:])
+        rcv_package.operateAction()
+
+        # connect_socket.send(encodeAccountPackage(account))
+
+    elif packageType == 'sch':
+        rcv_package = decodeSchedulePackage(package[3:])
+        rcv_package.operateAction()
+        # print(rcv_package.get_todo())
+        # connect_socket.send(encodeSchedulePackage(schedule))
+
+    elif packageType == 'log':
+        # login
+        rcv_package = decodeLoginPackage(package[3:])
+        if(rcv_package.check()):
+            return "logAccepted".encode("UTF-8")
+        else:
+            return "logRejected".encode("UTF-8")
+        
+
+    # elif packageType == 'deb':
+    #     message = rcv_event.decode("UTF-8")
+    #     print(message)
+    #     t = ProgressThread(message)
+    #     t.start()
+
+def decodeLoginPackage(package):
+    resultAccount = UserAccount()
+    resultAccount.name = package[:20].decode('utf-8').split('\x00', 1)[0]
+    resultAccount.password = package[20:].decode('utf-8').split('\x00', 1)[0]
+
+    return resultAccount
 
 def encodeAccountPackage(accountClass): # return bytearray
 
@@ -29,7 +67,7 @@ def decodeAccountPackage(package): # return AccountClass
     resultAccount = Account()
     
     p_id, p_money, p_year , p_month= int.from_bytes(package[:4], 'big'), int.from_bytes(package[4:8],'big'), package[8], package[9]
-    p_day, p_item, p_detail, p_status = package[10], package[11:29].decode('utf-8'), package[29:47].decode('utf-8'), package[47]
+    p_day, p_item, p_detail, p_status = package[10], package[11:29].decode('utf-8').split('\x00', 1)[0], package[29:47].decode('utf-8').split('\x00', 1)[0], package[47]
     p_operationCode = package[48]
 
     resultAccount.set_number(p_id)
@@ -40,13 +78,14 @@ def decodeAccountPackage(package): # return AccountClass
     resultAccount.set_item(p_item)
     resultAccount.set_detail(p_detail)
     resultAccount.set_status(p_status)
-    
+    resultAccount.set_operationCode(p_operationCode)
+
     #
-    resultAccount.set_receipt("898")
-    resultAccount.set_note("testest")
+    # resultAccount.set_receipt("898")
+    # resultAccount.set_note("testest")
     #
 
-    resultAccount.operateAction(p_operationCode)
+
     # update resultAccount.
 
     return resultAccount
@@ -86,3 +125,21 @@ def decodeSchedulePackage(package): # return AccountClass
     # update resultAccount
 
     return resultSchedule
+
+def encodeWeatherPackage(weatherClass):
+    
+    package, zero, city_size, period_size, situation_size = 0, 0, 12, 12, 30
+    
+    package = bytes("wea", encoding='utf-8')
+    package += weatherClass.get_month().to_bytes(1, 'big')
+    package += weatherClass.get_day().to_bytes(1, 'big')
+    package += bytes(weatherClass.get_city(), encoding= 'UTF-8')
+    package += zero.to_bytes(city_size - (len(weatherClass.get_city()) * 3), 'big')
+    package += bytes(weatherClass.get_period(), encoding= 'UTF-8')
+    package += zero.to_bytes(period_size - (len(weatherClass.get_period()) * 3), 'big')
+    package += bytes(weatherClass.get_siutation(), encoding= 'UTF-8')
+    package += zero.to_bytes(situation_size - (len(weatherClass.get_situation()) * 3), 'big')
+    package += weatherClass.get_max_temperature().to_bytes(1, 'big')
+    package += weatherClass.get_min_temperature().to_bytes(1, 'big')
+
+    return package

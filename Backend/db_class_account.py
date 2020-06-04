@@ -5,7 +5,7 @@ import sqlite3
 
 class Account:
     item,detail,receipt,note,dbfile,query='','','','','',''
-    year,month,day,money,number,status,key,con,selectnum=0,0,0,0,0,0,0,0,0
+    year,month,day,money,number,status,key,con,selectnum,operationCode=0,0,0,0,0,0,0,0,0,0
 
     def set_item(self, item):  #set分類
         self.item=item
@@ -28,7 +28,7 @@ class Account:
     def get_money(self):
         return self.money
     def randomize_number(self):        #set id(insert時使用)
-        self.number=random.randint(1,100000)
+        self.number=random.randint(0,99999)
     def set_number(self, number):
         self.number = number
     def get_number(self):
@@ -53,6 +53,10 @@ class Account:
         self.key=key
     def get_key(self):
         return self.key
+    def set_operationCode(self, code):
+        self.operationCode = code
+    def get_operaionCode(self):
+        return self.operationCode
     # def set_query(self,query):        #set要求(修改時使用)
     #     self.query=query
     # def get_query(self):
@@ -62,20 +66,20 @@ class Account:
     # def get_selectnum(self):
     #     return self.selectnum
 
-    def operateAction(self, operationCode):
-        if operationCode == 0: # 新增
+    def operateAction(self):
+        if self.operationCode == 0: # 新增
             self.insert()
             print("insert success.")
-        elif operationCode == 1: # 刪除
+        elif self.operationCode == 1: # 刪除
             self.key = self.number
             self.delete()
             print("delete success.")
-        elif operationCode == 2: # 修改
+        elif self.operationCode == 2: # 修改
             self.key = self.number
             self.delete()
             self.insert()
             print("modify success.")
-        elif operationCode == 3: # 查詢
+        elif self.operationCode == 3: # 查詢
             self.select()
             print("select success.")
     def DEBUG_printAllAttribute(self):
