@@ -1,7 +1,7 @@
 import requests
 from selenium import webdriver
 from bs4 import BeautifulSoup 
-from WeatherClass import *
+from DB_Classes import *
 
 url = 'https://www.cwb.gov.tw/V8/C/W/County/index.html'
 driver = webdriver.PhantomJS(executable_path = 'C:/Users/ijn95/OneDrive/桌面/Code/python/phantomjs-2.1.1-windows/bin/phantomjs.exe')
