@@ -2,7 +2,7 @@ import os
 import random
 import dialogflow_f
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS']='./TextTraining/life-8c6775870f64.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS']='life-8c6775870f64.json'
 
 while True:
     texts=input('enter a text:') # targer String

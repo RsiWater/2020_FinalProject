@@ -1,21 +1,32 @@
 from db_class_account import *
 from db_class_schedule import *
 from DB_Classes import *
+from dialogflow_f import *
 
 def classifyPackage(package):
     packageType = package[:3].decode("utf-8")
     
     if packageType == 'acc':
         rcv_package = decodeAccountPackage(package[3:])
-        rcv_package.operateAction()
+        send_package = encodeAccountPackage(rcv_package)
+        return send_package
 
+        #rcv_package.operateAction()
         # connect_socket.send(encodeAccountPackage(account))
 
     elif packageType == 'sch':
         rcv_package = decodeSchedulePackage(package[3:])
-        rcv_package.operateAction()
+        send_package = encodeSchedulePackage(rcv_package)
+        return send_package
+
+        #rcv_package.operateAction()
         # print(rcv_package.get_todo())
         # connect_socket.send(encodeSchedulePackage(schedule))
+
+    elif packageType=='sen':
+        send_package=Sentence(package[3:])
+        return send_package
+
 
     elif packageType == 'log':
         # login
@@ -143,3 +154,16 @@ def encodeWeatherPackage(weatherClass):
     package += weatherClass.get_min_temperature().to_bytes(1, 'big')
 
     return package
+
+def Sentence(package):  #return bytearray
+
+    send_package=0
+    p_sentence=package[:75].decode('utf-8')
+    number=random.randint(0,1000)
+    response=dialogflow_f.detect_texts('life-nxuajt',str(number),p_sentence,'zh-TW')
+    send_package=bytes("sen", encoding='UTF-8')
+    send_package+=bytes(response.query_result.intent.display_name,encoding='UTF-8')
+    send_package+=bytes(response.query_result.fulfillment_text ,encoding='UTF-8')
+
+    return send_package
+
