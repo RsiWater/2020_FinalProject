@@ -82,6 +82,10 @@ class Account:
         elif self.operationCode == 3: # 查詢
             self.select()
             print("select success.")
+        elif self.operationCode == 4:
+            self.DEBUG_printAllAttribute()
+            print('debug mode.')
+
     def DEBUG_printAllAttribute(self):
         print("ID", self.number)
         print("money", self.money)
@@ -93,7 +97,7 @@ class Account:
         print('receipt', self.receipt)
         print('status', self.status)
         print('note', self.note)
-
+        print('operateAction', self.operationCode)
 
     def __init__(self):
         self.dbfile='life.db'

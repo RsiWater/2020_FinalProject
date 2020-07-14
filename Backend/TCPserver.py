@@ -6,7 +6,7 @@ from db_class_schedule import Schedule
 from DB_Classes import *
 
 
-hostname = '127.0.0.1' #設定主機名
+hostname = "192.168.203.108" #設定主機名
 port = 6666  #設定埠號 要確保這個埠號沒有被使用，可以在cmd裡面檢視
 addr = (hostname,port)
 srv = socket.socket() #建立一個socket

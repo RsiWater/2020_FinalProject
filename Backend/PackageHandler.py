@@ -4,20 +4,23 @@ from DB_Classes import *
 
 def classifyPackage(package):
     packageType = package[:3].decode("utf-8")
-    
+
     if packageType == 'acc':
+        print('handle account')
         rcv_package = decodeAccountPackage(package[3:])
         rcv_package.operateAction()
-
+        
         # connect_socket.send(encodeAccountPackage(account))
 
     elif packageType == 'sch':
+        print('handle schedule')
         rcv_package = decodeSchedulePackage(package[3:])
         rcv_package.operateAction()
         # print(rcv_package.get_todo())
         # connect_socket.send(encodeSchedulePackage(schedule))
 
     elif packageType == 'log':
+        print('handle login')
         # login
         rcv_package = decodeLoginPackage(package[3:])
         if(rcv_package.check()):

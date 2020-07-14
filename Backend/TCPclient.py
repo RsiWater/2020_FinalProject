@@ -1,7 +1,8 @@
 import socket
-hostname = '127.0.0.1'
+hostname = "192.168.203.108"
 port = 6666
 addr = (hostname,port)
+print(hostname)
 clientsock = socket.socket() ## 建立一個socket
 clientsock.connect(addr) # 建立連線
 say = input("輸入你想傳送的訊息：")
