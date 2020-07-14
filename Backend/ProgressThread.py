@@ -1,7 +1,7 @@
 import threading
 import time
 from PackageHandler import *
-from db_class_account import *
+# from db_class_account import *
 
 class ProgressThread(threading.Thread):
     def __init__(self, socket, address):
