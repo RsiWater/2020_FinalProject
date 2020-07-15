@@ -58,6 +58,8 @@ class Weather:
         package += self.min_temperature.to_bytes(1, 'big')
 
         return package
+    def DEBUG_printAllAttribute(self):
+        print(self.city)
 
 class UserAccount:
     def __init__(self):

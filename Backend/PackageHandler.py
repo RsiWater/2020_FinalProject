@@ -8,20 +8,20 @@ def classifyPackage(package):
     
     if packageType == 'acc':
         rcv_package = decodeAccountPackage(package[3:])
-        send_package = encodeAccountPackage(rcv_package)
-        return send_package
+        rcv_package.operateAction()
 
-        #rcv_package.operateAction()
         # connect_socket.send(encodeAccountPackage(account))
 
     elif packageType == 'sch':
         rcv_package = decodeSchedulePackage(package[3:])
-        send_package = encodeSchedulePackage(rcv_package)
-        return send_package
 
-        #rcv_package.operateAction()
+        rcv_package.operateAction()
+
         # print(rcv_package.get_todo())
         # connect_socket.send(encodeSchedulePackage(schedule))
+
+    elif packageType == 'wea':
+        return 'wea'
 
     elif packageType=='sen':
         send_package=Sentence(package[3:])
@@ -40,8 +40,7 @@ def classifyPackage(package):
     # elif packageType == 'deb':
     #     message = rcv_event.decode("UTF-8")
     #     print(message)
-    #     t = ProgressThread(message)
-    #     t.start()
+
 
 def decodeLoginPackage(package):
     resultAccount = UserAccount()
