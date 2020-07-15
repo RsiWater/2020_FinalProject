@@ -1,5 +1,3 @@
-from db_class_account import *
-from db_class_schedule import *
 from DB_Classes import *
 from dialogflow_f import *
 

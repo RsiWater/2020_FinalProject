@@ -5,8 +5,6 @@ new_dbfile='life.db'
 new_con=sqlite3.connect(new_dbfile)
 
 
-
-
 def check(count):
     unsame=False
     rows=new_con.execute('select id from record;')
