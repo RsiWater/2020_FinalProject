@@ -78,8 +78,9 @@ class UserAccount:
         return ifExist
 
 class Account:
-    item,detail,receipt,note,dbfile,query='','','','','',''
+    item,detail,receipt,note,dbfile,query,user='','','','','','',''
     year,month,day,money,number,status,key,con,selectnum,operationCode=0,0,0,0,0,0,0,0,0,0
+    findAll=[]
 
     def set_item(self, item):  #set分類
         self.item=item
@@ -127,10 +128,14 @@ class Account:
         self.key=key
     def get_key(self):
         return self.key
-    def set_operationCode(self, code):
+    def set_operationCode(self, code): #set 指令碼
         self.operationCode = code
     def get_operaionCode(self):
         return self.operationCode
+    def set_user(self, user):          #set 使用者
+        self.user = user
+    def get_user(self):
+        return self.user
     # def set_query(self,query):        #set要求(修改時使用)
     #     self.query=query
     # def get_query(self):
@@ -172,46 +177,35 @@ class Account:
         print('status', self.status)
         print('note', self.note)
         print('operateAction', self.operationCode)
+        print('user', self.user)
 
     def __init__(self):
         self.dbfile='life.db'
         self.con=sqlite3.connect(self.dbfile)
     def insert(self):
         self.DEBUG_printAllAttribute()
-        self.con.execute('insert into record(金額,年,月,日,分類,細項,發票,備註,收支屬性,id)values({},{},{},{},"{}","{}","{}","{}",{},{});'.format(self.money,self.year,self.month,self.day,self.item,self.detail,self.receipt,self.note,self.status,self.number))
+        self.con.execute('insert into record(金額,年,月,日,分類,細項,發票,備註,收支屬性,id,user)values({},{},{},{},"{}","{}","{}","{}",{},{},"{}");'.format(self.money,self.year,self.month,self.day,self.item,self.detail,self.receipt,self.note,self.status,self.number,self.user))
         self.con.commit()
     def delete(self):
         self.con.execute('delete from record where id={};'.format(self.key))
         self.con.commit()
     def update(self):
         self.con.execute('delete from record where id={};'.format(self.key))
-        self.con.execute('insert into record(金額,年,月,日,分類,細項,發票,備註,收支屬性,id)values({},{},{},{},"{}","{}","{}","{}",{},{});'.format(self.money,self.year,self.month,self.day,self.item,self.detail,self.receipt,self.note,self.status,self.key))
+        self.con.execute('insert into record(金額,年,月,日,分類,細項,發票,備註,收支屬性,id,user)values({},{},{},{},"{}","{}","{}","{}",{},{},"{}");'.format(self.money,self.year,self.month,self.day,self.item,self.detail,self.receipt,self.note,self.status,self.key,self.user))
         self.con.commit()
     def select(self):
-        datas=[]
-        data=self.con.execute('select * from record where id={};'.format(self.key))
-        for i in data:
-            for j in i:
-                datas.append(j)
-        self.set_money(datas[0])
-        self.set_year(datas[1])
-        self.set_month(datas[2])
-        self.set_day(datas[3])
-        self.set_item(datas[4])
-        self.set_detail(datas[5])
-        self.set_receipt(datas[7])
-        self.set_note(datas[8])
-        self.set_status(datas[9])
+        data=self.con.execute('select * from record where user="{}";'.format(self.user))
+        self.findAll=data
         print("select success")
     def close(self):
         self.con.close()
 
 
 class Schedule:
-    todo,dbfile,query='','',''
-    year,month,day,con,number,key=0,0,0,0,0,0
+    todo,dbfile,query,user='','','',''
+    year,month,day,con,number,key,operationCode=0,0,0,0,0,0,0
     start,end=0.0,0.0
-    operationCode = 0
+    findAll=[]
 
 
     def set_todo(self, todo):  #set事情
@@ -256,6 +250,10 @@ class Schedule:
         self.operationCode = code
     def get_operaionCode(self):
         return self.operationCode
+    def set_user(self,user):
+        self.user=user
+    def get_user(self):
+        return self.user
 
     def operateAction(self):
         if self.operationCode == 0: # 新增
@@ -279,28 +277,18 @@ class Schedule:
         self.dbfile='life.db'
         self.con=sqlite3.connect(self.dbfile)
     def insert(self):
-        self.con.execute('insert into schedule_record(事情,年,月,日,開始時間,結束時間,id)values("{}",{},{},{},{},{},{});'.format(self.todo,self.year,self.month,self.day,self.start,self.end,self.number))
+        self.con.execute('insert into schedule_record(事情,年,月,日,開始時間,結束時間,id,user)values("{}",{},{},{},{},{},{},"{}");'.format(self.todo,self.year,self.month,self.day,self.start,self.end,self.number,self.user))
         self.con.commit()
     def delete(self):
         self.con.execute('delete from schedule_record where id={};'.format(self.key))
         self.con.commit()
     def update(self):
         self.con.execute('delete from schedule_record where id={};'.format(self.key))
-        self.con.execute('insert into schedule_record(事情,年,月,日,開始時間,結束時間,id)values("{}",{},{},{},{},{},{});'.format(self.todo,self.year,self.month,self.day,self.start,self.end,self.key))
+        self.con.execute('insert into schedule_record(事情,年,月,日,開始時間,結束時間,id,user)values("{}",{},{},{},{},{},{},"{}");'.format(self.todo,self.year,self.month,self.day,self.start,self.end,self.key,self.user))
         self.con.commit()
     def select(self):
-        datas=[]
-        data=self.con.execute('select * from schedule_record where id={};'.format(self.key))
-        for i in data:
-            for j in i:
-                datas.append(j)
-        self.set_todo(datas[0])
-        self.set_year(datas[1])
-        self.set_month(datas[2])
-        self.set_day(datas[3])
-        self.set_start(datas[4])
-        self.set_end(datas[5])
-        #self.set_key(datas[6])
+        data=self.con.execute('select * from schedule_record where user="{}";'.format(self.user))
+        self.findAll=data
     def close(self):
         self.con.close()
     
