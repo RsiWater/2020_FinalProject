@@ -10,10 +10,16 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS']='life-8c6775870f64.json'
 # Crawl.writeData()
 
 weatherData = dict()
-with open('weatherData.json', 'r') as fp:
-    weatherData = json.load(fp)
+try:
+    with open('weatherData.json', 'r') as fp:
+        weatherData = json.load(fp)
+except:
+    Crawl.writeData()
+    with open('weatherData.json', 'r') as fp:
+        weatherData = json.load(fp)
 
-    print(weatherData.keys())
+print(weatherData.keys())
+
 
 hostname = "192.168.203.108" #設定主機名
 port = 6666  #設定埠號 要確保這個埠號沒有被使用，可以在cmd裡面檢視
