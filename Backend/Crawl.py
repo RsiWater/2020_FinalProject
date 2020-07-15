@@ -58,10 +58,10 @@ def crawlWeather():
                 temp_d.city = city
                 if j == 0:
                     data = data_day
-                    temp_d.period = "Day"
+                    temp_d.period = "早上"
                 else:
                     data = data_night
-                    temp_d.period = "Night"
+                    temp_d.period = "晚上"
                 temp_d.situation = data[1].get('alt')
                 temp_d.max_temperature = int(data[2].string[:2])
                 temp_d.min_temperature = int(data[2].string[5:])
@@ -92,3 +92,36 @@ def writeData():
     with open('weatherData.json', 'w') as fp:
         fp.write(ret)
     print('data operate done')
+
+def dictData2WeatherClass(dictData):
+    newDict = dict()
+
+    for city, eleList in dictData.items():
+        tempList = list()
+        # print(city)
+        for ele in eleList:
+            temp_d = Weather()
+            temp_d.city = ele['city']
+            temp_d.period = ele['period']
+            temp_d.situation = ele['situation']
+            temp_d.max_temperature = ele['max_temperature']
+            temp_d.min_temperature = ele['min_temperature']
+            temp_d.month = ele['month']
+            temp_d.day = ele['day']
+            tempList.append(temp_d)
+        newDict[city] = tempList
+    
+    return newDict
+
+def getWeatherData():
+    weatherData = dict()
+    try:
+        with open('weatherData.json', 'r') as fp:
+            weatherData = json.load(fp)
+    except:
+        writeData()
+        with open('weatherData.json', 'r') as fp:
+            weatherData = json.load(fp)
+
+    result = dictData2WeatherClass(weatherData)
+    return result

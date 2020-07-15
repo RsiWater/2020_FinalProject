@@ -1,5 +1,6 @@
 from DB_Classes import *
 from dialogflow_f import *
+import Crawl
 
 def classifyPackage(package):
     packageType = package[:3].decode("utf-8")
@@ -19,7 +20,13 @@ def classifyPackage(package):
         # connect_socket.send(encodeSchedulePackage(schedule))
 
     elif packageType == 'wea':
-        return 'wea'
+        send_package = bytes('', encoding="UTF-8")
+        weatherData = Crawl.getWeatherData()
+        for eleList in weatherData.values():
+            for ele in eleList:
+                send_package+=encodeWeatherPackage(ele)
+        # 
+        return send_package
 
     elif packageType=='sen':
         send_package=Sentence(package[3:])
@@ -136,7 +143,7 @@ def decodeSchedulePackage(package): # return AccountClass
 
 def encodeWeatherPackage(weatherClass):
     
-    package, zero, city_size, period_size, situation_size = 0, 0, 12, 12, 30
+    package, zero, city_size, period_size, situation_size = 0, 0, 12, 12, 45
     
     package = bytes("wea", encoding='utf-8')
     package += weatherClass.get_month().to_bytes(1, 'big')
@@ -145,7 +152,7 @@ def encodeWeatherPackage(weatherClass):
     package += zero.to_bytes(city_size - (len(weatherClass.get_city()) * 3), 'big')
     package += bytes(weatherClass.get_period(), encoding= 'UTF-8')
     package += zero.to_bytes(period_size - (len(weatherClass.get_period()) * 3), 'big')
-    package += bytes(weatherClass.get_siutation(), encoding= 'UTF-8')
+    package += bytes(weatherClass.get_situation(), encoding= 'UTF-8')
     package += zero.to_bytes(situation_size - (len(weatherClass.get_situation()) * 3), 'big')
     package += weatherClass.get_max_temperature().to_bytes(1, 'big')
     package += weatherClass.get_min_temperature().to_bytes(1, 'big')
