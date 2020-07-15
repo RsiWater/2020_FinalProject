@@ -5,15 +5,43 @@ def classifyPackage(package):
     packageType = package[:3].decode("utf-8")
     
     if packageType == 'acc':
+        send_package=bytes('',encoding='utf-8')
         rcv_package = decodeAccountPackage(package[3:])
         rcv_package.operateAction()
+        if rcv_package.operationCode==3:
+            for data in rcv_package.findAll:
+                rcv_package.set_money(data[0])
+                rcv_package.set_year(data[1])
+                rcv_package.set_month(data[2])
+                rcv_package.set_day(data[3])
+                rcv_package.set_item(data[4])
+                rcv_package.set_detail(data[5])
+                rcv_package.set_receipt(data[6])
+                rcv_package.set_note(data[7])
+                rcv_package.set_status(data[8])
+                rcv_package.set_key(data[9])
+                rcv_package.set_user(data[10])
+                send_package+=encodeAccountPackage(rcv_package)
+            return send_package
 
         # connect_socket.send(encodeAccountPackage(account))
 
     elif packageType == 'sch':
+        send_package=bytes('',encoding='utf-8')
         rcv_package = decodeSchedulePackage(package[3:])
-
         rcv_package.operateAction()
+        if rcv_package.operationCode==3:
+            for data in rcv_package.findAll:
+                rcv_package.set_todo(data[0])
+                rcv_package.set_year(data[1])
+                rcv_package.set_month(data[2])
+                rcv_package.set_day(data[3])
+                rcv_package.set_start(data[4])
+                rcv_package.set_end(data[5])
+                rcv_package.set_key(data[6])
+                rcv_package.set_user(data[7])
+                send_package+=encodeAccountPackage(rcv_package)
+            return send_package
 
         # print(rcv_package.get_todo())
         # connect_socket.send(encodeSchedulePackage(schedule))
@@ -63,6 +91,7 @@ def encodeAccountPackage(accountClass): # return bytearray
     package += bytes(accountClass.get_detail(), encoding = "UTF-8")
     package += zero.to_bytes(itemSize - (len(accountClass.get_detail()) * 3), 'big')
     package += accountClass.get_status().to_bytes(1, 'big')
+    package += bytes(accountClass.get_user,encoding='UTF-8')
     
     # print(package)
     # for i in package:
@@ -76,7 +105,7 @@ def decodeAccountPackage(package): # return AccountClass
     
     p_id, p_money, p_year , p_month= int.from_bytes(package[:4], 'big'), int.from_bytes(package[4:8],'big'), package[8], package[9]
     p_day, p_item, p_detail, p_status = package[10], package[11:29].decode('utf-8').split('\x00', 1)[0], package[29:47].decode('utf-8').split('\x00', 1)[0], package[47]
-    p_operationCode = package[48]
+    p_operationCode, p_user = package[48], packagep[49:68].decode('utf-8')
 
     resultAccount.set_number(p_id)
     resultAccount.set_money(p_money)
@@ -87,6 +116,7 @@ def decodeAccountPackage(package): # return AccountClass
     resultAccount.set_detail(p_detail)
     resultAccount.set_status(p_status)
     resultAccount.set_operationCode(p_operationCode)
+    resultAccount.set_user(p_user)
 
     #
     # resultAccount.set_receipt("898")
@@ -112,6 +142,7 @@ def encodeSchedulePackage(scheduleClass): # return bytearray
     package += scheduleClass.get_day().to_bytes(1, 'big')
     package += scheduleClass.get_start().to_bytes(4, 'big')
     package += scheduleClass.get_end().to_bytes(4, 'big')
+    package += bytes(scheduleClass.get_user,encoding='UTF-8')
 
     return package
 
@@ -121,6 +152,7 @@ def decodeSchedulePackage(package): # return AccountClass
     
     p_id, p_todo, p_year , p_month= int.from_bytes(package[:4], 'big'), package[4:40].decode('utf-8'), package[40], package[41]
     p_day, p_start, p_end = package[42], int.from_bytes(package[43:47], 'big'), int.from_bytes(package[47:51], 'big')
+    p_user=package[52:71].decode('utf-8')
     
     resultSchedule.set_number(p_id)
     resultSchedule.set_todo(p_todo)
@@ -129,6 +161,7 @@ def decodeSchedulePackage(package): # return AccountClass
     resultSchedule.set_day(p_day)
     resultSchedule.set_start(p_start)
     resultSchedule.set_end(p_end)
+    resultSchedule.set_user(p_user)
 
     # update resultAccount
 
