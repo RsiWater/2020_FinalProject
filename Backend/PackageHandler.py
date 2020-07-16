@@ -211,6 +211,31 @@ def Sentence(package):  #return bytearray
 
     return send_package
 
+def encodeReceiptPackage(accountClass): # return bytearray
+
+    package, zero, itemSize, userSize = 0, 0, 18, 20
+    
+    package = bytes("rec", encoding='utf-8')
+    package += accountClass.get_key().to_bytes(4, 'big')
+    package += accountClass.get_money().to_bytes(4, 'big')
+    package += accountClass.get_year().to_bytes(1, 'big')
+    package += accountClass.get_month().to_bytes(1, 'big')
+    package += accountClass.get_day().to_bytes(1,'big')
+   
+    package += bytes(accountClass.get_item(), encoding = "UTF-8")
+    package += zero.to_bytes(itemSize - (len(accountClass.get_item() * 3)), 'big')
+    package += bytes(accountClass.get_detail(), encoding = "UTF-8")
+    package += zero.to_bytes(itemSize - (len(accountClass.get_detail()) * 3), 'big')
+    package += accountClass.get_status().to_bytes(1, 'big')
+    package += bytes(accountClass.get_user(),encoding='UTF-8')
+    package += zero.to_bytes(userSize - (len(accountClass.get_user())), 'big')
+    
+    # print(package)
+    # for i in package:
+    #     print(i)
+
+    return package
+
 def receiptSearch(checkNumber,package):
     p_user=package[:20].decode('utf-8').split('\x00', 1)[0]
     checkAccount=Account()
@@ -231,7 +256,7 @@ def receiptSearch(checkNumber,package):
                 checkAccount.set_status(data[8])
                 checkAccount.set_key(data[9])
                 checkAccount.set_user(data[10])
-                send_package+=encodeAccountPackage(checkAccount)
+                send_package+=encodeReceiptPackage(checkAccount)
     return send_package
 
                 
