@@ -41,7 +41,7 @@ def classifyPackage(package):
                 rcv_package.set_end(data[5])
                 rcv_package.set_key(data[6])
                 rcv_package.set_user(data[7])
-                send_package+=encodeAccountPackage(rcv_package)
+                send_package+=encodeSchedulePackage(rcv_package)
             return send_package
 
         # print(rcv_package.get_todo())
@@ -60,6 +60,11 @@ def classifyPackage(package):
         send_package=Sentence(package[3:])
         return send_package
 
+    elif packageType=='rec':
+        #need crawl
+        checkNumber=[]
+        send_package=receiptSearch(checkNumber,package[3:])
+        return send_package
 
     elif packageType == 'log':
         # login
@@ -197,7 +202,7 @@ def encodeWeatherPackage(weatherClass):
 def Sentence(package):  #return bytearray
 
     send_package=0
-    p_sentence=package[:75].decode('utf-8')
+    p_sentence=package[:75].decode('utf-8').split('\x00', 1)[0]
     number=random.randint(0,1000)
     response=dialogflow_f.detect_texts('life-nxuajt',str(number),p_sentence,'zh-TW')
     send_package=bytes("sen", encoding='UTF-8')
@@ -205,4 +210,29 @@ def Sentence(package):  #return bytearray
     send_package+=bytes(response.query_result.fulfillment_text ,encoding='UTF-8')
 
     return send_package
+
+def receiptSearch(checkNumber,package):
+    p_user=package[:20].decode('utf-8').split('\x00', 1)[0]
+    checkAccount=Account()
+    checkAccount.set_user(p_user)
+    checkAccount.select()
+    send_package=bytes('',encoding='utf-8')
+    for i in checkNumber:
+        for data in checkAccount.findAll:
+            if data[6]==i:
+                checkAccount.set_money(data[0])
+                checkAccount.set_year(data[1])
+                checkAccount.set_month(data[2])
+                checkAccount.set_day(data[3])
+                checkAccount.set_item(data[4])
+                checkAccount.set_detail(data[5])
+                checkAccount.set_receipt(data[6])
+                checkAccount.set_note(data[7])
+                checkAccount.set_status(data[8])
+                checkAccount.set_key(data[9])
+                checkAccount.set_user(data[10])
+                send_package+=encodeAccountPackage(checkAccount)
+    return send_package
+
+                
 
