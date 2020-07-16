@@ -79,7 +79,7 @@ class UserAccount:
 
 class Account:
     item,detail,receipt,note,dbfile,query,user='','','','','','',''
-    year,month,day,money,number,status,key,con,selectnum,operationCode=0,0,0,0,0,0,0,0,0,0
+    year,month,day,money,status,key,con,selectnum,operationCode=0,0,0,0,0,0,0,0,0
     findAll=[]
 
     def set_item(self, item):  #set分類
@@ -102,12 +102,6 @@ class Account:
         self.money=money
     def get_money(self):
         return self.money
-    def randomize_number(self):        #set id(insert時使用)
-        self.number=random.randint(0,99999)
-    def set_number(self, number):
-        self.number = number
-    def get_number(self):
-        return self.number
     def set_detail(self, detail):  #set細項
         self.detail=detail
     def get_detail(self):
@@ -150,11 +144,9 @@ class Account:
             self.insert()
             print("insert success.")
         elif self.operationCode == 1: # 刪除
-            self.key = self.number
             self.delete()
             print("delete success.")
         elif self.operationCode == 2: # 修改
-            self.key = self.number
             self.delete()
             self.insert()
             print("modify success.")
@@ -166,7 +158,7 @@ class Account:
             print('debug mode.')
 
     def DEBUG_printAllAttribute(self):
-        print("ID", self.number)
+        print("ID", self.key)
         print("money", self.money)
         print("year", self.year)
         print("month", self.month)
@@ -183,8 +175,8 @@ class Account:
         self.dbfile='life.db'
         self.con=sqlite3.connect(self.dbfile)
     def insert(self):
-        self.DEBUG_printAllAttribute()
-        self.con.execute('insert into record(金額,年,月,日,分類,細項,發票,備註,收支屬性,id,user)values({},{},{},{},"{}","{}","{}","{}",{},{},"{}");'.format(self.money,self.year,self.month,self.day,self.item,self.detail,self.receipt,self.note,self.status,self.number,self.user))
+        # self.DEBUG_printAllAttribute()
+        self.con.execute('insert into record(金額,年,月,日,分類,細項,發票,備註,收支屬性,id,user)values({},{},{},{},"{}","{}","{}","{}",{},{},"{}");'.format(self.money,self.year,self.month,self.day,self.item,self.detail,self.receipt,self.note,self.status,self.key,self.user))
         self.con.commit()
     def delete(self):
         self.con.execute('delete from record where id={};'.format(self.key))
@@ -203,7 +195,7 @@ class Account:
 
 class Schedule:
     todo,dbfile,query,user='','','',''
-    year,month,day,con,number,key,operationCode=0,0,0,0,0,0,0
+    year,month,day,con,key,operationCode=0,0,0,0,0,0
     start,end=0.0,0.0
     findAll=[]
 
@@ -236,12 +228,6 @@ class Schedule:
     #     self.query=query
     # def get_query(self):
     #     return self.query
-    def randomize_number(self):        #set id(insert時使用)
-        self.number=random.randint(1,100000)
-    def set_number(self, number):
-        self.number = number
-    def get_number(self):
-        return self.number
     def set_key(self,key):            #set id(刪除、修改、查詢時使用)
         self.key=key
     def get_key(self):
@@ -260,11 +246,9 @@ class Schedule:
             self.insert()
             print("insert success.")
         elif self.operationCode == 1: # 刪除
-            self.key = self.number
             self.delete()
             print("delete success.")
         elif self.operationCode == 2: # 修改
-            self.key = self.number
             self.delete()
             self.insert()
             print("modify success.")
@@ -277,7 +261,7 @@ class Schedule:
         self.dbfile='life.db'
         self.con=sqlite3.connect(self.dbfile)
     def insert(self):
-        self.con.execute('insert into schedule_record(事情,年,月,日,開始時間,結束時間,id,user)values("{}",{},{},{},{},{},{},"{}");'.format(self.todo,self.year,self.month,self.day,self.start,self.end,self.number,self.user))
+        self.con.execute('insert into schedule_record(事情,年,月,日,開始時間,結束時間,id,user)values("{}",{},{},{},{},{},{},"{}");'.format(self.todo,self.year,self.month,self.day,self.start,self.end,self.key,self.user))
         self.con.commit()
     def delete(self):
         self.con.execute('delete from schedule_record where id={};'.format(self.key))
