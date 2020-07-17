@@ -125,3 +125,44 @@ def getWeatherData():
 
     result = dictData2WeatherClass(weatherData)
     return result
+
+
+def receiptCrawler():
+    main_url='https://www.etax.nat.gov.tw'
+    url = 'https://www.etax.nat.gov.tw/etw-main/web/ETW183W1'
+    driver = webdriver.PhantomJS(executable_path = 'C:/Users/陳佑旻/Desktop/phantomjs-2.1.1-windows/bin/phantomjs.exe')
+    driver.get(url)
+
+    soup = BeautifulSoup(driver.page_source, "lxml")
+    data = soup.select('tbody tr td a')
+    #print(data)
+
+    count=0
+    tstr='ETW183W2'
+    web=[]
+    for i in data:
+        if i['href'].find(tstr)!=-1:
+            web.append(i['href'])
+            count=count+1
+        if count==1:
+            break
+    # print(web)
+
+    checkNumber=[]
+    for w in web:
+        sub_url=main_url+w
+        driver.get(sub_url)
+        soup = BeautifulSoup(driver.page_source, "lxml")
+        firstPrize = soup.select('tbody tr td.number p')
+        additional=soup.select('tbody tr td.number')
+        # print(firstPrize)
+        # print(additional)
+
+        subCheckNumber=[]
+        for i in range(3):
+            subCheckNumber.append(firstPrize[i].text[5:8])
+        subCheckNumber.append(additional[3].text)
+
+        checkNumber.append(subCheckNumber)
+    # print(checkNumber)
+    return checkNumber

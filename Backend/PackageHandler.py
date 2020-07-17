@@ -61,8 +61,7 @@ def classifyPackage(package):
         return send_package
 
     elif packageType=='rec':
-        #need crawl
-        checkNumber=[]
+        checkNumber=Crawl.receiptCrawler()
         send_package=receiptSearch(checkNumber,package[3:])
         return send_package
 
@@ -246,20 +245,21 @@ def receiptSearch(checkNumber,package):
     checkAccount.select()
     send_package=bytes('',encoding='utf-8')
     for i in checkNumber:
-        for data in checkAccount.findAll:
-            if data[6]==i:
-                checkAccount.set_money(data[0])
-                checkAccount.set_year(data[1])
-                checkAccount.set_month(data[2])
-                checkAccount.set_day(data[3])
-                checkAccount.set_item(data[4])
-                checkAccount.set_detail(data[5])
-                checkAccount.set_receipt(data[6])
-                checkAccount.set_note(data[7])
-                checkAccount.set_status(data[8])
-                checkAccount.set_key(data[9])
-                checkAccount.set_user(data[10])
-                send_package+=encodeReceiptPackage(checkAccount)
+        for number in i:
+            for data in checkAccount.findAll:
+                if data[6]==number:
+                    checkAccount.set_money(data[0])
+                    checkAccount.set_year(data[1])
+                    checkAccount.set_month(data[2])
+                    checkAccount.set_day(data[3])
+                    checkAccount.set_item(data[4])
+                    checkAccount.set_detail(data[5])
+                    checkAccount.set_receipt(data[6])
+                    checkAccount.set_note(data[7])
+                    checkAccount.set_status(data[8])
+                    checkAccount.set_key(data[9])
+                    checkAccount.set_user(data[10])
+                    send_package+=encodeReceiptPackage(checkAccount)
     return send_package
 
                 
