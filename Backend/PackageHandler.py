@@ -200,14 +200,17 @@ def encodeWeatherPackage(weatherClass):
     return package
 
 def Sentence(package):  #return bytearray
+    intent_size, fulfillment_size, zero = 30, 90, 0
 
     send_package=0
     p_sentence=package[:75].decode('utf-8').split('\x00', 1)[0]
     number=random.randint(0,1000)
-    response=dialogflow_f.detect_texts('life-nxuajt',str(number),p_sentence,'zh-TW')
+    response=detect_texts('life-nxuajt',str(number),p_sentence,'zh-TW')
     send_package=bytes("sen", encoding='UTF-8')
     send_package+=bytes(response.query_result.intent.display_name,encoding='UTF-8')
+    send_package+=zero.to_bytes(intent_size - (len(response.query_result.intent.display_name)), 'big')
     send_package+=bytes(response.query_result.fulfillment_text ,encoding='UTF-8')
+    send_package+=zero.to_bytes(fulfillment_size - (len(response.query_result.fulfillment_text) * 3), 'big')
 
     return send_package
 
