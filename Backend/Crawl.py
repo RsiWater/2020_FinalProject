@@ -63,8 +63,8 @@ def crawlWeather():
                     data = data_night
                     temp_d.period = "晚上"
                 temp_d.situation = data[1].get('alt')
-                temp_d.max_temperature = int(data[2].string[:2])
-                temp_d.min_temperature = int(data[2].string[5:])
+                temp_d.min_temperature = int(data[2].string[:2])
+                temp_d.max_temperature = int(data[2].string[5:])
                 temp_d.month = int(data_date[1].string[:2])
                 temp_d.day = int(data_date[1].string[3:])
                 weatherList.append(temp_d)

@@ -4,9 +4,9 @@ import json
 import Crawl
 from ProgressThread import *
 
-
 os.environ['GOOGLE_APPLICATION_CREDENTIALS']='life-8c6775870f64.json'
 
+# Crawl.crawlWeather()
 
 hostname = "192.168.203.108" #設定主機名
 port = 6666  #設定埠號 要確保這個埠號沒有被使用，可以在cmd裡面檢視
