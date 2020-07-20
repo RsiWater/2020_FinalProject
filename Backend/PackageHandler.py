@@ -1,6 +1,7 @@
 from DB_Classes import *
 from dialogflow_f import *
 import Crawl
+import hashlib
 
 def classifyPackage(package):
     packageType = package[:3].decode("utf-8")
@@ -68,16 +69,30 @@ def classifyPackage(package):
     elif packageType == 'log':
         # login
         rcv_package = decodeLoginPackage(package[3:])
-        if(rcv_package.check()):
-            return "logAccepted".encode("UTF-8")
-        else:
-            return "logRejected".encode("UTF-8")
+        
+        send_package = encodeLoginMessage(rcv_package)
+        return send_package
         
 
     # elif packageType == 'deb':
     #     message = rcv_event.decode("UTF-8")
     #     print(message)
 
+def encodeLoginMessage(userClass):    
+    zero, passSize, keySize = 0, 2, 64
+
+    key = SHA256_encode(userClass.name)
+
+    package = bytes("log", encoding="UTF-8")
+    if(userClass.check()):
+        package += bytes("OK", encoding="UTF-8")
+        package += bytes(key, encoding="UTF-8")
+    else:
+        package += bytes("NO", encoding="UTF-8")
+        package += bytes(SHA256_encode("NULL"), encoding="UTF-8")
+    
+    return package
+    
 
 def decodeLoginPackage(package):
     resultAccount = UserAccount()
@@ -262,5 +277,12 @@ def receiptSearch(checkNumber,package):
                     send_package+=encodeReceiptPackage(checkAccount)
     return send_package
 
+def SHA256_encode(mes):
+    s = hashlib.sha256()
+
+    temp = mes
+    s.update(temp.encode("UTF-8"))
+    temp = s.hexdigest()
+    return temp
                 
 
