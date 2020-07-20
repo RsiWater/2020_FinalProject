@@ -146,9 +146,10 @@ def receiptCrawler():
             count=count+1
         if count==1:
             break
-    # print(web)
+    # print(web)  #length=28
 
     checkNumber=[]
+    year,month=0,0
     for w in web:
         sub_url=main_url+w
         driver.get(sub_url)
@@ -160,9 +161,17 @@ def receiptCrawler():
 
         subCheckNumber=[]
         for i in range(3):
-            subCheckNumber.append(firstPrize[i].text[5:8])
-        subCheckNumber.append(additional[3].text)
+            subCheckNumber.append(firstPrize[i].text[5:8].strip())
+        for i in additional[3].text.split('、'):
+            subCheckNumber.append(i.strip())
+        year=int(str(int(w[23:28][:3])+1911)[2:4])
+        subCheckNumber.append(year)
+        if w[23:28][3]=='0':
+            month=int(w[23:28][4])
+        else:
+            month=int(w[23:28][3:5])
+        subCheckNumber.append(month)  #最後兩個是年、月
 
         checkNumber.append(subCheckNumber)
     # print(checkNumber)
-    return checkNumber
+    return checkNumber  
