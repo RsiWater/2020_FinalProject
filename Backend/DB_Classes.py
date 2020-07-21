@@ -71,7 +71,7 @@ class UserAccount:
     
     def check(self):
         ifExist = False
-        data=self.con.execute('select * from userAccount where Name={} AND Password = {};'.format(self.name, self.password))
+        data=self.con.execute('select * from userAccount where Name=? AND Password = ?;', (self.name, self.password))
         for element in data:
             ifExist = True
             break
