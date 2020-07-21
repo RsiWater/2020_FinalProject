@@ -1,6 +1,7 @@
 from DB_Classes import *
 from dialogflow_f import *
 import Crawl
+import response_judge
 
 def classifyPackage(package):
     packageType = package[:3].decode("utf-8")
@@ -199,17 +200,41 @@ def encodeWeatherPackage(weatherClass):
     return package
 
 def Sentence(package):  #return bytearray
-    intent_size, fulfillment_size, zero = 30, 90, 0
+    fulfillment_size, zero = 90, 0
 
-    send_package=0
-    p_sentence=package[:75].decode('utf-8').split('\x00', 1)[0]
-    number=random.randint(0,1000)
-    response=detect_texts('life-nxuajt',str(number),p_sentence,'zh-TW')
-    send_package=bytes("sen", encoding='UTF-8')
-    send_package+=bytes(response.query_result.intent.display_name,encoding='UTF-8')
-    send_package+=zero.to_bytes(intent_size - (len(response.query_result.intent.display_name)), 'big')
-    send_package+=bytes(response.query_result.fulfillment_text ,encoding='UTF-8')
-    send_package+=zero.to_bytes(fulfillment_size - (len(response.query_result.fulfillment_text) * 3), 'big')
+    send_package,intent,operate=0,0,0
+    p_intent,p_operate,p_sentence=int.from_bytes(package[:4], 'big'),int.from_bytes(package[4:8], 'big'),package[8:98].decode('utf-8').split('\x00', 1)[0]
+    if p_intent==0:
+        number=random.randint(0,1000)
+        response=detect_texts('life-nxuajt',str(number),p_sentence,'zh-TW')
+        intent,operate=response_judge.judge(response)
+        send_package=bytes("sen", encoding='UTF-8')
+        send_package+=intent.to_bytes(4,'big')
+        send_package+=operate.to_bytes(4,'big')
+        send_package+=bytes(response.query_result.fulfillment_text ,encoding='UTF-8')
+        send_package+=zero.to_bytes(fulfillment_size - (len(response.query_result.fulfillment_text) * 3), 'big')
+    elif p_intent==1:
+        # 記帳
+        if p_operate==1:
+            # 新增
+        elif p_operate==2:
+            # 刪除
+        elif p_operate==3:
+            # 修改
+        elif p_operate==4:
+            # 查詢
+    elif p_intent==2:
+        # 行程
+        if p_operate==1:
+            # 新增
+        elif p_operate==2:
+            # 刪除
+        elif p_operate==3:
+            # 修改
+        elif p_operate==4:
+            # 查詢
+    elif p_intent==3:
+        # 猜意圖
 
     return send_package
 
