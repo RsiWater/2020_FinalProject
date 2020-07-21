@@ -40,23 +40,6 @@ class Weather:
     def get_min_temperature(self):
         return self.min_temperature
 
-
-    def generate_package(self):
-        package, zero = "", 0
-        CITY_SIZE, PERIOD_SIZE, SITUATION_SIZE = 12, 12, 30
-
-        package += bytes("wea", encoding='utf-8')
-        package += self.month.to_bytes(1, 'big')
-        package += self.day.to_bytes(1, 'big')
-        package += bytes(self.city, encoding='utf-8')
-        package += zero.to_bytes(CITY_SIZE - (len(self.city) * 3 ), 'big')
-        package += bytes(self.period, encoding='utf-8')
-        package += zero.to_bytes(PERIOD_SIZE - (len(self.period) * 3), 'big')
-        package += bytes(self.situation, encoding='utf-8')
-        package += zero.to_bytes(SITUATION_SIZE - (len(self.situation) * 3), 'big')
-        package += self.max_temperature.to_bytes(1, 'big')
-        package += self.min_temperature.to_bytes(1, 'big')
-
         return package
     def DEBUG_printAllAttribute(self):
         print(self.city)

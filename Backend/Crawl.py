@@ -1,5 +1,6 @@
 import requests
 import json
+from datetime import datetime as dt
 from selenium import webdriver
 from bs4 import BeautifulSoup 
 from DB_Classes import *
@@ -85,8 +86,18 @@ def crawlWeather():
     # for elements in soup.find_all('table', class_ = "table"):
     #     print(elements.get('tr')) 
 
+def checkDate():
+    try:
+        with open('weatherData.json', 'r') as fp:
+            weatherData = json.load(fp)
+            if weatherData['date'] != dt.now().day:
+                writeData()
+    except:
+        writeData()
+
 def writeData():
     dictData = crawlWeather()
+    dictData["date"] = dt.now().day
     ret = json.dumps(dictData)
 
     with open('weatherData.json', 'w') as fp:
@@ -98,18 +109,18 @@ def dictData2WeatherClass(dictData):
 
     for city, eleList in dictData.items():
         tempList = list()
-        # print(city)
-        for ele in eleList:
-            temp_d = Weather()
-            temp_d.city = ele['city']
-            temp_d.period = ele['period']
-            temp_d.situation = ele['situation']
-            temp_d.max_temperature = ele['max_temperature']
-            temp_d.min_temperature = ele['min_temperature']
-            temp_d.month = ele['month']
-            temp_d.day = ele['day']
-            tempList.append(temp_d)
-        newDict[city] = tempList
+        if city != "date":
+            for ele in eleList:
+                temp_d = Weather()
+                temp_d.city = ele['city']
+                temp_d.period = ele['period']
+                temp_d.situation = ele['situation']
+                temp_d.max_temperature = ele['max_temperature']
+                temp_d.min_temperature = ele['min_temperature']
+                temp_d.month = ele['month']
+                temp_d.day = ele['day']
+                tempList.append(temp_d)
+            newDict[city] = tempList
     
     return newDict
 
