@@ -51,6 +51,7 @@ class UserAccount:
 
         self.name = ''
         self.password = ''
+        self.key = ''
     
     def check(self):
         ifExist = False
@@ -59,6 +60,10 @@ class UserAccount:
             ifExist = True
             break
         return ifExist
+
+    def updateKey(self, key):
+        self.con.execute("UPDATE userAccount SET key = ? WHERE Name = ?", (key, self.name))
+        self.con.commit()
 
 class Account:
     item,detail,receipt,note,dbfile,query,user='','','','','','',''

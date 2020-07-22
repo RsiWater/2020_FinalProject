@@ -4,6 +4,7 @@ import json
 import Crawl
 from ProgressThread import *
 
+
 os.environ['GOOGLE_APPLICATION_CREDENTIALS']='life-8c6775870f64.json'
 
 Crawl.checkDate()

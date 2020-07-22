@@ -24,6 +24,7 @@ def judge(response):
     
     if find==False:
         # 哪一項服務
+        pass
     
     return intent,operate
 

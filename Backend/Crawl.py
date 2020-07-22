@@ -1,5 +1,6 @@
 import requests
 import json
+import copy
 from datetime import datetime as dt
 from selenium import webdriver
 from bs4 import BeautifulSoup 
@@ -96,13 +97,32 @@ def checkDate():
         writeData()
 
 def writeData():
+    WEATHER_DATA_LENGTH = 14 # the length of certain city's weather data
+
     dictData = crawlWeather()
+    buf_dictData = copy.deepcopy(dictData)
+    crawlDone = False
+
+    while crawlDone == False:
+        crawlDone = True
+        for key, value in dictData.items():
+            if len(value) != WEATHER_DATA_LENGTH:
+                if len(buf_dictData[key]) == WEATHER_DATA_LENGTH:
+                    dictData[key] = buf_dictData[key]
+                else:
+                    crawlDone = False
+                    break
+        if not crawlDone:
+            buf_dictData = crawlWeather()
+        else:
+            print("Crawl failed.")
+
     dictData["date"] = dt.now().day
     ret = json.dumps(dictData)
 
     with open('weatherData.json', 'w') as fp:
         fp.write(ret)
-    print('data operate done')
+    print('update success')
 
 def dictData2WeatherClass(dictData):
     newDict = dict()

@@ -82,12 +82,10 @@ def classifyPackage(package):
 def encodeLoginMessage(userClass):    
     zero, passSize, keySize = 0, 2, 64
 
-    key = SHA256_encode(userClass.name)
-
     package = bytes("log", encoding="UTF-8")
     if(userClass.check()):
         package += bytes("OK", encoding="UTF-8")
-        package += bytes(key, encoding="UTF-8")
+        package += bytes(userClass.key, encoding="UTF-8")
     else:
         package += bytes("NO", encoding="UTF-8")
         package += bytes(SHA256_encode("NULL"), encoding="UTF-8")
@@ -99,12 +97,15 @@ def decodeLoginPackage(package):
     resultAccount = UserAccount()
     resultAccount.name = package[:20].decode('utf-8').split('\x00', 1)[0]
     resultAccount.password = package[20:].decode('utf-8').split('\x00', 1)[0]
+    resultAccount.key = SHA256_encode(resultAccount.name)
+
+    resultAccount.updateKey(resultAccount.key)
 
     return resultAccount
 
 def encodeAccountPackage(accountClass): # return bytearray
 
-    package, zero, itemSize, userSize = 0, 0, 18, 20
+    package, zero, itemSize, detailSize, userSize = 0, 0, 18, 18, 20
     
     package = bytes("acc", encoding='utf-8')
     package += accountClass.get_key().to_bytes(4, 'big')
@@ -114,9 +115,9 @@ def encodeAccountPackage(accountClass): # return bytearray
     package += accountClass.get_day().to_bytes(1,'big')
    
     package += bytes(accountClass.get_item(), encoding = "UTF-8")
-    package += zero.to_bytes(itemSize - (len(accountClass.get_item() * 3)), 'big')
+    package += zero.to_bytes(itemSize - (len(accountClass.get_item().encode('UTF-8'))), 'big')
     package += bytes(accountClass.get_detail(), encoding = "UTF-8")
-    package += zero.to_bytes(itemSize - (len(accountClass.get_detail()) * 3), 'big')
+    package += zero.to_bytes(detailSize - (len(accountClass.get_detail().encode('UTF-8'))), 'big')
     package += accountClass.get_status().to_bytes(1, 'big')
     package += bytes(accountClass.get_user(),encoding='UTF-8')
     package += zero.to_bytes(userSize - (len(accountClass.get_user())), 'big')
@@ -164,7 +165,7 @@ def encodeSchedulePackage(scheduleClass): # return bytearray
     package = bytes("sch", encoding='utf-8')
     package += scheduleClass.get_key().to_bytes(4,'big')
     package += bytes(scheduleClass.get_todo(), encoding='UTF-8')
-    package += zero.to_bytes(todo_size - (len(scheduleClass.get_todo() * 3)), 'big')
+    package += zero.to_bytes(todo_size - (len(scheduleClass.get_todo().encode('UTF-8'))), 'big')
     package += scheduleClass.get_year().to_bytes(1, 'big')
     package += scheduleClass.get_month().to_bytes(1, 'big')
     package += scheduleClass.get_day().to_bytes(1, 'big')
@@ -204,11 +205,11 @@ def encodeWeatherPackage(weatherClass):
     package += weatherClass.get_month().to_bytes(1, 'big')
     package += weatherClass.get_day().to_bytes(1, 'big')
     package += bytes(weatherClass.get_city(), encoding= 'UTF-8')
-    package += zero.to_bytes(city_size - (len(weatherClass.get_city()) * 3), 'big')
+    package += zero.to_bytes(city_size - (len(weatherClass.get_city().encode("UTF-8"))), 'big')
     package += bytes(weatherClass.get_period(), encoding= 'UTF-8')
-    package += zero.to_bytes(period_size - (len(weatherClass.get_period()) * 3), 'big')
+    package += zero.to_bytes(period_size - (len(weatherClass.get_period().encode("UTF-8"))), 'big')
     package += bytes(weatherClass.get_situation(), encoding= 'UTF-8')
-    package += zero.to_bytes(situation_size - (len(weatherClass.get_situation()) * 3), 'big')
+    package += zero.to_bytes(situation_size - (len(weatherClass.get_situation().encode("UTF-8"))), 'big')
     package += weatherClass.get_max_temperature().to_bytes(1, 'big')
     package += weatherClass.get_min_temperature().to_bytes(1, 'big')
 
@@ -227,35 +228,44 @@ def Sentence(package):  #return bytearray
         send_package+=intent.to_bytes(4,'big')
         send_package+=operate.to_bytes(4,'big')
         send_package+=bytes(response.query_result.fulfillment_text ,encoding='UTF-8')
-        send_package+=zero.to_bytes(fulfillment_size - (len(response.query_result.fulfillment_text) * 3), 'big')
+        send_package+=zero.to_bytes(fulfillment_size - (len(response.query_result.fulfillment_text.encode("UTF-8"))), 'big')
     elif p_intent==1:
         # 記帳
         if p_operate==1:
             # 新增
+            pass
         elif p_operate==2:
             # 刪除
+            pass
         elif p_operate==3:
             # 修改
+            pass
         elif p_operate==4:
             # 查詢
+            pass
     elif p_intent==2:
         # 行程
         if p_operate==1:
             # 新增
+            pass
         elif p_operate==2:
             # 刪除
+            pass
         elif p_operate==3:
             # 修改
+            pass
         elif p_operate==4:
             # 查詢
+            pass
     elif p_intent==3:
         # 猜意圖
+        pass
 
     return send_package
 
 def encodeReceiptPackage(accountClass): # return bytearray
 
-    package, zero, itemSize, userSize = 0, 0, 18, 20
+    package, zero, itemSize, detailSize ,userSize = 0, 0, 18, 18, 20
     
     package = bytes("rec", encoding='utf-8')
     package += accountClass.get_key().to_bytes(4, 'big')
@@ -265,9 +275,9 @@ def encodeReceiptPackage(accountClass): # return bytearray
     package += accountClass.get_day().to_bytes(1,'big')
    
     package += bytes(accountClass.get_item(), encoding = "UTF-8")
-    package += zero.to_bytes(itemSize - (len(accountClass.get_item() * 3)), 'big')
+    package += zero.to_bytes(itemSize - (len(accountClass.get_item().encode("UTF-8"))), 'big')
     package += bytes(accountClass.get_detail(), encoding = "UTF-8")
-    package += zero.to_bytes(itemSize - (len(accountClass.get_detail()) * 3), 'big')
+    package += zero.to_bytes(detailSize - (len(accountClass.get_detail()).encode("UTF-8")), 'big')
     package += accountClass.get_status().to_bytes(1, 'big')
     package += bytes(accountClass.get_user(),encoding='UTF-8')
     package += zero.to_bytes(userSize - (len(accountClass.get_user())), 'big')
