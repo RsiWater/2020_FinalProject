@@ -132,7 +132,10 @@ class Account:
             self.insert()
             print("insert success.")
         elif self.operationCode == 1: # 刪除
-            self.delete()
+            if self.key == 0:
+                self.delete_by_user()
+            else:
+                self.delete()
             print("delete success.")
         elif self.operationCode == 2: # 修改
             self.delete()
@@ -168,6 +171,9 @@ class Account:
         self.con.commit()
     def delete(self):
         self.con.execute('delete from record where id={};'.format(self.key))
+        self.con.commit()
+    def delete_by_user(self):
+        self.con.execute('delete from record where user={};'.format(self.user))
         self.con.commit()
     def update(self):
         self.con.execute('delete from record where id={};'.format(self.key))
