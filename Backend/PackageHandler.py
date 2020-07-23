@@ -218,22 +218,36 @@ def encodeWeatherPackage(weatherClass):
 def Sentence(package):  #return bytearray
     fulfillment_size, zero = 90, 0
 
-    send_package,intent,operate=0,0,0
+    send_package,intent,operate,fulfillment=0,0,0,''
     p_intent,p_operate,p_sentence=int.from_bytes(package[:4], 'big'),int.from_bytes(package[4:8], 'big'),package[8:98].decode('utf-8').split('\x00', 1)[0]
     if p_intent==0:
         number=random.randint(0,1000)
         response=detect_texts('life-nxuajt',str(number),p_sentence,'zh-TW')
         intent,operate=response_judge.judge(response)
-        send_package=bytes("sen", encoding='UTF-8')
-        send_package+=intent.to_bytes(4,'big')
-        send_package+=operate.to_bytes(4,'big')
-        send_package+=bytes(response.query_result.fulfillment_text ,encoding='UTF-8')
-        send_package+=zero.to_bytes(fulfillment_size - (len(response.query_result.fulfillment_text.encode("UTF-8"))), 'big')
-    elif p_intent==1:
+        # 一段式
+        fulfillment=response.query_result.fulfillment_text
+    if p_intent==1:
         # 記帳
         if p_operate==1:
             # 新增
-            pass
+            year,month,day,item,detail,money,status,key,user,errorFlag=response_judge.cutSentenceAccount(p_sentence)
+            if errorFlag==False:
+                setAccount=Account()
+                setAccount.set_year(int(str(year)[2:4]))
+                setAccount.set_month(month)
+                setAccount.set_day(day)
+                setAccount.set_item(item)
+                setAccount.set_detail(detail)
+                setAccount.set_money(money)
+                setAccount.set_status(status)
+                setAccount.set_key(key)
+                setAccount.set_user(user)
+                setAccount.insert()
+                fulfillment='已新增'
+            else:
+                fulfillment='請重新輸入'
+            intent=0
+            operate=0
         elif p_operate==2:
             # 刪除
             pass
@@ -243,7 +257,7 @@ def Sentence(package):  #return bytearray
         elif p_operate==4:
             # 查詢
             pass
-    elif p_intent==2:
+    if p_intent==2:
         # 行程
         if p_operate==1:
             # 新增
@@ -257,10 +271,15 @@ def Sentence(package):  #return bytearray
         elif p_operate==4:
             # 查詢
             pass
-    elif p_intent==3:
+    if p_intent==3:
         # 猜意圖
         pass
 
+    send_package=bytes("sen", encoding='UTF-8')
+    send_package+=intent.to_bytes(4,'big')
+    send_package+=operate.to_bytes(4,'big')
+    send_package+=bytes(fulfillment ,encoding='UTF-8')
+    send_package+=zero.to_bytes(fulfillment_size - (len(fulfillment.encode("UTF-8"))), 'big')
     return send_package
 
 def encodeReceiptPackage(accountClass): # return bytearray

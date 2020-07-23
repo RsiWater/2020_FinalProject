@@ -2,7 +2,7 @@ import jieba
 import datetime
 
 def judge(response):
-    origin=[['新增','加','增加','加入','記'],['刪除','刪'],['修改','改'],['查詢','查','查看','看']]
+    origin=[['新增','加','增加','加入','記','入'],['刪除','刪'],['修改','改'],['查詢','查','查看','看']]
 
     intent,operate,find=0,0,False
     if response.query_result.intent.display_name=='request for account':
@@ -14,19 +14,52 @@ def judge(response):
     else:
         intent=0
 
-    for i in range(len(origin)):
-        for j in origin[i]:
-            if response.query_result.fulfillment_text==j:
-                find=True
+    addScore,deleteScore,updateScore,searchScore=0,0,0,0
+    if response.query_result.fulfillment_text!='哪一項服務':
+        for i in range(len(origin)):
+            for j in origin[i]:
+                if response.query_result.fulfillment_text==j:
+                    operate=i+1
+                    find=True
+                    break
+            if find==True:
                 break
-        if find==True:
-            operate=i+1
-            break
-    
-    if find==False:
-        # 哪一項服務
-        pass
-    
+    else:
+        jieba.add_word('後天',freq=None,tag=None)
+        words=jieba.cut(sentence,cut_all=True)
+        for word in words:
+            for data in origin[0]:
+                if len(word)>=len(data):
+                    if word.find(data)!=-1:
+                        addScore+=1
+                else:
+                    if data.find(word)!=-1:
+                        addScore+=1
+            for data in origin[1]:
+                if len(word)>=len(data):
+                    if word.find(data)!=-1:
+                        deleteScore+=1
+                else:
+                    if data.find(word)!=-1:
+                        deleteScore+=1
+            for data in origin[2]:
+                if len(word)>=len(data):
+                    if word.find(data)!=-1:
+                        updateScore+=1
+                else:
+                    if data.find(word)!=-1:
+                        updateScore+=1
+            for data in origin[3]:
+                if len(word)>=len(data):
+                    if word.find(data)!=-1:
+                        searchScore+=1
+                else:
+                    if data.find(word)!=-1:
+                        searchScore+=1
+        
+        Score=[addScore,deleteScore,updateScore,searchScore]
+        operate=Score.index(max(Score))+1
+            
     return intent,operate
 
 def cutSentenceAccount(sentence):
@@ -34,8 +67,8 @@ def cutSentenceAccount(sentence):
     statusName=['收入','支出']
     date=['年','月','日','號']
     moneyName=['元','塊']
-    dateNameFlag,dateFlag,moneyFlag,statusFlag,errorFlag=False,False,False,False,False
-    date_name,year,month,day,item,detail,money,status='',0,0,0,'','',0,1
+    dateNameFlag,dateFlag,moneyFlag,statusFlag,errorFlag,mouseFlag=False,False,False,False,False,False
+    date_name,year,month,day,item,detail,money,status,key,user='',0,0,0,'','',0,1,0,''
     time=datetime.datetime.now()
     data=[]
 
@@ -49,18 +82,28 @@ def cutSentenceAccount(sentence):
             print(int(i))
             try:
                 if data[data.index(i)+1]=='年':
-                    year=i
+                    year=int(i)
                 elif data[data.index(i)+1]=='月':
-                    month=i
+                    month=int(i)
                 elif data[data.index(i)+1]=='日' or data[data.index(i)+1]=='號':
-                    day=i
+                    day=int(i)
                 elif data[data.index(i)+1]=='元' or data[data.index(i)+1]=='塊':
-                    money=i
+                    money=int(i)
                 else:
-                    money=i
+                    money=int(i)
             except:
-                money=i
+                key=int(i)
         except:
+            if i=='@':
+                mouseFlag=True
+                continue
+            if i=='#':
+                continue
+            if mouseFlag==True:
+                user=i
+                mouseFlag=False
+                continue
+
             for j in dateName:
                 if i==j:
                     dateNameFlag=True
@@ -142,10 +185,10 @@ def cutSentenceAccount(sentence):
         else:
             detail='花費'
             item='其他雜項'
-        return year,month,day,item,detail,money,status,errorFlag
+        return year,month,day,item,detail,money,status,key,user,errorFlag
 
     except:
-        return year,month,day,item,detail,money,status,errorFlag
+        return year,month,day,item,detail,money,status,key,user,errorFlag
 
 
 def classifyDetail(detail):
