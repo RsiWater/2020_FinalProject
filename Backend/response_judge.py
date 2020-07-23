@@ -26,7 +26,7 @@ def judge(response):
                 break
     else:
         jieba.add_word('後天',freq=None,tag=None)
-        words=jieba.cut(sentence,cut_all=True)
+        words=jieba.cut(response.query_result.query_text,cut_all=True)
         for word in words:
             for data in origin[0]:
                 if len(word)>=len(data):
@@ -197,7 +197,7 @@ def classifyDetail(detail):
     learn=['書','講義','補習','教材','課','上']
     health=['看','病','醫','療','護','健康','保健','藥']
     assurance=['保','保險','險','股票','股','賣']
-    food=['吃','喝','吃飯','飲料','飯','早餐','午餐','晚餐','餐','消夜','點心','水','酒','食','餐廳','上']
+    food=['吃','喝','吃飯','飲料','飯','早餐','午餐','晚餐','餐','消夜','點心','水','酒','食','餐廳','上','菜','肉','蛋','豆','魚']
     otherScore,leisureScore,transportationScore,learnScore,healthScore,assuranceScore,foodScore=0,0,0,0,0,0,0
     item=''
 
