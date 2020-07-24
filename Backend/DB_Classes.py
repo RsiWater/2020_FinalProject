@@ -132,6 +132,7 @@ class Account:
             self.insert()
             print("insert success.")
         elif self.operationCode == 1: # 刪除
+            # When id = 0, database delete by user rather than id.
             if self.key == 0:
                 self.delete_by_user()
             else:
@@ -142,7 +143,11 @@ class Account:
             self.insert()
             print("modify success.")
         elif self.operationCode == 3: # 查詢
-            self.select()
+            # when id = 0, database select all of record rather than select by user.
+            if self.key == 0:
+                self.select_all()
+            else:
+                self.select()
             print("select success.")
         elif self.operationCode == 4:
             self.DEBUG_printAllAttribute()
@@ -183,6 +188,10 @@ class Account:
         data=self.con.execute('select * from record where user="{}";'.format(self.user))
         self.findAll=data
         print("select success")
+    def select(self):
+        data = self.con.execute('SELECT * from record')
+        self.findAll = data
+        print("select all success")
     def close(self):
         self.con.close()
 
@@ -218,6 +227,75 @@ class Schedule:
         self.end=end
     def get_end(self):
         return self.end
+    def set_start_in_format(self, year, month, day, hour, minute):
+        self.year = year
+        self.month = month
+        self.day = day
+        self.start = (hour * 100) + minute
+    def set_end_in_format(self, year, month, day, hour, minute):
+        detTime = 0
+        monthDay = [31,28,31,30,31,30,31,31,30,31,30,31]
+
+        detTime += hour
+        detTime += (day - self.day) * 24
+
+        print("d")
+        print(detTime)
+
+        if month != self.month:
+            if month > self.month:
+                if (self.year % 4 == 0 and self.year % 100 != 0) or (self.year % 400 == 0):
+                    monthDay[1] += 1
+                for ptr in range(self.month - 1, month - 1):
+                    detTime += (monthDay[ptr] * 24)
+            else:
+                if ((self.year + 1) % 4 == 0 and (self.year + 1) % 100 != 0) or ((self.year + 1) % 400 == 0):
+                    monthDay[1] += 1
+                for ptr in range(month - 1, self.month - 1):
+                    detTime -= (monthDay[ptr] * 24)
+        
+        print("m")
+        print(detTime)
+
+        if year > self.year:
+            for ptr in range(self.year, year):
+                if ((ptr % 4 == 0 and ptr % 100 != 0) or (ptr % 400 == 0)):
+                    if (ptr == self.year and self.month <= 2) or (ptr == year and month > 2):
+                        detTime += 366 * 24
+                    elif ptr != self.year and ptr != year:
+                        detTime += 366 * 24
+                    else:
+                        detTime += 365 * 24
+                else:
+                    detTime += 365 * 24
+        elif year < self.year:
+            self.end = -1
+            print("Set Time Error! You need to set StartDate before set EndDate")
+            return
+        
+        detTime = detTime * 100 + minute
+
+        self.end = detTime
+
+    def set_relative_end_time(self, year, month, day, hour, minute):
+        detTime = self.start
+        monthDay = [31,28,31,30,31,30,31,31,30,31,30,31]
+
+
+        detTime += hour
+        detTime += day * 24
+        for i in range(month):
+            ptr = (self.month - 1 + i) % 12
+            detTime += monthDay[ptr]
+        
+        for i in range(year):
+            ptr = self.year + i
+            if ((ptr % 4 == 0 and ptr % 100 != 0) or (ptr % 400 == 0)):
+                pass
+                # not done
+
+        # detTime += minute
+
     # def set_query(self,query):        #set要求(修改時使用)
     #     self.query=query
     # def get_query(self):
