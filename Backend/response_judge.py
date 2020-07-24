@@ -262,6 +262,159 @@ def classifyDetail(detail):
     elif Score.index(max(Score))==6:
         item='食品酒水'
     return item
+
+
+def cutSentenceSchedule_add(sentence):
+    dateName=['前天','昨天','今天','明天','後天']
+    date=['年','月','日','號']
+    timeName=['點','時','分','天','小','上午','下午','中午','晚上','凌晨','早上','到']
+    data=[]
+    dateNameFlag,dateFlag,timeNameFlag,errorFlag,mouseFlag=False,False,False,False,False
+    year,month,day,todo,start,end,key,user=0,0,0,'',0,0,0,''
+    date_name,h,m,yearList,monthList,dayList=[],[],[],[],[],[]
+    day_difference,m_difference,h_difference=0,0,0
+    time=datetime.datetime.now()
+    
+    jieba.add_word('後天',freq=None,tag=None)
+    words=jieba.cut(sentence,cut_all=True)
+    for word in words:
+        data.append(word)
+
+    for word in data:
+        try:
+            print(int(word))
+            try:
+                if data[data.index(word)+1]=='年':
+                    yearList.append(int(word))
+                elif data[data.index(word)+1]=='月':
+                    monthList.append(int(word))
+                elif data[data.index(word)+1]=='日' or data[data.index(i)+1]=='號':
+                    dayList.append(int(word))
+                elif data[data.index(word)+1]=='時' or data[data.index(i)+1]=='點':
+                    try:
+                        if data[data.index(word)-1]=='上午' or data[data.index(word)-1]=='早上' or data[data.index(word)-1]=='凌晨':
+                            h.append(int(word))
+                        elif data[data.index(word)-1]=='中午':
+                            h.append(12)
+                        elif data[data.index(word)-1]=='下午' or data[data.index(word)-1]=='晚上':
+                            h.append(int(word)+12)
+                    except:
+                        h.append(int(word))
+                elif data[data.index(word)+1]=='分':
+                    try:
+                        if data[data.index(word)-1]=='點':
+                            m.append(int(word))
+                        else:
+                            m_difference=int(word)
+                    except:
+                        m_difference=int(word)
+                elif data[data.index(word)+1]=='天':
+                    day_difference=int(word)
+                elif data[data.index(word)+1]=='小':
+                    h_difference=int(word)
+                else:
+                    m.append(int(word))
+            except:
+                key=int(word)
+        except:
+            if word=='@':
+                mouseFlag=True
+                continue
+            if word=='#':
+                continue
+            if mouseFlag==True:
+                user=word
+                mouseFlag=False
+                continue
+
+            for j in dateName:
+                if word==j:
+                    dateNameFlag=True
+                    date_name.append(word)
+                    break
+            if dateNameFlag==True:
+                dateNameFlag=False
+                continue
+            for j in date:
+                if word==j:
+                    dateFlag=True
+                    break
+            if dateFlag==True:
+                dateFlag=False
+                continue
+            for j in timeNameFlag:
+                if word==j:
+                    timeNameFlag=True
+                    break
+            if timeNameFlag==True:
+                timeNameFlag=False
+                continue
+            # 一段式
+            todo+=i
+
+    # year 
+    if len(yearList)!=0:
+        year=yearList[0]
+    else:
+        year=time.year
+    
+    # month
+    if len(monthList)!=0:
+        month=monthList[0]
+    else:
+        month=time.month
+    
+    # day
+    if len(dayList)!=0:
+        day=dayList[0]
+    else:
+        if len(date_name)!=0:
+            if date_name[0]=='今天':
+                day=time.day
+            elif date_name[0]=='明天':
+                day=time.day+1
+            elif date_name[0]=='後天':
+                day=time.day+2
+            elif date_name[0]=='昨天':
+                day=time.day-1
+            elif date_name[0]=='前天':
+                day=time.day-2
+        else:
+            day=time.day
+    
+    # start&end
+    if len(dayList)>=2:
+        if len(monthList)<2:
+            while True:
+                monthList.append(time.month)
+                if len(monthList)==2:
+                    break
+        if len(yearList)<2:
+            while True:
+                yearList.append(time.year)
+                if len(yearList)==2:
+                    break
+        if len(h)<2:
+            if len(h)==0:
+                h.append(0)
+                h.append(23)
+            else:
+                h.append(23)
+        if len(m)<2:
+            if len(m)==0:
+                m.append(0)
+                m.append(23)
+            else:
+                m.append(23)
+    else:
+        # 其他判斷
+        pass
+        
+        
+        
+    
+
+
     
 
 
