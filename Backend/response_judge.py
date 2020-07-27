@@ -269,10 +269,10 @@ def classifyDetail(detail):
 def cutSentenceSchedule_add(sentence):
     dateName=['前天','昨天','今天','明天','後天']
     date=['年','月','日','號']
-    timeName=['點','時','分','天','小','上午','下午','中午','晚上','凌晨','早上','到']
+    timeName=['點','時','分','天','小','上午','下午','中午','晚上','凌晨','早上','到','分到','今天下午','天下']
     data=[]
     dateNameFlag,dateFlag,timeNameFlag,errorFlag,mouseFlag=False,False,False,False,False
-    year,month,day,todo,start,end,key,user=0,0,0,'',0,0,0,''
+    year,month,day,todo,key,user=0,0,0,'',0,''
     date_name,h,m,yearList,monthList,dayList=[],[],[],[],[],[]
     day_difference,m_difference,h_difference=0,0,0
     time=datetime.datetime.now()
@@ -290,9 +290,9 @@ def cutSentenceSchedule_add(sentence):
                     yearList.append(int(word))
                 elif data[data.index(word)+1]=='月':
                     monthList.append(int(word))
-                elif data[data.index(word)+1]=='日' or data[data.index(i)+1]=='號':
+                elif data[data.index(word)+1]=='日' or data[data.index(word)+1]=='號':
                     dayList.append(int(word))
-                elif data[data.index(word)+1]=='時' or data[data.index(i)+1]=='點':
+                elif data[data.index(word)+1]=='時' or data[data.index(word)+1]=='點':
                     try:
                         if data[data.index(word)-1]=='上午' or data[data.index(word)-1]=='早上' or data[data.index(word)-1]=='凌晨':
                             h.append(int(word))
@@ -344,7 +344,7 @@ def cutSentenceSchedule_add(sentence):
             if dateFlag==True:
                 dateFlag=False
                 continue
-            for j in timeNameFlag:
+            for j in timeName:
                 if word==j:
                     timeNameFlag=True
                     break
@@ -352,7 +352,7 @@ def cutSentenceSchedule_add(sentence):
                 timeNameFlag=False
                 continue
             # 一段式
-            todo+=i
+            todo+=word
 
     # year 
     if len(yearList)!=0:
@@ -400,17 +400,222 @@ def cutSentenceSchedule_add(sentence):
             if len(h)==0:
                 h.append(0)
                 h.append(23)
+                m.append(0)
+                m.append(59)
             else:
-                h.append(23)
+                if len(m)==0:
+                    h.append(23)
+                    m.append(0)
+                    m.append(59)
+                else:
+                    h.append(23)
+                    m.append(59)
         if len(m)<2:
             if len(m)==0:
                 m.append(0)
-                m.append(23)
+                m.append(0)
             else:
-                m.append(23)
+                if h.index(data.index(m[0])-2)!=0:
+                    m.append(0)
+                    m[1]=m[0]
+                    m[0]=0
+                else:
+                    m.append(0)
     else:
-        # 其他判斷
-        pass
+        if len(dayList)==1:
+            # month&year
+            if len(monthList)<2:
+                while True:
+                    monthList.append(time.month)
+                    if len(monthList)==2:
+                        break
+            if len(yearList)<2:
+                while True:
+                    yearList.append(time.year)
+                    if len(yearList)==2:
+                        break
+            # day
+            if len(date_name)>=2:
+                if date_name[len(date_name)-1]=='今天':
+                    dayList.append(dayList[0])
+                elif date_name[len(date_name)-1]=='明天':
+                    dayList.append(dayList[0]+1)
+                elif date_name[len(date_name)-1]=='後天':
+                    dayList.append(dayList[0]+2)
+                elif date_name[len(date_name)-1]=='昨天':
+                    dayList.append(dayList[0]-1)
+                elif date_name[len(date_name)-1]=='前天':
+                    dayList.append(dayList[0]-2)
+            elif len(date_name)==1:
+                if date_name[0]=='今天':
+                    dayList.append(dayList[0])
+                elif date_name[0]=='明天':
+                    dayList.append(dayList[0]+1)
+                elif date_name[0]=='後天':
+                    dayList.append(dayList[0]+2)
+                elif date_name[0]=='昨天':
+                    dayList.append(dayList[0]-1)
+                elif date_name[0]=='前天':
+                    dayList.append(dayList[0]-2)
+            else:
+                dayList.append(dayList[0]+day_difference)
+            # h&m
+            if len(h)<2:
+                if len(h)==0:
+                    if h_difference==0:
+                        h.append(0)
+                        h.append(23)
+                        m.append(0)
+                        m.append(59)
+                    else:
+                        h.append(time.hour)
+                        h.append(time.hour+h_difference)
+                        m.append(0)
+                        m.append(0)
+                else:
+                    if h_difference==0:
+                        if m_difference==0:
+                            h.append(23)
+                            m.append(0)
+                            m.append(59)
+                        else:
+                            h.append(h[0])
+                            m.append(m[0]+m_difference)
+                    else:
+                        if m_difference==0:
+                            h.append(h[0]+h_difference)
+                            m.append(0)
+                            m.append(0)
+                        else:
+                            h.append(h[0]+h_difference)
+                            m.append(m[0]+m_difference)
+            if len(m)<2:
+                if len(m)==0:
+                    if m_difference==0:
+                        m.append(0)
+                        m.append(0)
+                    else:
+                        m.append(time.minute)
+                        m.append(time.minute+m_difference)
+                else:
+                    if m_difference==0:
+                        m.append(0)
+                    else:
+                        m.append(m[0]+m_difference)
+        else:
+            # month&year
+            if len(monthList)<2:
+                while True:
+                    monthList.append(time.month)
+                    if len(monthList)==2:
+                        break
+            if len(yearList)<2:
+                while True:
+                    yearList.append(time.year)
+                    if len(yearList)==2:
+                        break
+            # day
+            if len(date_name)>=2:
+                if date_name[0]=='今天':
+                    dayList.append(time.day)
+                elif date_name[0]=='明天':
+                    dayList.append(time.day+1)
+                elif date_name[0]=='後天':
+                    dayList.append(time.day+2)
+                elif date_name[0]=='昨天':
+                    dayList.append(time.day-1)
+                elif date_name[0]=='前天':
+                    dayList.append(time.day-2)
+                
+                if date_name[len(date_name)-1]=='今天':
+                    dayList.append(time.day)
+                elif date_name[len(date_name)-1]=='明天':
+                    dayList.append(time.day+1)
+                elif date_name[len(date_name)-1]=='後天':
+                    dayList.append(time.day+2)
+                elif date_name[len(date_name)-1]=='昨天':
+                    dayList.append(time.day-1)
+                elif date_name[len(date_name)-1]=='前天':
+                    dayList.append(time.day-2)
+            elif len(date_name)==1:
+                if date_name[0]=='今天':
+                    dayList.append(time.day)
+                elif date_name[0]=='明天':
+                    dayList.append(time.day+1)
+                elif date_name[0]=='後天':
+                    dayList.append(time.day+2)
+                elif date_name[0]=='昨天':
+                    dayList.append(time.day-1)
+                elif date_name[0]=='前天':
+                    dayList.append(time.day-2)
+                
+                dayList.append(dayList[0]+day_difference)
+            else:
+                dayList.append(time.day)
+                dayList.append(dayList[0]+day_difference)
+            # h&m
+            if len(h)<2:
+                if len(h)==0:
+                    if h_difference==0:
+                        h.append(0)
+                        h.append(23)
+                        m.append(0)
+                        m.append(59)
+                    else:
+                        h.append(time.hour)
+                        h.append(time.hour+h_difference)
+                        m.append(0)
+                        m.append(0)
+                else:
+                    if h_difference==0:
+                        if m_difference==0:
+                            h.append(23)
+                            m.append(0)
+                            m.append(59)
+                        else:
+                            h.append(h[0])
+                            m.append(m[0]+m_difference)
+                    else:
+                        if m_difference==0:
+                            h.append(h[0]+h_difference)
+                            m.append(0)
+                            m.append(0)
+                        else:
+                            h.append(h[0]+h_difference)
+                            m.append(m[0]+m_difference)
+            if len(m)<2:
+                if len(m)==0:
+                    if m_difference==0:
+                        m.append(0)
+                        m.append(0)
+                    else:
+                        m.append(time.minute)
+                        m.append(time.minute+m_difference)
+                else:
+                    if m_difference==0:
+                        m.append(0)
+                    else:
+                        m.append(m[0]+m_difference)
+
+    return year,month,day,todo,key,user,yearList,monthList,dayList,h,m
+            
+            
+
+                
+
+            
+
+            
+
+
+
+
+            
+
+
+
+
+        
         
         
         
