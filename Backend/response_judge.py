@@ -77,6 +77,8 @@ def cutSentenceAccount(sentence):
     for word in words:
         data.append(word)
     
+    print(data)
+    
     for i in data:
         try:
             print(int(i))

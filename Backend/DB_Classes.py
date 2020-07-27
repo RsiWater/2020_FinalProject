@@ -68,7 +68,7 @@ class UserAccount:
 class Account:
     item,detail,receipt,note,dbfile,query,user='','','','','','',''
     year,month,day,money,status,key,con,selectnum,operationCode=0,0,0,0,0,0,0,0,0
-    findAll=[]
+    findAll ,idList = list(), list()
 
     def set_item(self, item):  #set分類
         self.item=item
@@ -171,7 +171,8 @@ class Account:
         self.dbfile='life.db'
         self.con=sqlite3.connect(self.dbfile)
     def insert(self):
-        # self.DEBUG_printAllAttribute()
+        while(not self.checkKey()):
+            self.key = random.randint(1, 100000)
         self.con.execute('insert into record(金額,年,月,日,分類,細項,發票,備註,收支屬性,id,user)values({},{},{},{},"{}","{}","{}","{}",{},{},"{}");'.format(self.money,self.year,self.month,self.day,self.item,self.detail,self.receipt,self.note,self.status,self.key,self.user))
         self.con.commit()
     def delete(self):
@@ -188,10 +189,18 @@ class Account:
         data=self.con.execute('select * from record where user="{}";'.format(self.user))
         self.findAll=data
         print("select success")
-    def select(self):
+    def select_all(self):
         data = self.con.execute('SELECT * from record')
         self.findAll = data
         print("select all success")
+    def checkKey(self):
+        ifExist = False
+        data = self.con.execute('SELECT * FROM record WHERE id = {}'.format(self.key))
+        for ele in data:
+            ifExist = True
+            break
+
+        return not ifExist
     def close(self):
         self.con.close()
 
@@ -239,9 +248,6 @@ class Schedule:
         detTime += hour
         detTime += (day - self.day) * 24
 
-        print("d")
-        print(detTime)
-
         if month != self.month:
             if month > self.month:
                 if (self.year % 4 == 0 and self.year % 100 != 0) or (self.year % 400 == 0):
@@ -254,9 +260,6 @@ class Schedule:
                 for ptr in range(month - 1, self.month - 1):
                     detTime -= (monthDay[ptr] * 24)
         
-        print("m")
-        print(detTime)
-
         if year > self.year:
             for ptr in range(self.year, year):
                 if ((ptr % 4 == 0 and ptr % 100 != 0) or (ptr % 400 == 0)):
@@ -291,10 +294,16 @@ class Schedule:
         for i in range(year):
             ptr = self.year + i
             if ((ptr % 4 == 0 and ptr % 100 != 0) or (ptr % 400 == 0)):
-                pass
-                # not done
+                if (ptr == self.year and self.month >= 3):
+                    detTime += 365 * 24
+                else:
+                    detTime += 366 * 24
+            else:
+                detTime += 365 * 24
 
-        # detTime += minute
+        detTime = detTime * 100 + minute
+
+        self.end = detTime
 
     # def set_query(self,query):        #set要求(修改時使用)
     #     self.query=query
