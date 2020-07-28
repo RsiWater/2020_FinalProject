@@ -269,7 +269,7 @@ def classifyDetail(detail):
 def cutSentenceSchedule_add(sentence):
     dateName=['前天','昨天','今天','明天','後天']
     date=['年','月','日','號']
-    timeName=['點','時','分','天','小','上午','下午','中午','晚上','凌晨','早上','到','分到','今天下午','天下']
+    timeName=['點','時','分','天','小','上午','下午','中午','晚上','凌晨','早上','到','分到','今天下午','天下','鐘','半','整']
     data=[]
     dateNameFlag,dateFlag,timeNameFlag,mouseFlag=False,False,False,False
     todo,key,user='',0,''
@@ -278,6 +278,7 @@ def cutSentenceSchedule_add(sentence):
     time=datetime.datetime.now()
     
     jieba.add_word('後天',freq=None,tag=None)
+    jieba.add_word('鬧鐘',freq=None,tag=None)
     words=jieba.cut(sentence,cut_all=True)
     for word in words:
         data.append(word)
@@ -300,6 +301,8 @@ def cutSentenceSchedule_add(sentence):
                             h.append(12)
                         elif data[data.index(word)-1]=='下午' or data[data.index(word)-1]=='晚上':
                             h.append(int(word)+12)
+                        else:
+                            h.append(int(word))
                     except:
                         h.append(int(word))
                 elif data[data.index(word)+1]=='分':
@@ -327,6 +330,10 @@ def cutSentenceSchedule_add(sentence):
             if mouseFlag==True:
                 user=word
                 mouseFlag=False
+                continue
+            if word=='半':
+                m.append(30)
+                data[data.index(word)]='30'
                 continue
 
             for j in dateName:
@@ -385,11 +392,14 @@ def cutSentenceSchedule_add(sentence):
                 m.append(0)
                 m.append(0)
             else:
-                if h.index(data.index(m[0])-2)!=0:
-                    m.append(0)
-                    m[1]=m[0]
-                    m[0]=0
-                else:
+                try:
+                    if h.index(int(data[data.index(str(m[0]))-2]))!=0:
+                        m.append(0)
+                        m[1]=m[0]
+                        m[0]=0
+                    else:
+                        m.append(0)
+                except:
                     m.append(0)
     else:
         if len(dayList)==1:
@@ -445,33 +455,52 @@ def cutSentenceSchedule_add(sentence):
                 else:
                     if h_difference==0:
                         if m_difference==0:
-                            h.append(23)
-                            m.append(0)
-                            m.append(59)
+                            if len(m)==0:
+                                h.append(23)
+                                m.append(0)
+                                m.append(59)
+                            else:
+                                h.append(23)
+                                m.append(59)
                         else:
-                            h.append(h[0])
-                            m.append(m[0]+m_difference)
+                            if len(m)==0:
+                                m.append(0)
+                                h.append(h[0])
+                                m.append(m[0]+m_difference)
+                            else:
+                                h.append(h[0])
+                                m.append(m[0]+m_difference)
                     else:
                         if m_difference==0:
-                            h.append(h[0]+h_difference)
-                            m.append(0)
-                            m.append(0)
+                            if len(m)==0:
+                                h.append(h[0]+h_difference)
+                                m.append(0)
+                                m.append(0)
+                            else:
+                                h.append(h[0]+h_difference)
+                                m.append(m[0]+m_difference)
                         else:
-                            h.append(h[0]+h_difference)
-                            m.append(m[0]+m_difference)
+                            if len(m)==0:
+                                h.append(h[0]+h_difference)
+                                m.append(0)
+                                m.append(m[0]+m_difference)
+                            else:
+                                h.append(h[0]+h_difference)
+                                m.append(m[0]+m_difference)
             if len(m)<2:
                 if len(m)==0:
-                    if m_difference==0:
-                        m.append(0)
-                        m.append(0)
-                    else:
-                        m.append(time.minute)
-                        m.append(time.minute+m_difference)
+                    m.append(0)
+                    m.append(0)
                 else:
-                    if m_difference==0:
+                    try:
+                        if h.index(int(data[data.index(str(m[0]))-2]))!=0:
+                            m.append(0)
+                            m[len(m)-1]=m[0]
+                            m[0]=0
+                        else:
+                            m.append(0)
+                    except:
                         m.append(0)
-                    else:
-                        m.append(m[0]+m_difference)
         else:
             # month&year
             if len(monthList)<2:
@@ -539,33 +568,56 @@ def cutSentenceSchedule_add(sentence):
                 else:
                     if h_difference==0:
                         if m_difference==0:
-                            h.append(23)
-                            m.append(0)
-                            m.append(59)
+                            if len(m)==0:
+                                h.append(23)
+                                m.append(0)
+                                m.append(59)
+                            else:
+                                h.append(23)
+                                m.append(59)
                         else:
-                            h.append(h[0])
-                            m.append(m[0]+m_difference)
+                            if len(m)==0:
+                                m.append(0)
+                                h.append(h[0])
+                                m.append(m[0]+m_difference)
+                            else:
+                                h.append(h[0])
+                                m.append(m[0]+m_difference)
                     else:
                         if m_difference==0:
-                            h.append(h[0]+h_difference)
-                            m.append(0)
-                            m.append(0)
+                            if len(m)==0:
+                                h.append(h[0]+h_difference)
+                                m.append(0)
+                                m.append(0)
+                            else:
+                                h.append(h[0]+h_difference)
+                                m.append(m[0]+m_difference)
                         else:
-                            h.append(h[0]+h_difference)
-                            m.append(m[0]+m_difference)
+                            if len(m)==0:
+                                h.append(h[0]+h_difference)
+                                m.append(0)
+                                m.append(m[0]+m_difference)
+                            else:
+                                h.append(h[0]+h_difference)
+                                m.append(m[0]+m_difference)
             if len(m)<2:
+                print('check')
                 if len(m)==0:
-                    if m_difference==0:
-                        m.append(0)
-                        m.append(0)
-                    else:
-                        m.append(time.minute)
-                        m.append(time.minute+m_difference)
+                    m.append(0)
+                    m.append(0)
                 else:
-                    if m_difference==0:
+                    print('check')
+                    try:
+                        if h.index(int(data[data.index(str(m[0]))-2]))!=0:
+                            m.append(0)
+                            m[len(m)-1]=m[0]
+                            m[0]=0
+                        else:
+                            print('yeah')
+                            m.append(0)
+                    except:
+                        print('no')
                         m.append(0)
-                    else:
-                        m.append(m[0]+m_difference)
 
     if m[len(m)-1]>=60:
         m[len(m)-1]=m[len(m)-1]-60
