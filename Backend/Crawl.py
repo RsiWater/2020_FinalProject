@@ -161,7 +161,7 @@ def getWeatherData():
 def receiptCrawler():
     main_url='https://www.etax.nat.gov.tw'
     url = 'https://www.etax.nat.gov.tw/etw-main/web/ETW183W1'
-    driver = webdriver.PhantomJS(executable_path = 'C:/Users/陳佑旻/Desktop/phantomjs-2.1.1-windows/bin/phantomjs.exe')
+    driver = webdriver.PhantomJS(executable_path = 'C:/Users/ijn95/OneDrive/桌面/Code/python/phantomjs-2.1.1-windows/bin/phantomjs.exe')
     driver.get(url)
 
     soup = BeautifulSoup(driver.page_source, "lxml")

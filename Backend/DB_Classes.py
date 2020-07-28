@@ -40,7 +40,7 @@ class Weather:
     def get_min_temperature(self):
         return self.min_temperature
 
-        return package
+        # return package
     def DEBUG_printAllAttribute(self):
         print(self.city)
 
@@ -342,6 +342,8 @@ class Schedule:
         self.dbfile='life.db'
         self.con=sqlite3.connect(self.dbfile)
     def insert(self):
+        while(not self.checkKey()):
+            self.key = random.randint(1, 100000)
         self.con.execute('insert into schedule_record(事情,年,月,日,開始時間,結束時間,id,user)values("{}",{},{},{},{},{},{},"{}");'.format(self.todo,self.year,self.month,self.day,self.start,self.end,self.key,self.user))
         self.con.commit()
     def delete(self):
@@ -356,4 +358,11 @@ class Schedule:
         self.findAll=data
     def close(self):
         self.con.close()
-    
+    def checkKey(self):
+        ifExist = False
+        data = self.con.execute('SELECT * FROM schedule_record WHERE id = {}'.format(self.key))
+        for ele in data:
+            ifExist = True
+            break
+
+        return not ifExist

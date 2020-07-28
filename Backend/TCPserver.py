@@ -2,12 +2,13 @@ import os
 import socket
 import json
 import Crawl
+from UpdateThread import *
 from ProgressThread import *
 
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS']='life-8c6775870f64.json'
 
-Crawl.checkDate()
+# Crawl.checkDate()
 # Crawl.writeData()
 
 hostname = "192.168.203.108" #設定主機名
@@ -18,6 +19,8 @@ srv.bind(addr)
 srv.listen(5)
 print("Waitting the connection.")
 
+updateThread = UpdateThread()
+updateThread.start()
 
 while True:
     connect_socket, client_addr = srv.accept()

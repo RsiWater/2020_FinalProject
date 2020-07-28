@@ -8,6 +8,7 @@ def classifyPackage(package):
     packageType = package[:3].decode("utf-8")
     
     if packageType == 'acc':
+        print("accc")
         send_package=bytes('',encoding='utf-8')
         rcv_package = decodeAccountPackage(package[3:])
         rcv_package.operateAction()
@@ -105,7 +106,7 @@ def decodeLoginPackage(package):
 
 def encodeAccountPackage(accountClass): # return bytearray
 
-    package, zero, itemSize, detailSize, userSize = 0, 0, 18, 18, 20
+    package, zero, itemSize, detailSize, receiptSize, noteSize, userSize = 0, 0, 18, 18, 2, 90, 20
     
     package = bytes("acc", encoding='utf-8')
     package += accountClass.get_key().to_bytes(4, 'big')
@@ -118,6 +119,12 @@ def encodeAccountPackage(accountClass): # return bytearray
     package += zero.to_bytes(itemSize - (len(accountClass.get_item().encode('UTF-8'))), 'big')
     package += bytes(accountClass.get_detail(), encoding = "UTF-8")
     package += zero.to_bytes(detailSize - (len(accountClass.get_detail().encode('UTF-8'))), 'big')
+    
+    package += bytes(accountClass.get_receipt(), encoding = "UTF-8")
+    package += zero.to_bytes(receiptSize - (len(accountClass.get_receipt().encode('UTF-8'))), 'big')
+    package += bytes(accountClass.get_note(), encoding = "UTF-8")
+    package += zero.to_bytes(noteSize - (len(accountClass.get_note().encode('UTF-8'))), 'big')
+
     package += accountClass.get_status().to_bytes(1, 'big')
     package += accountClass.get_operaionCode().to_bytes(1, 'big')
     package += bytes(accountClass.get_user(),encoding='UTF-8')
@@ -134,8 +141,8 @@ def decodeAccountPackage(package): # return AccountClass
     resultAccount = Account()
     
     p_id, p_money, p_year , p_month= int.from_bytes(package[:4], 'big'), int.from_bytes(package[4:8],'big'), int.from_bytes(package[8:12], 'big'), package[12]
-    p_day, p_item, p_detail, p_status = package[13], package[14:32].decode('utf-8').split('\x00', 1)[0], package[32:50].decode('utf-8').split('\x00', 1)[0], package[50]
-    p_operationCode, p_user = package[51], package[52:71].decode('utf-8').split('\x00', 1)[0]
+    p_day, p_item, p_detail, p_receipt, p_note, p_status = package[13], package[14:32].decode('utf-8').split('\x00', 1)[0], package[32:50].decode('utf-8').split('\x00', 1)[0], package[50:52].decode('utf-8').split('\x00', 1)[0], package[52:142].decode('utf-8').split('\x00', 1)[0], package[142]
+    p_operationCode, p_user = package[143], package[144:164].decode('utf-8').split('\x00', 1)[0]
 
     resultAccount.set_key(p_id)
     resultAccount.set_money(p_money)
@@ -144,6 +151,8 @@ def decodeAccountPackage(package): # return AccountClass
     resultAccount.set_day(p_day)
     resultAccount.set_item(p_item)
     resultAccount.set_detail(p_detail)
+    resultAccount.set_receipt(p_receipt)
+    resultAccount.set_note(p_note)
     resultAccount.set_status(p_status)
     resultAccount.set_operationCode(p_operationCode)
     resultAccount.set_user(p_user)
