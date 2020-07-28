@@ -271,8 +271,8 @@ def cutSentenceSchedule_add(sentence):
     date=['年','月','日','號']
     timeName=['點','時','分','天','小','上午','下午','中午','晚上','凌晨','早上','到','分到','今天下午','天下']
     data=[]
-    dateNameFlag,dateFlag,timeNameFlag,errorFlag,mouseFlag=False,False,False,False,False
-    year,month,day,todo,key,user=0,0,0,'',0,''
+    dateNameFlag,dateFlag,timeNameFlag,mouseFlag=False,False,False,False
+    todo,key,user='',0,''
     date_name,h,m,yearList,monthList,dayList=[],[],[],[],[],[]
     day_difference,m_difference,h_difference=0,0,0
     time=datetime.datetime.now()
@@ -353,36 +353,6 @@ def cutSentenceSchedule_add(sentence):
                 continue
             # 一段式
             todo+=word
-
-    # year 
-    if len(yearList)!=0:
-        year=yearList[0]
-    else:
-        year=time.year
-    
-    # month
-    if len(monthList)!=0:
-        month=monthList[0]
-    else:
-        month=time.month
-    
-    # day
-    if len(dayList)!=0:
-        day=dayList[0]
-    else:
-        if len(date_name)!=0:
-            if date_name[0]=='今天':
-                day=time.day
-            elif date_name[0]=='明天':
-                day=time.day+1
-            elif date_name[0]=='後天':
-                day=time.day+2
-            elif date_name[0]=='昨天':
-                day=time.day-1
-            elif date_name[0]=='前天':
-                day=time.day-2
-        else:
-            day=time.day
     
     # start&end
     if len(dayList)>=2:
@@ -597,7 +567,11 @@ def cutSentenceSchedule_add(sentence):
                     else:
                         m.append(m[0]+m_difference)
 
-    return year,month,day,todo,key,user,yearList,monthList,dayList,h,m
+    if m[len(m)-1]>=60:
+        m[len(m)-1]=m[len(m)-1]-60
+        h[len(h)-1]=h[len(h)-1]+1
+
+    return todo,key,user,yearList,monthList,dayList,h,m
             
             
 

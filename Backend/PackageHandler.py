@@ -247,8 +247,6 @@ def Sentence(package):  #return bytearray
                 fulfillment='已新增'
             else:
                 fulfillment='請重新輸入'
-            intent=0
-            operate=0
         elif p_operate==2:
             # 刪除
             pass
@@ -258,11 +256,21 @@ def Sentence(package):  #return bytearray
         elif p_operate==4:
             # 查詢
             pass
+        intent=0
+        operate=0
     if p_intent==2:
         # 行程
         if p_operate==1:
             # 新增
-            pass
+            todo,key,user,yearList,monthList,dayList,h,m=response_judge.cutSentenceSchedule_add(p_sentence)
+            setSchedule=Schedule()
+            setSchedule.set_todo(todo)
+            setSchedule.set_key(key)
+            setSchedule.set_user(user)
+            setSchedule.set_start_in_format(yearList[0],monthList[0],dayList[0],h[0],m[0])
+            setSchedule.set_end_in_format(yearList[len(yearList)-1],monthList[len(monthList)-1],dayList[len(dayList)-1],h[len(h)-1],m[len(m)-1])
+            setSchedule.insert()
+            fulfillment='已新增'
         elif p_operate==2:
             # 刪除
             pass
@@ -272,6 +280,8 @@ def Sentence(package):  #return bytearray
         elif p_operate==4:
             # 查詢
             pass
+        intent=0
+        operate=0
     if p_intent==3:
         # 猜意圖
         pass
