@@ -274,7 +274,7 @@ def cutSentenceSchedule_add(sentence):
     dateNameFlag,dateFlag,timeNameFlag,mouseFlag=False,False,False,False
     todo,key,user='',0,''
     date_name,h,m,yearList,monthList,dayList=[],[],[],[],[],[]
-    day_difference,m_difference,h_difference=0,0,0
+    day_difference,m_difference,h_difference,count=0,0,0,0
     time=datetime.datetime.now()
     
     jieba.add_word('後天',freq=None,tag=None)
@@ -284,6 +284,7 @@ def cutSentenceSchedule_add(sentence):
         data.append(word)
 
     for word in data:
+        count=count+1
         try:
             print(int(word))
             try:
@@ -291,7 +292,7 @@ def cutSentenceSchedule_add(sentence):
                     yearList.append(int(word))
                 elif data[data.index(word)+1]=='月':
                     monthList.append(int(word))
-                elif data[data.index(word)+1]=='日' or data[data.index(word)+1]=='號':
+                elif data[data.index(word)+1]=='日' or data[data.index(word)+1]=='號' or data[data.index(word)-1]=='月':
                     dayList.append(int(word))
                 elif data[data.index(word)+1]=='時' or data[data.index(word)+1]=='點':
                     try:
@@ -315,7 +316,7 @@ def cutSentenceSchedule_add(sentence):
                         m_difference=int(word)
                 elif data[data.index(word)+1]=='天':
                     day_difference=int(word)
-                elif data[data.index(word)+1]=='小':
+                elif data[data.index(word)+1]=='小' and data[data.index(word)+2]=='時':
                     h_difference=int(word)
                 else:
                     m.append(int(word))
@@ -352,6 +353,11 @@ def cutSentenceSchedule_add(sentence):
                 dateFlag=False
                 continue
             for j in timeName:
+                try:
+                    if word=='小' and data[count]!='時':
+                        break
+                except:
+                    break
                 if word==j:
                     timeNameFlag=True
                     break
