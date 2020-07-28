@@ -206,3 +206,20 @@ def receiptCrawler():
         checkNumber.append(subCheckNumber)
     # print(checkNumber)
     return checkNumber  
+
+# def writeReceiptData(checkNumberList):
+#     resultDict = dict()
+
+#     for ele in checkNumberList:
+#         tempDict = dict()
+
+#         numberList = list()
+#         for i in range(4):
+#             numberList.append(ele[i])
+
+#         tempDict['numbers'] = numberList
+#         tempDict['year'] = ele[-2]
+#         tempDict['month'] = ele[-1]
+
+#     with open('receiptData.json', 'w') as fp:
+    
