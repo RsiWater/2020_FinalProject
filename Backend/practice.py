@@ -16,7 +16,7 @@ data=[]
 # print(type(time.year))
 # print(type(time.month))
 # print(type(time.day))
-sentence='今天8點整吃早餐到9點半@a123#456'
+sentence='30號7點小學同學會3小時@a123#456'
 jieba.add_word('後天',freq=None,tag=None)
 words=jieba.cut(sentence,cut_all=True)
 for word in words:
