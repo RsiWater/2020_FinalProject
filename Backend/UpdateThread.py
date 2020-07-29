@@ -25,4 +25,5 @@ class UpdateThread(threading.Thread):
             
 
             Crawl.writeData()
+            print("server data updated.")
 
