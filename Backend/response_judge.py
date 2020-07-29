@@ -269,7 +269,7 @@ def classifyDetail(detail):
 def cutSentenceSchedule_add(sentence):
     dateName=['前天','昨天','今天','明天','後天']
     date=['年','月','日','號']
-    timeName=['點','時','分','天','小','上午','下午','中午','晚上','凌晨','早上','到','分到','今天下午','天下','鐘','半','整']
+    timeName=['點','時','分','天','小','上午','下午','中午','晚上','凌晨','早上','到','分到','今天下午','天下','鐘','半','整','後']
     data=[]
     dateNameFlag,dateFlag,timeNameFlag,mouseFlag=False,False,False,False
     todo,key,user='',0,''
@@ -449,15 +449,39 @@ def cutSentenceSchedule_add(sentence):
             if len(h)<2:
                 if len(h)==0:
                     if h_difference==0:
-                        h.append(0)
-                        h.append(23)
-                        m.append(0)
-                        m.append(59)
+                        if m_difference==0:
+                            h.append(0)
+                            h.append(23)
+                            m.append(0)
+                            m.append(59)
+                        else:
+                            if time.minute+m_difference>=60:   
+                                h.append(time.hour+(time.minute+m_difference)/60)
+                                m.append((time.minute+m_difference)%60)
+                                h.append(23)
+                                m.append(59)
+                            else:
+                                h.append(time.hour)
+                                m.append(time.minute+m_difference)
+                                h.append(23)
+                                m.append(59)
                     else:
-                        h.append(time.hour)
-                        h.append(time.hour+h_difference)
-                        m.append(0)
-                        m.append(0)
+                        if m_difference==0:
+                            h.append(time.hour+h_difference)
+                            m.append(time.minute)
+                            h.append(23)
+                            m.append(59)
+                        else:
+                            if time.minute+m_difference>=60:   
+                                h.append(time.hour+(time.minute+m_difference)/60+h_difference)
+                                m.append((time.minute+m_difference)%60)
+                                h.append(23)
+                                m.append(59)
+                            else:
+                                h.append(time.hour+h_difference)
+                                m.append(time.minute+m_difference)
+                                h.append(23)
+                                m.append(59)
                 else:
                     if h_difference==0:
                         if m_difference==0:
@@ -471,11 +495,19 @@ def cutSentenceSchedule_add(sentence):
                         else:
                             if len(m)==0:
                                 m.append(0)
-                                h.append(h[0])
-                                m.append(m[0]+m_difference)
+                                if m[0]+m_difference>=60:   
+                                    h.append(h[0]+(m[0]+m_difference)/60)
+                                    m.append((m[0]+m_difference)%60)
+                                else:
+                                    h.append(h[0])
+                                    m.append(m[0]+m_difference)
                             else:
-                                h.append(h[0])
-                                m.append(m[0]+m_difference)
+                                if m[0]+m_difference>=60:   
+                                    h.append(h[0]+(m[0]+m_difference)/60)
+                                    m.append((m[0]+m_difference)%60)
+                                else:
+                                    h.append(h[0])
+                                    m.append(m[0]+m_difference)
                     else:
                         if m_difference==0:
                             if len(m)==0:
@@ -484,15 +516,23 @@ def cutSentenceSchedule_add(sentence):
                                 m.append(0)
                             else:
                                 h.append(h[0]+h_difference)
-                                m.append(m[0]+m_difference)
+                                m.append(m[0])
                         else:
                             if len(m)==0:
-                                h.append(h[0]+h_difference)
                                 m.append(0)
-                                m.append(m[0]+m_difference)
+                                if m[0]+m_difference>=60:   
+                                    h.append(h[0]+(m[0]+m_difference)/60+h_difference)
+                                    m.append((m[0]+m_difference)%60)
+                                else:
+                                    h.append(h[0]+h_difference)
+                                    m.append(m[0]+m_difference)
                             else:
-                                h.append(h[0]+h_difference)
-                                m.append(m[0]+m_difference)
+                                if m[0]+m_difference>=60:   
+                                    h.append(h[0]+(m[0]+m_difference)/60+h_difference)
+                                    m.append((m[0]+m_difference)%60)
+                                else:
+                                    h.append(h[0]+h_difference)
+                                    m.append(m[0]+m_difference)
             if len(m)<2:
                 if len(m)==0:
                     m.append(0)
@@ -562,15 +602,39 @@ def cutSentenceSchedule_add(sentence):
             if len(h)<2:
                 if len(h)==0:
                     if h_difference==0:
-                        h.append(0)
-                        h.append(23)
-                        m.append(0)
-                        m.append(59)
+                        if m_difference==0:
+                            h.append(0)
+                            h.append(23)
+                            m.append(0)
+                            m.append(59)
+                        else:
+                            if time.minute+m_difference>=60:   
+                                h.append(time.hour+(time.minute+m_difference)/60)
+                                m.append((time.minute+m_difference)%60)
+                                h.append(23)
+                                m.append(59)
+                            else:
+                                h.append(time.hour)
+                                m.append(time.minute+m_difference)
+                                h.append(23)
+                                m.append(59)
                     else:
-                        h.append(time.hour)
-                        h.append(time.hour+h_difference)
-                        m.append(0)
-                        m.append(0)
+                        if m_difference==0:
+                            h.append(time.hour+h_difference)
+                            m.append(time.minute)
+                            h.append(23)
+                            m.append(59)
+                        else:
+                            if time.minute+m_difference>=60:   
+                                h.append(time.hour+(time.minute+m_difference)/60+h_difference)
+                                m.append((time.minute+m_difference)%60)
+                                h.append(23)
+                                m.append(59)
+                            else:
+                                h.append(time.hour+h_difference)
+                                m.append(time.minute+m_difference)
+                                h.append(23)
+                                m.append(59)
                 else:
                     if h_difference==0:
                         if m_difference==0:
@@ -584,11 +648,19 @@ def cutSentenceSchedule_add(sentence):
                         else:
                             if len(m)==0:
                                 m.append(0)
-                                h.append(h[0])
-                                m.append(m[0]+m_difference)
+                                if m[0]+m_difference>=60:   
+                                    h.append(h[0]+(m[0]+m_difference)/60)
+                                    m.append((m[0]+m_difference)%60)
+                                else:
+                                    h.append(h[0])
+                                    m.append(m[0]+m_difference)
                             else:
-                                h.append(h[0])
-                                m.append(m[0]+m_difference)
+                                if m[0]+m_difference>=60:   
+                                    h.append(h[0]+(m[0]+m_difference)/60)
+                                    m.append((m[0]+m_difference)%60)
+                                else:
+                                    h.append(h[0])
+                                    m.append(m[0]+m_difference)
                     else:
                         if m_difference==0:
                             if len(m)==0:
@@ -597,15 +669,23 @@ def cutSentenceSchedule_add(sentence):
                                 m.append(0)
                             else:
                                 h.append(h[0]+h_difference)
-                                m.append(m[0]+m_difference)
+                                m.append(m[0])
                         else:
                             if len(m)==0:
-                                h.append(h[0]+h_difference)
                                 m.append(0)
-                                m.append(m[0]+m_difference)
+                                if m[0]+m_difference>=60:   
+                                    h.append(h[0]+(m[0]+m_difference)/60+h_difference)
+                                    m.append((m[0]+m_difference)%60)
+                                else:
+                                    h.append(h[0]+h_difference)
+                                    m.append(m[0]+m_difference)
                             else:
-                                h.append(h[0]+h_difference)
-                                m.append(m[0]+m_difference)
+                                if m[0]+m_difference>=60:   
+                                    h.append(h[0]+(m[0]+m_difference)/60+h_difference)
+                                    m.append((m[0]+m_difference)%60)
+                                else:
+                                    h.append(h[0]+h_difference)
+                                    m.append(m[0]+m_difference)
             if len(m)<2:
                 print('check')
                 if len(m)==0:
@@ -625,10 +705,11 @@ def cutSentenceSchedule_add(sentence):
                         print('no')
                         m.append(0)
 
-    if m[len(m)-1]>=60:
-        m[len(m)-1]=m[len(m)-1]-60
-        h[len(h)-1]=h[len(h)-1]+1
-
+    for i in range(len(h)):
+        h[i]=int(h[i])
+    for i in range(len(m)):
+        m[i]=int(m[i])
+        
     return todo,key,user,yearList,monthList,dayList,h,m
             
             
