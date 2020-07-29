@@ -207,19 +207,31 @@ def receiptCrawler():
     # print(checkNumber)
     return checkNumber  
 
-# def writeReceiptData(checkNumberList):
-#     resultDict = dict()
+def writeReceiptData():
+    checkNumberList = receiptCrawler()
+    resultDict = dict()
 
-#     for ele in checkNumberList:
-#         tempDict = dict()
+    for eleList in checkNumberList:
+        dictKey = ("20%02d" % eleList[-2]) + ("%02d%02d" % (eleList[-1], eleList[-1] + 1))
+        tempList = list()
+        for i in range(len(eleList) - 2):
+            tempList.append(eleList[i])
+        resultDict[dictKey] = tempList
 
-#         numberList = list()
-#         for i in range(4):
-#             numberList.append(ele[i])
-
-#         tempDict['numbers'] = numberList
-#         tempDict['year'] = ele[-2]
-#         tempDict['month'] = ele[-1]
-
-#     with open('receiptData.json', 'w') as fp:
+    ret = json.dumps(resultDict)
+    with open('receiptData.json', 'w') as fp:
+        fp.write(ret)
     
+    print("update receipt data success.")
+
+def getReceiptData():
+    receiptData = dict()
+    try:
+        with open('receiptData.json', 'r') as fp:
+            receiptData = json.load(fp)
+    except:
+        writeReceiptData()
+        with open('receiptData.json', 'r') as fp:
+            receiptData = json.load(fp)
+
+    return receiptData
