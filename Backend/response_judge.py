@@ -269,7 +269,7 @@ def classifyDetail(detail):
 def cutSentenceSchedule_add(sentence):
     dateName=['前天','昨天','今天','明天','後天']
     date=['年','月','日','號']
-    timeName=['點','時','分','天','小','上午','下午','中午','晚上','凌晨','早上','到','分到','今天下午','天下','鐘','半','整','後']
+    timeName=['點','時','分','天','小','上午','下午','中午','晚上','凌晨','早上','到','分到','整到','今天下午','天下','鐘','半','整','後']
     data=[]
     dateNameFlag,dateFlag,timeNameFlag,mouseFlag=False,False,False,False
     todo,key,user='',0,''
@@ -422,27 +422,48 @@ def cutSentenceSchedule_add(sentence):
                         break
             # day
             if len(date_name)>=2:
-                if date_name[len(date_name)-1]=='今天':
-                    dayList.append(dayList[0])
-                elif date_name[len(date_name)-1]=='明天':
-                    dayList.append(dayList[0]+1)
-                elif date_name[len(date_name)-1]=='後天':
-                    dayList.append(dayList[0]+2)
-                elif date_name[len(date_name)-1]=='昨天':
-                    dayList.append(dayList[0]-1)
-                elif date_name[len(date_name)-1]=='前天':
-                    dayList.append(dayList[0]-2)
+                for i in range(len(date_name)):
+                    if date_name[i]=='今天':
+                        if dayList[0]!=time.day:
+                            dayList.append(time.day)
+                    elif date_name[i]=='明天':
+                        if dayList[0]!=time.day+1:
+                            dayList.append(time.day+1)
+                    elif date_name[i]=='後天':
+                        if dayList[0]!=time.day+2:
+                            dayList.append(time.day+2)
+                    elif date_name[i]=='昨天':
+                        if dayList[0]!=time.day-1:
+                            dayList.append(time.day-1)
+                    elif date_name[i]=='前天':
+                        if dayList[0]!=time.day-2:
+                            dayList.append(time.day-2)
             elif len(date_name)==1:
                 if date_name[0]=='今天':
-                    dayList.append(dayList[0])
+                    if dayList[0]!=time.day:
+                        dayList.append(time.day)
+                    else:
+                        dayList.append(dayList[0]+day_difference)
                 elif date_name[0]=='明天':
-                    dayList.append(dayList[0]+1)
+                    if dayList[0]!=time.day+1:
+                        dayList.append(time.day+1)
+                    else:
+                        dayList.append(dayList[0]+day_difference)
                 elif date_name[0]=='後天':
-                    dayList.append(dayList[0]+2)
+                    if dayList[0]!=time.day+2:
+                        dayList.append(time.day+2)
+                    else:
+                        dayList.append(dayList[0]+day_difference)
                 elif date_name[0]=='昨天':
-                    dayList.append(dayList[0]-1)
+                    if dayList[0]!=time.day-1:
+                        dayList.append(time.day-1)
+                    else:
+                        dayList.append(dayList[0]+day_difference)
                 elif date_name[0]=='前天':
-                    dayList.append(dayList[0]-2)
+                    if dayList[0]!=time.day-2:
+                        dayList.append(time.day-2)
+                    else:
+                        dayList.append(dayList[0]+day_difference)
             else:
                 dayList.append(dayList[0]+day_difference)
             # h&m
@@ -705,11 +726,26 @@ def cutSentenceSchedule_add(sentence):
                         print('no')
                         m.append(0)
 
+    # 去float
     for i in range(len(h)):
         h[i]=int(h[i])
     for i in range(len(m)):
         m[i]=int(m[i])
-        
+    
+    # start<end
+    if dayList[0]>dayList[len(dayList)-1]:
+        tmp=dayList[0]
+        dayList[0]=dayList[len(dayList)-1]
+        dayList[len(dayList)-1]=tmp
+    if monthList[0]>monthList[len(monthList)-1]:
+        tmp=monthList[0]
+        monthList[0]=monthList[len(monthList)-1]
+        monthList[len(monthList)-1]=tmp
+    if yearList[0]>yearList[len(yearList)-1]:
+        tmp=yearList[0]
+        yearList[0]=yearList[len(yearList)-1]
+        yearList[len(yearList)-1]=tmp
+
     return todo,key,user,yearList,monthList,dayList,h,m
             
             
