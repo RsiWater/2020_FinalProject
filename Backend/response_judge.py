@@ -269,7 +269,7 @@ def classifyDetail(detail):
 def cutSentenceSchedule_add(sentence):
     dateName=['前天','昨天','今天','明天','後天']
     date=['年','月','日','號']
-    timeName=['點','時','分','天','小','上午','下午','中午','晚上','凌晨','早上','到','分到','整到','今天下午','天下','鐘','半','整','後']
+    timeName=['點','時','分','小時','天','上午','下午','中午','晚上','凌晨','早上','到','分到','整到','今天下午','天下','分鐘','半','整','後']
     data=[]
     dateNameFlag,dateFlag,timeNameFlag,mouseFlag=False,False,False,False
     todo,key,user='',0,''
@@ -277,46 +277,47 @@ def cutSentenceSchedule_add(sentence):
     day_difference,m_difference,h_difference,count=0,0,0,0
     time=datetime.datetime.now()
     
+    # jieba切詞
     jieba.add_word('後天',freq=None,tag=None)
-    jieba.add_word('鬧鐘',freq=None,tag=None)
+    jieba.add_word('小時',freq=None,tag=None)
+    jieba.add_word('分鐘',freq=None,tag=None)
     words=jieba.cut(sentence,cut_all=True)
     for word in words:
         data.append(word)
 
+    # 剔除不要的文字，留下數字、todo、key、user
     for word in data:
-        count=count+1
+        count=count+1   #計算詞的位置
         try:
             print(int(word))
             try:
-                if data[data.index(word)+1]=='年':
+                if data[count]=='年':
                     yearList.append(int(word))
-                elif data[data.index(word)+1]=='月':
+                elif data[count]=='月':
                     monthList.append(int(word))
-                elif data[data.index(word)+1]=='日' or data[data.index(word)+1]=='號' or data[data.index(word)-1]=='月':
+                elif data[count]=='日' or data[count]=='號' or data[count-2]=='月':
                     dayList.append(int(word))
-                elif data[data.index(word)+1]=='時' or data[data.index(word)+1]=='點':
+                elif data[count]=='時' or data[count]=='點':
                     try:
-                        if data[data.index(word)-1]=='上午' or data[data.index(word)-1]=='早上' or data[data.index(word)-1]=='凌晨':
+                        if data[count-2]=='上午' or data[count-2]=='早上' or data[count-2]=='凌晨' or data[count-2]=='中午':
                             h.append(int(word))
-                        elif data[data.index(word)-1]=='中午':
-                            h.append(12)
-                        elif data[data.index(word)-1]=='下午' or data[data.index(word)-1]=='晚上':
+                        elif data[count-2]=='下午' or data[count-2]=='晚上':
                             h.append(int(word)+12)
                         else:
                             h.append(int(word))
                     except:
                         h.append(int(word))
-                elif data[data.index(word)+1]=='分':
+                elif data[count]=='分' or data[count]=='分鐘':
                     try:
-                        if data[data.index(word)-1]=='點':
+                        if data[count-2]=='點' or data[count-2]=='時':
                             m.append(int(word))
                         else:
                             m_difference=int(word)
                     except:
                         m_difference=int(word)
-                elif data[data.index(word)+1]=='天':
+                elif data[count]=='天':
                     day_difference=int(word)
-                elif data[data.index(word)+1]=='小' and data[data.index(word)+2]=='時':
+                elif data[count]=='小時':
                     h_difference=int(word)
                 else:
                     m.append(int(word))
@@ -334,7 +335,7 @@ def cutSentenceSchedule_add(sentence):
                 continue
             if word=='半':
                 m.append(30)
-                data[data.index(word)]='30'
+                # data[data.index(word)]='30'
                 continue
 
             for j in dateName:
@@ -353,11 +354,6 @@ def cutSentenceSchedule_add(sentence):
                 dateFlag=False
                 continue
             for j in timeName:
-                try:
-                    if word=='小' and data[count]!='時':
-                        break
-                except:
-                    break
                 if word==j:
                     timeNameFlag=True
                     break
@@ -733,7 +729,7 @@ def cutSentenceSchedule_add(sentence):
         m[i]=int(m[i])
     
     # start<end
-    if dayList[0]>dayList[len(dayList)-1]:
+    if dayList[0]>dayList[len(dayList)-1] and monthList[0]==monthList[len(dayList)-1]:
         tmp=dayList[0]
         dayList[0]=dayList[len(dayList)-1]
         dayList[len(dayList)-1]=tmp
@@ -747,6 +743,121 @@ def cutSentenceSchedule_add(sentence):
         yearList[len(yearList)-1]=tmp
 
     return todo,key,user,yearList,monthList,dayList,h,m
+
+
+def cutSentence_del(sentence):
+    dateName=['前天','昨天','今天','明天','後天']
+    date=['年','月','日','號']
+    allName=['全部','全','全都','所有','現有']
+    data=[]
+    dateNameFlag,dateFlag,errorFlag,mouseFlag,allNameFlag,delAll=False,False,False,False,False,False
+    year,month,day,key,user=0,0,0,0,''
+    count=0
+    time=datetime.datetime.now()
+
+    # jieba切詞
+    jieba.add_word('後天',freq=None,tag=None)
+    jieba.add_word('現有',freq=None,tag=None)
+    words=jieba.cut(sentence,cut_all=True)
+    for word in words:
+        data.append(word)
+
+    # 剔除不要的文字，留下數字、todo、key、user
+    for word in data:
+        count=count+1   #計算詞的位置
+        try:
+            print(int(word))
+            try:
+                if data[count]=='年':
+                    year=int(word)
+                elif data[count]=='月':
+                    if year==0:
+                        year=time.year
+                        month=int(word)
+                    else:
+                        month=int(word)
+                elif data[count]=='日' or data[count]=='號' or data[count-2]=='月':
+                    if year==0 and month==0:
+                        year=time.year
+                        month=time.month
+                        day=int(word)
+                    elif year!=0 and month==0:
+                        month=time.month
+                        day=int(word)
+                    elif year==0 and month!=0:
+                        year=time.year
+                        day=int(word)
+                    else:
+                        day=int(word)
+                else:
+                    day=int(word)
+            except:
+                key=int(word)
+        except:
+            if word=='@':
+                mouseFlag=True
+                continue
+            if word=='#':
+                continue
+            if mouseFlag==True:
+                user=word
+                mouseFlag=False
+                continue
+
+            for j in dateName:
+                if word==j:
+                    if word=='今天':
+                        year=time.year
+                        month=time.month
+                        day=time.day
+                    elif word=='前天':
+                        year=time.year
+                        month=time.month
+                        day=time.day-2
+                    elif word=='昨天':
+                        year=time.year
+                        month=time.month
+                        day=time.day-1
+                    elif word=='明天':
+                        year=time.year
+                        month=time.month
+                        day=time.day+1
+                    elif word=='後天':
+                        year=time.year
+                        month=time.month
+                        day=time.day+2
+                    dateNameFlag=True
+                    break
+            if dateNameFlag==True:
+                dateNameFlag=False
+                continue
+            for j in date:
+                if word==j:
+                    dateFlag=True
+                    break
+            if dateFlag==True:
+                dateFlag=False
+                continue
+            for j in allName:
+                if word==j:
+                    allNameFlag=True
+                    delAll=True
+                    break
+            if allNameFlag==True:
+                allNameFlag=False
+                continue
+
+    if year==0 and month==0 and day==0 and delAll==False:
+        errorFlag=True
+    
+    return year,month,day,key,user,delAll,errorFlag
+            
+
+
+
+
+
+
             
             
 
