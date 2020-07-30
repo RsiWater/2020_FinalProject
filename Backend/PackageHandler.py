@@ -8,7 +8,7 @@ def classifyPackage(package):
     packageType = package[:3].decode("utf-8")
     
     if packageType == 'acc':
-        print("accc")
+        print("account")
         send_package=bytes('',encoding='utf-8')
         rcv_package = decodeAccountPackage(package[3:])
         rcv_package.operateAction()
@@ -31,6 +31,7 @@ def classifyPackage(package):
         # connect_socket.send(encodeAccountPackage(account))
 
     elif packageType == 'sch':
+        print('schedule')
         send_package=bytes('',encoding='utf-8')
         rcv_package = decodeSchedulePackage(package[3:])
         rcv_package.operateAction()
@@ -51,6 +52,7 @@ def classifyPackage(package):
         # connect_socket.send(encodeSchedulePackage(schedule))
 
     elif packageType == 'wea':
+        print('weather')
         send_package = bytes('', encoding="UTF-8")
         weatherData = Crawl.getWeatherData()
         for eleList in weatherData.values():
@@ -60,21 +62,25 @@ def classifyPackage(package):
         return send_package
 
     elif packageType=='sen':
+        print('sentence')
         send_package=Sentence(package[3:])
         return send_package
 
     elif packageType=='rec':
+        print('receipt')
         checkNumber=Crawl.receiptCrawler()
         send_package=receiptSearch(checkNumber,package[3:])
         return send_package
 
     elif packageType == 'log':
-        # login
+        print("login")        
         rcv_package = decodeLoginPackage(package[3:])
         
         send_package = encodeLoginMessage(rcv_package)
         return send_package
-        
+    
+    else:
+        print('none')
 
     # elif packageType == 'deb':
     #     message = rcv_event.decode("UTF-8")
@@ -84,9 +90,19 @@ def encodeLoginMessage(userClass):
     zero, passSize, keySize = 0, 2, 64
 
     package = bytes("log", encoding="UTF-8")
-    if(userClass.check()):
+    checkPassAuthorization = False
+    if userClass.name == "key":
+        checkPassAuthorization = userClass.checkKey()
+    else:
+        checkPassAuthorization = userClass.check()
+            
+    if checkPassAuthorization:
         package += bytes("OK", encoding="UTF-8")
-        package += bytes(userClass.key, encoding="UTF-8")
+        if userClass.name == "key":
+            package += bytes("OK", encoding="UTF-8")
+            package += zero.to_bytes(keySize - (len("OK".encode('UTF-8'))), 'big')
+        else:
+            package += bytes(userClass.key, encoding="UTF-8")
     else:
         package += bytes("NO", encoding="UTF-8")
         package += bytes(SHA256_encode("NULL"), encoding="UTF-8")

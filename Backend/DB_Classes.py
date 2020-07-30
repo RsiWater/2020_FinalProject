@@ -61,6 +61,14 @@ class UserAccount:
             break
         return ifExist
 
+    def checkKey(self):
+        ifExist = False
+        data = self.con.execute('SELECT * FROM userAccount WHERE Key = "{}";'.format(self.password))
+        for ele in data:
+            ifExist = True
+            break
+        return ifExist
+
     def updateKey(self, key):
         self.con.execute("UPDATE userAccount SET key = ? WHERE Name = ?", (key, self.name))
         self.con.commit()
@@ -237,11 +245,51 @@ class Schedule:
     def get_end(self):
         return self.end
     def set_start_in_format(self, year, month, day, hour, minute):
-        self.year = year
-        self.month = month
-        self.day = day
+        while hour >= 24:
+            day += 1
+            hour -= 24
+
+        monthDay = [31,28,31,30,31,30,31,31,30,31,30,31]
+        if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+            monthDay[1] += 1
+
+        while day >= monthDay[month - 1]:
+            day -= monthDay[month - 1]
+            month += 1
+            if month > 12:
+                year += 1
+                month -= 12
+        
+        while month > 12:
+            year += 1
+            month -= 12
+
         self.start = (hour * 100) + minute
+        self.day = day
+        self.month = month
+        self.year = year
+
     def set_end_in_format(self, year, month, day, hour, minute):
+        # need add functionality that deal with overflow day and month.
+        while hour >= 24:
+            day += 1
+            hour -= 24
+
+        monthDay = [31,28,31,30,31,30,31,31,30,31,30,31]
+        if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+            monthDay[1] += 1
+
+        while day >= monthDay[month - 1]:
+            day -= monthDay[month - 1]
+            month += 1
+            if month > 12:
+                year += 1
+                month -= 12
+        
+        while month > 12:
+            year += 1
+            month -= 12
+
         detTime = 0
         monthDay = [31,28,31,30,31,30,31,31,30,31,30,31]
 
