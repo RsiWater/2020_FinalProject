@@ -743,6 +743,121 @@ def cutSentenceSchedule_add(sentence):
         yearList[len(yearList)-1]=tmp
 
     return todo,key,user,yearList,monthList,dayList,h,m
+
+
+def cutSentence_del(sentence):
+    dateName=['前天','昨天','今天','明天','後天']
+    date=['年','月','日','號']
+    allName=['全部','全','全都','所有','現有']
+    data=[]
+    dateNameFlag,dateFlag,errorFlag,mouseFlag,allNameFlag,delAll=False,False,False,False,False,False
+    year,month,day,key,user=0,0,0,0,''
+    count=0
+    time=datetime.datetime.now()
+
+    # jieba切詞
+    jieba.add_word('後天',freq=None,tag=None)
+    jieba.add_word('現有',freq=None,tag=None)
+    words=jieba.cut(sentence,cut_all=True)
+    for word in words:
+        data.append(word)
+
+    # 剔除不要的文字，留下數字、todo、key、user
+    for word in data:
+        count=count+1   #計算詞的位置
+        try:
+            print(int(word))
+            try:
+                if data[count]=='年':
+                    year=int(word)
+                elif data[count]=='月':
+                    if year==0:
+                        year=time.year
+                        month=int(word)
+                    else:
+                        month=int(word)
+                elif data[count]=='日' or data[count]=='號' or data[count-2]=='月':
+                    if year==0 and month==0:
+                        year=time.year
+                        month=time.month
+                        day=int(word)
+                    elif year!=0 and month==0:
+                        month=time.month
+                        day=int(word)
+                    elif year==0 and month!=0:
+                        year=time.year
+                        day=int(word)
+                    else:
+                        day=int(word)
+                else:
+                    day=int(word)
+            except:
+                key=int(word)
+        except:
+            if word=='@':
+                mouseFlag=True
+                continue
+            if word=='#':
+                continue
+            if mouseFlag==True:
+                user=word
+                mouseFlag=False
+                continue
+
+            for j in dateName:
+                if word==j:
+                    if word=='今天':
+                        year=time.year
+                        month=time.month
+                        day=time.day
+                    elif word=='前天':
+                        year=time.year
+                        month=time.month
+                        day=time.day-2
+                    elif word=='昨天':
+                        year=time.year
+                        month=time.month
+                        day=time.day-1
+                    elif word=='明天':
+                        year=time.year
+                        month=time.month
+                        day=time.day+1
+                    elif word=='後天':
+                        year=time.year
+                        month=time.month
+                        day=time.day+2
+                    dateNameFlag=True
+                    break
+            if dateNameFlag==True:
+                dateNameFlag=False
+                continue
+            for j in date:
+                if word==j:
+                    dateFlag=True
+                    break
+            if dateFlag==True:
+                dateFlag=False
+                continue
+            for j in allName:
+                if word==j:
+                    allNameFlag=True
+                    delAll=True
+                    break
+            if allNameFlag==True:
+                allNameFlag=False
+                continue
+
+    if year==0 and month==0 and day==0 and delAll==False:
+        errorFlag=True
+    
+    return year,month,day,key,user,delAll,errorFlag
+            
+
+
+
+
+
+
             
             
 
