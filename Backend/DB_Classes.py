@@ -217,13 +217,13 @@ class Account:
             self.con.commit()
         else:
             if self.year!=0 and self.month!=0 and self.day!=0:
-                self.con.execute('delete from record where 年={} and 月={} and 日={};'.format(self.year,self.month,self.day))
+                self.con.execute('delete from record where 年={} and 月={} and 日={} and user="{}";'.format(self.year,self.month,self.day,self.user))
                 self.con.commit()
             elif self.year!=0 and self.month!=0 and self.day==0:
-                self.con.execute('delete from record where 年={} and 月={};'.format(self.year,self.month))
+                self.con.execute('delete from record where 年={} and 月={} and user="{}";'.format(self.year,self.month,self.user))
                 self.con.commit()
             elif self.year!=0 and self.month==0 and self.day==0:
-                self.con.execute('delete from record where 年={};'.format(self.year))
+                self.con.execute('delete from record where 年={} and user="{}";'.format(self.year,self.user))
                 self.con.commit()
 
 
@@ -434,11 +434,11 @@ class Schedule:
             self.con.commit()
         else:
             if self.year!=0 and self.month!=0 and self.day!=0:
-                self.con.execute('delete from schedule_record where 年={} and 月={} and 日={};'.format(self.year,self.month,self.day))
+                self.con.execute('delete from schedule_record where 年={} and 月={} and 日={} and user="{}";'.format(self.year,self.month,self.day,self.user))
                 self.con.commit()
             elif self.year!=0 and self.month!=0 and self.day==0:
-                self.con.execute('delete from schedule_record where 年={} and 月={};'.format(self.year,self.month))
+                self.con.execute('delete from schedule_record where 年={} and 月={} and user="{}";'.format(self.year,self.month,self.user))
                 self.con.commit()
             elif self.year!=0 and self.month==0 and self.day==0:
-                self.con.execute('delete from schedule_record where 年={};'.format(self.year))
+                self.con.execute('delete from schedule_record where 年={} and user="{}";'.format(self.year,self.user))
                 self.con.commit()

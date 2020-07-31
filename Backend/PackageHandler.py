@@ -258,7 +258,7 @@ def Sentence(package):  #return bytearray
             year,month,day,item,detail,money,status,key,user,errorFlag=response_judge.cutSentenceAccount(p_sentence)
             if errorFlag==False:
                 setAccount=Account()
-                setAccount.set_year(int(str(year)[2:4]))
+                setAccount.set_year(year)
                 setAccount.set_month(month)
                 setAccount.set_day(day)
                 setAccount.set_item(item)
@@ -280,7 +280,7 @@ def Sentence(package):  #return bytearray
             year,month,day,key,user,delAll,errorFlag=response_judge.cutSentence_del(p_sentence)
             if errorFlag==False:
                 setAccount=Account()
-                setAccount.set_year(int(str(year)[2:4]))
+                setAccount.set_year(year)
                 setAccount.set_month(month)
                 setAccount.set_day(day)
                 setAccount.set_user(user)
@@ -323,7 +323,7 @@ def Sentence(package):  #return bytearray
             year,month,day,key,user,delAll,errorFlag=response_judge.cutSentence_del(p_sentence)
             if errorFlag==False:
                 setSchedule=Schedule()
-                setSchedule.set_year(int(str(year)[2:4]))
+                setSchedule.set_year(year)
                 setSchedule.set_month(month)
                 setSchedule.set_day(day)
                 setSchedule.set_user(user)

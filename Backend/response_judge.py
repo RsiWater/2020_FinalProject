@@ -301,7 +301,7 @@ def cutSentenceSchedule_add(sentence):
     dateName=['前天','昨天','今天','明天','後天']
     date=['年','月','日','號']
     timeName=['點','時','分','小時','天','上午','下午','中午','晚上','凌晨','早上','到','分到','整到','今天下午','天下','分鐘','半','整','後']
-    oneName=['新增','行程','我','想','要','想要','事情']
+    oneName=['新增','行程','我','想','要','想要','事情','提醒']
     data=[]
     dateNameFlag,dateFlag,timeNameFlag,mouseFlag,errorFlag,oneNameFlag=False,False,False,False,False,False
     todo,key,user='',0,''
