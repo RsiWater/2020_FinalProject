@@ -274,7 +274,17 @@ def Sentence(package):  #return bytearray
                 fulfillment='請重新輸入'
         elif p_operate==2:
             # 刪除
-            pass
+            year,month,day,key,user,delAll,errorFlag=response_judge.cutSentence_del(p_sentence)
+            if errorFlag==False:
+                setAccount=Account()
+                setAccount.set_year(int(str(year)[2:4]))
+                setAccount.set_month(month)
+                setAccount.set_day(day)
+                setAccount.set_user(user)
+                setAccount.deleteByRobot(delAll)
+                fulfillment='已刪除'
+            else:
+                fulfillment='請重新輸入'
         elif p_operate==3:
             # 修改
             pass
@@ -298,7 +308,17 @@ def Sentence(package):  #return bytearray
             fulfillment='已新增'
         elif p_operate==2:
             # 刪除
-            pass
+            year,month,day,key,user,delAll,errorFlag=response_judge.cutSentence_del(p_sentence)
+            if errorFlag==False:
+                setSchedule=Schedule()
+                setSchedule.set_year(int(str(year)[2:4]))
+                setSchedule.set_month(month)
+                setSchedule.set_day(day)
+                setSchedule.set_user(user)
+                setSchedule.deleteByRobot(delAll)
+                fulfillment='已刪除'
+            else:
+                fulfillment='請重新輸入'
         elif p_operate==3:
             # 修改
             pass
