@@ -3,7 +3,7 @@ import datetime
 import response_judge
 
 data=[]
-sentence='我要刪除@a123#456'
+sentence='我想要新增事情@a123#456'
 # scheduleAdd
 # 7月29日到7月30日爬山@a123#456
 # 7月29日下午4點20分到7月30日早上8點爬山@a123#456
@@ -31,12 +31,13 @@ jieba.add_word('後天',freq=None,tag=None)
 jieba.add_word('小時',freq=None,tag=None)
 jieba.add_word('分鐘',freq=None,tag=None)
 jieba.add_word('現有',freq=None,tag=None)
+jieba.add_word('記帳',freq=None,tag=None)
 words=jieba.cut(sentence,cut_all=True)
 for word in words:
     data.append(word)
 
 print(data)
-print(response_judge.cutSentence_del(sentence))
+# print(response_judge.cutSentence_del(sentence))
     
     
 
