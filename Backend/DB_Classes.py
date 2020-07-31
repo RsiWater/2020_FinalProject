@@ -187,7 +187,7 @@ class Account:
         self.con.execute('delete from record where id={};'.format(self.key))
         self.con.commit()
     def delete_by_user(self):
-        self.con.execute('delete from record where user={};'.format(self.user))
+        self.con.execute('delete from record where user="{}";'.format(self.user))
         self.con.commit()
     def update(self):
         self.con.execute('delete from record where id={};'.format(self.key))
