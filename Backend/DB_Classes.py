@@ -187,7 +187,7 @@ class Account:
         self.con.execute('delete from record where id={};'.format(self.key))
         self.con.commit()
     def delete_by_user(self):
-        self.con.execute('delete from record where user={};'.format(self.user))
+        self.con.execute('delete from record where user="{}";'.format(self.user))
         self.con.commit()
     def update(self):
         self.con.execute('delete from record where id={};'.format(self.key))
@@ -211,6 +211,20 @@ class Account:
         return not ifExist
     def close(self):
         self.con.close()
+    def deleteByRobot(self,delAll):
+        if delAll==True:
+            self.con.execute('delete from record where user="{}";'.format(self.user))
+            self.con.commit()
+        else:
+            if self.year!=0 and self.month!=0 and self.day!=0:
+                self.con.execute('delete from record where 年={} and 月={} and 日={};'.format(self.year,self.month,self.day))
+                self.con.commit()
+            elif self.year!=0 and self.month!=0 and self.day==0:
+                self.con.execute('delete from record where 年={} and 月={};'.format(self.year,self.month))
+                self.con.commit()
+            elif self.year!=0 and self.month==0 and self.day==0:
+                self.con.execute('delete from record where 年={};'.format(self.year))
+                self.con.commit()
 
 
 class Schedule:
@@ -414,3 +428,17 @@ class Schedule:
             break
 
         return not ifExist
+    def deleteByRobot(self,delAll):
+        if delAll==True:
+            self.con.execute('delete from schedule_record where user="{}";'.format(self.user))
+            self.con.commit()
+        else:
+            if self.year!=0 and self.month!=0 and self.day!=0:
+                self.con.execute('delete from schedule_record where 年={} and 月={} and 日={};'.format(self.year,self.month,self.day))
+                self.con.commit()
+            elif self.year!=0 and self.month!=0 and self.day==0:
+                self.con.execute('delete from schedule_record where 年={} and 月={};'.format(self.year,self.month))
+                self.con.commit()
+            elif self.year!=0 and self.month==0 and self.day==0:
+                self.con.execute('delete from schedule_record where 年={};'.format(self.year))
+                self.con.commit()
