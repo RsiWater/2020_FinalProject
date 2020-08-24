@@ -3,11 +3,9 @@ import datetime
 
 def judge(response,sentence):
     origin=[['新增','加','增加','加入','記','入'],['刪除','刪'],['修改','改'],['查詢','查','查看','看']]
-    dateName=['前天','昨天','今天','明天','後天']
-    accountFlag=False
-    score=0
+    timeName=['前天','昨天','今天','明天','後天','年','月','日','號','點','時','分','小時','天','上午','下午','中午','晚上','凌晨','早上','到','分到','整到','今天下午','天下','分鐘','半','整','後']
 
-    intent,operate,find=0,0,False
+    intent,operate=0,0
     if response.query_result.intent.display_name=='request for account':
         intent=1
     elif response.query_result.intent.display_name=='request for schedule':
@@ -15,70 +13,81 @@ def judge(response,sentence):
     else:
         intent=0
 
-    addScore,deleteScore,updateScore,searchScore=0,0,0,0
-    if response.query_result.fulfillment_text!='哪一項服務':
-        for i in range(len(origin)):
-            for j in origin[i]:
-                if response.query_result.fulfillment_text==j:
-                    operate=i+1
-                    find=True
+    if intent!=0:
+        addScore,deleteScore,updateScore,searchScore,find=0,0,0,0,False
+        if response.query_result.fulfillment_text!='哪一項服務':
+            for i in range(len(origin)):
+                for j in origin[i]:
+                    if response.query_result.fulfillment_text==j:
+                        operate=i+1
+                        find=True
+                        break
+                if find==True:
                     break
-            if find==True:
-                break
+        else:
+            jieba.add_word('後天',freq=None,tag=None)
+            words=jieba.cut(response.query_result.query_text,cut_all=True)
+            for word in words:
+                for data in origin[0]:
+                    if len(word)>=len(data):
+                        if word.find(data)!=-1:
+                            addScore+=1
+                    else:
+                        if data.find(word)!=-1:
+                            addScore+=1
+                for data in origin[1]:
+                    if len(word)>=len(data):
+                        if word.find(data)!=-1:
+                            deleteScore+=1
+                    else:
+                        if data.find(word)!=-1:
+                            deleteScore+=1
+                for data in origin[2]:
+                    if len(word)>=len(data):
+                        if word.find(data)!=-1:
+                            updateScore+=1
+                    else:
+                        if data.find(word)!=-1:
+                            updateScore+=1
+                for data in origin[3]:
+                    if len(word)>=len(data):
+                        if word.find(data)!=-1:
+                            searchScore+=1
+                    else:
+                        if data.find(word)!=-1:
+                            searchScore+=1
+            
+            Score=[addScore,deleteScore,updateScore,searchScore]
+            operate=Score.index(max(Score))+1
     else:
-        jieba.add_word('後天',freq=None,tag=None)
-        words=jieba.cut(response.query_result.query_text,cut_all=True)
-        for word in words:
-            for data in origin[0]:
-                if len(word)>=len(data):
-                    if word.find(data)!=-1:
-                        addScore+=1
-                else:
-                    if data.find(word)!=-1:
-                        addScore+=1
-            for data in origin[1]:
-                if len(word)>=len(data):
-                    if word.find(data)!=-1:
-                        deleteScore+=1
-                else:
-                    if data.find(word)!=-1:
-                        deleteScore+=1
-            for data in origin[2]:
-                if len(word)>=len(data):
-                    if word.find(data)!=-1:
-                        updateScore+=1
-                else:
-                    if data.find(word)!=-1:
-                        updateScore+=1
-            for data in origin[3]:
-                if len(word)>=len(data):
-                    if word.find(data)!=-1:
-                        searchScore+=1
-                else:
-                    if data.find(word)!=-1:
-                        searchScore+=1
-        
-        Score=[addScore,deleteScore,updateScore,searchScore]
-        operate=Score.index(max(Score))+1
-    
-    if intent==0:
+        accountFlag,count,score=False,0,0
+        cutwords=[]
         words=jieba.cut(sentence,cut_all=True)
         for word in words:
-            if word=='元' or word=='塊':
-                accountFlag=True
-                break
+            cutwords.append(word)
+        
+        for word in cutwords:
+            if (word=='元' or word=='塊') and count!=0:
+                try:
+                    print(int(cutwords[count-1]))
+                    accountFlag=True
+                    break
+                except:
+                    count+=
+            else:
+                for i in timeName:
+                    if word==i:
+                        score+=
+                        break
+            count+=
+        
         if accountFlag==True:
             intent=1
         else:
-            for word in words:
-                for i in dateName:
-                    if word==i:
-                        score=score+1
-            if score>=2:
+            if score>0:
                 intent=2
             else:
                 intent=0
-        
         if intent!=0:
             operate=1
 
