@@ -181,6 +181,11 @@ class Account:
     def insert(self):
         while(not self.checkKey()):
             self.key = random.randint(1, 100000)
+        correctedDate = dealWithDate(self.year, self.month, self.day)
+        self.year = correctedDate[0]
+        self.month = correctedDate[1]
+        self.day = correctedDate[2]
+
         self.con.execute('insert into record(金額,年,月,日,分類,細項,發票,備註,收支屬性,id,user)values({},{},{},{},"{}","{}","{}","{}",{},{},"{}");'.format(self.money,self.year,self.month,self.day,self.item,self.detail,self.receipt,self.note,self.status,self.key,self.user))
         self.con.commit()
     def delete(self):
@@ -259,50 +264,18 @@ class Schedule:
     def get_end(self):
         return self.end
     def set_start_in_format(self, year, month, day, hour, minute):
-        while hour >= 24:
-            day += 1
-            hour -= 24
-
-        monthDay = [31,28,31,30,31,30,31,31,30,31,30,31]
-        if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
-            monthDay[1] += 1
-
-        while day >= monthDay[month - 1]:
-            day -= monthDay[month - 1]
-            month += 1
-            if month > 12:
-                year += 1
-                month -= 12
+        correctedDate = dealWithDate(year, month, day)
         
-        while month > 12:
-            year += 1
-            month -= 12
-
         self.start = (hour * 100) + minute
-        self.day = day
-        self.month = month
-        self.year = year
+        self.day = correctedDate[2]
+        self.month = correctedDate[1]
+        self.year = correctedDate[0]
 
     def set_end_in_format(self, year, month, day, hour, minute):
-        # need add functionality that deal with overflow day and month.
-        while hour >= 24:
-            day += 1
-            hour -= 24
-
-        monthDay = [31,28,31,30,31,30,31,31,30,31,30,31]
-        if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
-            monthDay[1] += 1
-
-        while day >= monthDay[month - 1]:
-            day -= monthDay[month - 1]
-            month += 1
-            if month > 12:
-                year += 1
-                month -= 12
-        
-        while month > 12:
-            year += 1
-            month -= 12
+        correctedDate = dealWithDate(year, month, day)
+        year = correctedDate[0]
+        month = correctedDate[1]
+        day = correctedDate[2]
 
         detTime = 0
         monthDay = [31,28,31,30,31,30,31,31,30,31,30,31]
@@ -442,3 +415,28 @@ class Schedule:
             elif self.year!=0 and self.month==0 and self.day==0:
                 self.con.execute('delete from schedule_record where 年={};'.format(self.year))
                 self.con.commit()
+
+
+def dealWithDate(year, month, day):
+    monthDay = [31,28,31,30,31,30,31,31,30,31,30,31]
+    resultYear, resultMonth, resultDay = year, month, day
+
+    if (resultYear % 4 == 0 and resultYear % 100 != 0) or (resultYear % 400 == 0):
+        monthDay[1] = 29
+
+    while resultDay > monthDay[month - 1]:
+        resultDay -= monthDay[month - 1]
+        resultMonth += 1
+        if resultMonth > 12:
+            resultYear += 1
+            if (resultYear % 4 == 0 and resultYear % 100 != 0) or (resultYear % 400 == 0):
+                monthDay[1] = 29
+            else:
+                monthDay[1] = 28
+            resultMonth -= 12
+    
+    while resultMonth > 12:
+        resultYear += 1
+        resultMonth -= 12
+
+    return (resultYear, resultMonth, resultDay)
