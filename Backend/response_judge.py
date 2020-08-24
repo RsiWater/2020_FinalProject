@@ -73,13 +73,13 @@ def judge(response,sentence):
                     accountFlag=True
                     break
                 except:
-                    count+=
+                    count+=1
             else:
                 for i in timeName:
                     if word==i:
-                        score+=
+                        score+=1
                         break
-            count+=
+            count+=1
         
         if accountFlag==True:
             intent=1
