@@ -1,19 +1,17 @@
 import jieba
 import datetime
 
-# 明天到9月1號要爬山
-# 1月到2月要實習
-
-def judge(response):
+def judge(response,sentence):
     origin=[['新增','加','增加','加入','記','入'],['刪除','刪'],['修改','改'],['查詢','查','查看','看']]
+    dateName=['前天','昨天','今天','明天','後天']
+    accountFlag=False
+    score=0
 
     intent,operate,find=0,0,False
     if response.query_result.intent.display_name=='request for account':
         intent=1
     elif response.query_result.intent.display_name=='request for schedule':
         intent=2
-    elif response.query_result.intent.display_name=='request for service':
-        intent=3
     else:
         intent=0
 
@@ -62,7 +60,28 @@ def judge(response):
         
         Score=[addScore,deleteScore,updateScore,searchScore]
         operate=Score.index(max(Score))+1
-            
+    
+    if intent==0:
+        words=jieba.cut(sentence,cut_all=True)
+        for word in words:
+            if word=='元' or word=='塊':
+                accountFlag=True
+                break
+        if accountFlag==True:
+            intent=1
+        else:
+            for word in words:
+                for i in dateName:
+                    if word==i:
+                        score=score+1
+            if score>=2:
+                intent=2
+            else:
+                intent=0
+        
+        if intent!=0:
+            operate=1
+
     return intent,operate
 
 def cutSentenceAccount(sentence):
@@ -70,12 +89,14 @@ def cutSentenceAccount(sentence):
     statusName=['收入','支出']
     date=['年','月','日','號']
     moneyName=['元','塊']
-    dateNameFlag,dateFlag,moneyFlag,statusFlag,errorFlag,mouseFlag=False,False,False,False,False,False
+    oneName=['新增','記帳','我','想','要','想要']
+    dateNameFlag,dateFlag,moneyFlag,statusFlag,errorFlag,mouseFlag,oneNameFlag=False,False,False,False,False,False,False
     date_name,year,month,day,item,detail,money,status,key,user='',0,0,0,'','',0,1,0,''
     time=datetime.datetime.now()
     data=[]
 
     jieba.add_word('後天',freq=None,tag=None)
+    jieba.add_word('記帳',freq=None,tag=None)
     words=jieba.cut(sentence,cut_all=True)
     for word in words:
         data.append(word)
@@ -140,6 +161,13 @@ def cutSentenceAccount(sentence):
             if statusFlag==True:
                 statusFlag=False
                 continue
+            for j in oneName:
+                if i==j:
+                    oneNameFlag=True
+                    break
+            if oneNameFlag==True:
+                oneNameFlag=False
+                continue
             # 一段式
             detail+=i
         
@@ -202,7 +230,7 @@ def classifyDetail(detail):
     learn=['書','講義','補習','教材','課','上']
     health=['看','病','醫','療','護','健康','保健','藥']
     assurance=['保','保險','險','股票','股','賣']
-    food=['吃','喝','吃飯','飲料','飯','早餐','午餐','晚餐','餐','消夜','點心','水','酒','食','餐廳','上','菜','肉','蛋','豆','魚']
+    food=['吃','喝','吃飯','飲料','飯','早餐','午餐','晚餐','餐','宵夜','點心','水','酒','食','餐廳','上','菜','肉','蛋','豆','魚']
     otherScore,leisureScore,transportationScore,learnScore,healthScore,assuranceScore,foodScore=0,0,0,0,0,0,0
     item=''
 
@@ -273,8 +301,9 @@ def cutSentenceSchedule_add(sentence):
     dateName=['前天','昨天','今天','明天','後天']
     date=['年','月','日','號']
     timeName=['點','時','分','小時','天','上午','下午','中午','晚上','凌晨','早上','到','分到','整到','今天下午','天下','分鐘','半','整','後']
+    oneName=['新增','行程','我','想','要','想要','事情','提醒']
     data=[]
-    dateNameFlag,dateFlag,timeNameFlag,mouseFlag=False,False,False,False
+    dateNameFlag,dateFlag,timeNameFlag,mouseFlag,errorFlag,oneNameFlag=False,False,False,False,False,False
     todo,key,user='',0,''
     date_name,h,m,yearList,monthList,dayList=[],[],[],[],[],[]
     day_difference,m_difference,h_difference,count=0,0,0,0
@@ -363,9 +392,19 @@ def cutSentenceSchedule_add(sentence):
             if timeNameFlag==True:
                 timeNameFlag=False
                 continue
+            for j in oneName:
+                if word==j:
+                    oneNameFlag=True
+                    break
+            if oneNameFlag==True:
+                oneNameFlag=False
+                continue
             # 一段式
             todo+=word
     
+    # 是否error
+    if len(dateName)==0 or (len(yearList)==0 and len(monthList)==0 and len(dayList)==0 and len(h)==0 and len(m)==0):
+        errorFlag=True
     # start&end
     if len(dayList)>=2:
         if len(monthList)<2:
@@ -725,6 +764,7 @@ def cutSentenceSchedule_add(sentence):
                         print('no')
                         m.append(0)
 
+
     # 去float
     for i in range(len(h)):
         h[i]=int(h[i])
@@ -745,7 +785,7 @@ def cutSentenceSchedule_add(sentence):
         yearList[0]=yearList[len(yearList)-1]
         yearList[len(yearList)-1]=tmp
 
-    return todo,key,user,yearList,monthList,dayList,h,m
+    return todo,key,user,yearList,monthList,dayList,h,m,errorFlag
 
 
 def cutSentence_del(sentence):
@@ -854,6 +894,7 @@ def cutSentence_del(sentence):
         errorFlag=True
     
     return year,month,day,key,user,delAll,errorFlag
+    
             
 
 

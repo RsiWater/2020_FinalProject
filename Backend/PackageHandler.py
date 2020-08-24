@@ -249,8 +249,7 @@ def Sentence(package):  #return bytearray
     if p_intent==0:
         number=random.randint(0,1000)
         response=detect_texts('life-nxuajt',str(number),p_sentence,'zh-TW')
-        intent,operate=response_judge.judge(response)
-        # 一段式
+        p_intent,p_operate=response_judge.judge(response)
         fulfillment=response.query_result.fulfillment_text
     if p_intent==1:
         # 記帳
@@ -270,42 +269,55 @@ def Sentence(package):  #return bytearray
                 setAccount.set_user(user)
                 setAccount.insert()
                 fulfillment='已新增'
+                intent=0
+                operate=0
             else:
                 fulfillment='請重新輸入'
+                intent=p_intent
+                operate=p_operate
         elif p_operate==2:
             # 刪除
             year,month,day,key,user,delAll,errorFlag=response_judge.cutSentence_del(p_sentence)
             if errorFlag==False:
                 setAccount=Account()
-                setAccount.set_year(int(str(year)[2:4]))
+                setAccount.set_year(year)
                 setAccount.set_month(month)
                 setAccount.set_day(day)
                 setAccount.set_user(user)
                 setAccount.deleteByRobot(delAll)
                 fulfillment='已刪除'
+                intent=0
+                operate=0
             else:
                 fulfillment='請重新輸入'
+                intent=p_intent
+                operate=p_operate
         elif p_operate==3:
             # 修改
             pass
         elif p_operate==4:
             # 查詢
             pass
-        intent=0
-        operate=0
     if p_intent==2:
         # 行程
         if p_operate==1:
             # 新增
-            todo,key,user,yearList,monthList,dayList,h,m=response_judge.cutSentenceSchedule_add(p_sentence)
-            setSchedule=Schedule()
-            setSchedule.set_todo(todo)
-            setSchedule.set_key(key)
-            setSchedule.set_user(user)
-            setSchedule.set_start_in_format(yearList[0],monthList[0],dayList[0],h[0],m[0])
-            setSchedule.set_end_in_format(yearList[len(yearList)-1],monthList[len(monthList)-1],dayList[len(dayList)-1],h[len(h)-1],m[len(m)-1])
-            setSchedule.insert()
-            fulfillment='已新增'
+            todo,key,user,yearList,monthList,dayList,h,m,errorFlag=response_judge.cutSentenceSchedule_add(p_sentence)
+            if errorFlag==False:
+                setSchedule=Schedule()
+                setSchedule.set_todo(todo)
+                setSchedule.set_key(key)
+                setSchedule.set_user(user)
+                setSchedule.set_start_in_format(yearList[0],monthList[0],dayList[0],h[0],m[0])
+                setSchedule.set_end_in_format(yearList[len(yearList)-1],monthList[len(monthList)-1],dayList[len(dayList)-1],h[len(h)-1],m[len(m)-1])
+                setSchedule.insert()
+                fulfillment='已新增'
+                intent=0
+                operate=0
+            else:
+                fulfillment='請重新輸入'
+                intent=p_intent
+                operate=p_operate
         elif p_operate==2:
             # 刪除
             year,month,day,key,user,delAll,errorFlag=response_judge.cutSentence_del(p_sentence)
@@ -317,16 +329,18 @@ def Sentence(package):  #return bytearray
                 setSchedule.set_user(user)
                 setSchedule.deleteByRobot(delAll)
                 fulfillment='已刪除'
+                intent=0
+                operate=0
             else:
                 fulfillment='請重新輸入'
+                intent=p_intent
+                operate=p_operate
         elif p_operate==3:
             # 修改
             pass
         elif p_operate==4:
             # 查詢
             pass
-        intent=0
-        operate=0
     if p_intent==3:
         # 猜意圖
         pass
