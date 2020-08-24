@@ -224,7 +224,7 @@ def writeReceiptData():
     
     print("update receipt data success.")
 
-def getReceiptData():
+def readReceiptData():
     receiptData = dict()
     try:
         with open('receiptData.json', 'r') as fp:

@@ -68,8 +68,15 @@ def classifyPackage(package):
 
     elif packageType=='rec':
         print('receipt')
-        checkNumber=Crawl.receiptCrawler()
-        send_package=receiptSearch(checkNumber,package[3:])
+        checkNumber = Crawl.receiptCrawler()
+        send_package = receiptSearch(checkNumber,package[3:])
+        return send_package
+
+    elif packageType == "rqr":
+        print("receipt QR")
+        checkNumber = Crawl.readReceiptData()
+        
+        send_package = encodeReceiptQRPackage(checkNumber)
         return send_package
 
     elif packageType == 'log':
@@ -109,7 +116,6 @@ def encodeLoginMessage(userClass):
     
     return package
     
-
 def decodeLoginPackage(package):
     resultAccount = UserAccount()
     resultAccount.name = package[:20].decode('utf-8').split('\x00', 1)[0]
@@ -376,6 +382,18 @@ def encodeReceiptPackage(accountClass): # return bytearray
     #     print(i)
 
     return package
+
+def encodeReceiptQRPackage(checkNumber):
+    package, zero, DATE_SIZE, HIT_NUMBER_SIZE = 0, 0, 8, 15
+
+    for date, hitNumberList in checkNumber.items():
+        package = bytes("rqr", encoding="UTF-8")
+        package += bytes(date, encoding="UTF-8")
+        package += zero.to_bytes(DATE_SIZE - (len(date.encode("UTF-8"))), 'big')
+        for hitNumber in hitNumberList:
+            package += hitNumber.to_bytes(3, 'big')
+
+    return package    
 
 def receiptSearch(checkNumber,package):
     p_user=package[:20].decode('utf-8').split('\x00', 1)[0]
