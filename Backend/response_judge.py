@@ -414,7 +414,7 @@ def cutSentenceSchedule_add(sentence):
             todo+=word
     
     # 是否error
-    if len(dateName)==0 or (len(yearList)==0 and len(monthList)==0 and len(dayList)==0 and len(h)==0 and len(m)==0):
+    if len(date_name)==0 and (len(yearList)==0 and len(monthList)==0 and len(dayList)==0 and len(h)==0 and len(m)==0):
         errorFlag=True
     # start&end
     if len(dayList)>=2:
