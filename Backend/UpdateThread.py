@@ -11,6 +11,7 @@ class UpdateThread(threading.Thread):
         self.currentDay = 0
 
     def run(self):
+        Crawl.writeReceiptData()
         self.currentDay = dt.now().day
         updateInterval = 0
 
@@ -36,7 +37,7 @@ class UpdateThread(threading.Thread):
             print("server data updated.")
 
     def checkAccountInvoice(self):
-        receiptData = Crawl.getReceiptData()
+        receiptData = Crawl.readReceiptData()
 
         accountClass = Account()
         accountClass.select_all()

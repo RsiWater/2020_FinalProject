@@ -387,8 +387,9 @@ def encodeReceiptPackage(accountClass): # return bytearray
 def encodeReceiptQRPackage(checkNumber):
     package, zero, DATE_SIZE, HIT_NUMBER_SIZE = 0, 0, 8, 15
 
+    package = bytes("", encoding="UTF-8")
     for date, hitNumberList in checkNumber.items():
-        package = bytes("rqr", encoding="UTF-8")
+        package += bytes("rqr", encoding="UTF-8")
         package += bytes(date, encoding="UTF-8")
         package += zero.to_bytes(DATE_SIZE - (len(date.encode("UTF-8"))), 'big')
         currentHitNumberSize = 0

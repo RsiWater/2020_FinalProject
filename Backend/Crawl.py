@@ -175,7 +175,7 @@ def receiptCrawler():
         if i['href'].find(tstr)!=-1:
             web.append(i['href'])
             count=count+1
-        if count==1:
+        if count==2: 
             break
     # print(web)  #length=28
 
