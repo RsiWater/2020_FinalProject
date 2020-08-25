@@ -66,7 +66,7 @@ def classifyPackage(package):
         send_package=Sentence(package[3:])
         return send_package
 
-    elif packageType=='rec':
+    elif packageType == 'rec':
         print('receipt')
         checkNumber = Crawl.receiptCrawler()
         send_package = receiptSearch(checkNumber,package[3:])
@@ -255,7 +255,7 @@ def Sentence(package):  #return bytearray
     if p_intent==0:
         number=random.randint(0,1000)
         response=detect_texts('life-nxuajt',str(number),p_sentence,'zh-TW')
-        p_intent,p_operate=response_judge.judge(response)
+        p_intent,p_operate=response_judge.judge(response, p_sentence)
         fulfillment=response.query_result.fulfillment_text
     if p_intent==1:
         # 記帳
@@ -390,8 +390,13 @@ def encodeReceiptQRPackage(checkNumber):
         package = bytes("rqr", encoding="UTF-8")
         package += bytes(date, encoding="UTF-8")
         package += zero.to_bytes(DATE_SIZE - (len(date.encode("UTF-8"))), 'big')
+        currentHitNumberSize = 0
         for hitNumber in hitNumberList:
-            package += hitNumber.to_bytes(3, 'big')
+            package += bytes(hitNumber, encoding="UTF-8")
+            currentHitNumberSize += 3
+        while currentHitNumberSize < HIT_NUMBER_SIZE:
+            package += bytes("xxx", encoding="UTF-8")
+            currentHitNumberSize += 3
 
     return package    
 
