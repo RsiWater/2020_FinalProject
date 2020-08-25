@@ -349,7 +349,8 @@ def Sentence(package):  #return bytearray
             pass
     if p_intent==3:
         # 猜意圖
-        pass
+        intent=p_intent
+        operate=p_operate
 
     send_package=bytes("sen", encoding='UTF-8')
     send_package+=intent.to_bytes(4,'big')

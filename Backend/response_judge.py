@@ -10,12 +10,14 @@ def judge(response,sentence):
         intent=1
     elif response.query_result.intent.display_name=='request for schedule':
         intent=2
+    elif response.query_result.intent.display_name=='request for service':
+        intent=3
     else:
         intent=0
 
     if intent!=0:
         addScore,deleteScore,updateScore,searchScore,find=0,0,0,0,False
-        if response.query_result.fulfillment_text!='哪一項服務':
+        if response.query_result.fulfillment_text!='哪一項服務' and intent!=3:
             for i in range(len(origin)):
                 for j in origin[i]:
                     if response.query_result.fulfillment_text==j:
@@ -25,7 +27,7 @@ def judge(response,sentence):
                 if find==True:
                     break
         else:
-            jieba.add_word('後天',freq=None,tag=None)
+            jieba.add_word('記帳',freq=None,tag=None)
             words=jieba.cut(response.query_result.query_text,cut_all=True)
             for word in words:
                 for data in origin[0]:
