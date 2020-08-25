@@ -191,10 +191,12 @@ def receiptCrawler():
         # print(additional)
 
         subCheckNumber=[]
+        for i in range(2):
+            subCheckNumber.append(additional[i].text.split('、')[0].strip())
         for i in range(3):
-            subCheckNumber.append(firstPrize[i].text[5:8].strip())
+            subCheckNumber.append(firstPrize[i].text.strip())
         for i in additional[3].text.split('、'):
-            subCheckNumber.append(i.strip())
+            subCheckNumber.append("00000"+i.strip())
         year=int(str(int(w[23:28][:3])+1911)[2:4])
         subCheckNumber.append(year)
         if w[23:28][3]=='0':

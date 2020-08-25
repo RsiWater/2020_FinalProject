@@ -198,7 +198,7 @@ def encodeSchedulePackage(scheduleClass): # return bytearray
     package += scheduleClass.get_key().to_bytes(4,'big')
     package += bytes(scheduleClass.get_todo(), encoding='UTF-8')
     package += zero.to_bytes(todo_size - (len(scheduleClass.get_todo().encode('UTF-8'))), 'big')
-    package += scheduleClass.get_year().to_bytes(1, 'big')
+    package += scheduleClass.get_year().to_bytes(4, 'big')
     package += scheduleClass.get_month().to_bytes(1, 'big')
     package += scheduleClass.get_day().to_bytes(1, 'big')
     package += scheduleClass.get_start().to_bytes(4, 'big')
@@ -212,9 +212,9 @@ def decodeSchedulePackage(package): # return AccountClass
     
     resultSchedule = Schedule()
     
-    p_id, p_todo, p_year , p_month= int.from_bytes(package[:4], 'big'), package[4:40].decode('utf-8'), package[40], package[41]
-    p_day, p_start, p_end = package[42], int.from_bytes(package[43:47], 'big'), int.from_bytes(package[47:51], 'big')
-    p_user=package[52:71].decode('utf-8')
+    p_id, p_todo, p_year , p_month= int.from_bytes(package[:4], 'big'), package[4:40].decode('utf-8').split('\x00', 1)[0], int.from_bytes(package[40:44], 'big'), package[44]
+    p_day, p_start, p_end = package[45], int.from_bytes(package[46:50], 'big'), int.from_bytes(package[50:54], 'big')
+    p_user=package[54:74].decode('utf-8').split('\x00', 1)[0]
     
     resultSchedule.set_key(p_id)
     resultSchedule.set_todo(p_todo)
@@ -385,7 +385,7 @@ def encodeReceiptPackage(accountClass): # return bytearray
     return package
 
 def encodeReceiptQRPackage(checkNumber):
-    package, zero, DATE_SIZE, HIT_NUMBER_SIZE = 0, 0, 8, 15
+    package, zero, DATE_SIZE, HIT_NUMBER_SIZE = 0, 0, 8, 56
 
     package = bytes("", encoding="UTF-8")
     for date, hitNumberList in checkNumber.items():
@@ -395,10 +395,10 @@ def encodeReceiptQRPackage(checkNumber):
         currentHitNumberSize = 0
         for hitNumber in hitNumberList:
             package += bytes(hitNumber, encoding="UTF-8")
-            currentHitNumberSize += 3
+            currentHitNumberSize += 8
         while currentHitNumberSize < HIT_NUMBER_SIZE:
-            package += bytes("xxx", encoding="UTF-8")
-            currentHitNumberSize += 3
+            package += bytes("xxxxxxxx", encoding="UTF-8")
+            currentHitNumberSize += 8
 
     return package    
 
