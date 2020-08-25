@@ -100,8 +100,8 @@ def cutSentenceAccount(sentence):
     statusName=['收入','支出']
     date=['年','月','日','號']
     moneyName=['元','塊']
-    oneName=['新增','記帳','我','想','要','想要']
-    dateNameFlag,dateFlag,moneyFlag,statusFlag,errorFlag,mouseFlag,oneNameFlag=False,False,False,False,False,False,False
+    otherWords=['記帳','我','想','要','想要','新增','加','增加','加入','記','入']
+    dateNameFlag,dateFlag,moneyFlag,statusFlag,errorFlag,mouseFlag,otherWordsFlag=False,False,False,False,False,False,False
     date_name,year,month,day,item,detail,money,status,key,user='',0,0,0,'','',0,1,0,''
     time=datetime.datetime.now()
     data=[]
@@ -172,12 +172,17 @@ def cutSentenceAccount(sentence):
             if statusFlag==True:
                 statusFlag=False
                 continue
-            for j in oneName:
-                if i==j:
-                    oneNameFlag=True
-                    break
-            if oneNameFlag==True:
-                oneNameFlag=False
+            for j in otherWords:
+                if len(i)>=len(j):
+                    if i.find(j)!=-1:
+                        otherWordsFlag=True
+                        break
+                else:
+                    if j.find(i)!=-1:
+                        otherWordsFlag=True
+                        break
+            if otherWordsFlag==True:
+                otherWordsFlag=False
                 continue
             # 一段式
             detail+=i
@@ -312,9 +317,9 @@ def cutSentenceSchedule_add(sentence):
     dateName=['前天','昨天','今天','明天','後天']
     date=['年','月','日','號']
     timeName=['點','時','分','小時','天','上午','下午','中午','晚上','凌晨','早上','到','分到','整到','今天下午','天下','分鐘','半','整','後']
-    oneName=['新增','行程','我','想','要','想要','事情','提醒']
+    otherWords=['行程','我','想','要','想要','新增','加','增加','加入','記','入']
     data=[]
-    dateNameFlag,dateFlag,timeNameFlag,mouseFlag,errorFlag,oneNameFlag=False,False,False,False,False,False
+    dateNameFlag,dateFlag,timeNameFlag,mouseFlag,errorFlag,otherWordsFlag=False,False,False,False,False,False
     todo,key,user='',0,''
     date_name,h,m,yearList,monthList,dayList=[],[],[],[],[],[]
     day_difference,m_difference,h_difference,count=0,0,0,0
@@ -403,12 +408,17 @@ def cutSentenceSchedule_add(sentence):
             if timeNameFlag==True:
                 timeNameFlag=False
                 continue
-            for j in oneName:
-                if word==j:
-                    oneNameFlag=True
-                    break
-            if oneNameFlag==True:
-                oneNameFlag=False
+            for j in otherWords:
+                if len(word)>=len(j):
+                    if word.find(j)!=-1:
+                        otherWordsFlag=True
+                        break
+                else:
+                    if j.find(word)!=-1:
+                        otherWordsFlag=True
+                        break
+            if otherWordsFlag==True:
+                otherWordsFlag=False
                 continue
             # 一段式
             todo+=word
