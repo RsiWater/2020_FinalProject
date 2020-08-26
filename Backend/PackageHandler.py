@@ -192,7 +192,7 @@ def decodeAccountPackage(package): # return AccountClass
 
 def encodeSchedulePackage(scheduleClass): # return bytearray
 
-    package, zero, todo_size, userSize = 0, 0, 36, 20
+    package, zero, todo_size, operationCodeSize, userSize = 0, 0, 36, 1, 20
     
     package = bytes("sch", encoding='utf-8')
     package += scheduleClass.get_key().to_bytes(4,'big')
@@ -203,8 +203,9 @@ def encodeSchedulePackage(scheduleClass): # return bytearray
     package += scheduleClass.get_day().to_bytes(1, 'big')
     package += scheduleClass.get_start().to_bytes(4, 'big')
     package += scheduleClass.get_end().to_bytes(4, 'big')
-    package += bytes(scheduleClass.get_user,encoding='UTF-8')
-    package += zero.to_bytes(userSize - (len(scheduleClass.get_todo())), 'big')
+    package += scheduleClass.get_operaionCode().to_bytes(operationCodeSize, 'big')
+    package += bytes(scheduleClass.get_user(),encoding='UTF-8')
+    package += zero.to_bytes(userSize - (len(scheduleClass.get_user().encode("UTF-8"))), 'big')
 
     return package
 
@@ -214,7 +215,7 @@ def decodeSchedulePackage(package): # return AccountClass
     
     p_id, p_todo, p_year , p_month= int.from_bytes(package[:4], 'big'), package[4:40].decode('utf-8').split('\x00', 1)[0], int.from_bytes(package[40:44], 'big'), package[44]
     p_day, p_start, p_end = package[45], int.from_bytes(package[46:50], 'big'), int.from_bytes(package[50:54], 'big')
-    p_user=package[54:74].decode('utf-8').split('\x00', 1)[0]
+    p_operationCode, p_user = package[54], package[55:75].decode('utf-8').split('\x00', 1)[0]
     
     resultSchedule.set_key(p_id)
     resultSchedule.set_todo(p_todo)
@@ -223,6 +224,7 @@ def decodeSchedulePackage(package): # return AccountClass
     resultSchedule.set_day(p_day)
     resultSchedule.set_start(p_start)
     resultSchedule.set_end(p_end)
+    resultSchedule.set_operationCode(p_operationCode)
     resultSchedule.set_user(p_user)
 
     # update resultAccount
