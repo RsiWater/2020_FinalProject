@@ -3,7 +3,7 @@ import datetime
 import response_judge
 
 data=[]
-sentence='明天要打籃球'
+sentence='4月全部500元以上@a123#456'
 # scheduleAdd
 # 7月29日到7月30日爬山@a123#456
 # 7月29日下午4點20分到7月30日早上8點爬山@a123#456
@@ -37,7 +37,7 @@ for word in words:
     data.append(word)
 
 print(data)
-# print(response_judge.cutSentenceSchedule_add(sentence))
+print(response_judge.cutSentence_select(sentence))
 
     
     

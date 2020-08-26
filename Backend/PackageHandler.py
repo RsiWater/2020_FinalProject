@@ -283,14 +283,14 @@ def Sentence(package):  #return bytearray
                 operate=p_operate
         elif p_operate==2:
             # 刪除
-            year,month,day,key,user,delAll,errorFlag=response_judge.cutSentence_del(p_sentence)
+            year,month,day,key,user,timeDel,errorFlag=response_judge.cutSentence_del(p_sentence)
             if errorFlag==False:
                 setAccount=Account()
                 setAccount.set_year(year)
                 setAccount.set_month(month)
                 setAccount.set_day(day)
                 setAccount.set_user(user)
-                setAccount.deleteByRobot(delAll)
+                setAccount.deleteByRobot(timeDel)
                 fulfillment='已刪除'
                 intent=0
                 operate=0
@@ -303,7 +303,11 @@ def Sentence(package):  #return bytearray
             pass
         elif p_operate==4:
             # 查詢
-            pass
+            year,month,day,key,user,timeSelect,moneySelect,errorFlag,rangeJudge=response_judge.cutSentence_select(p_sentence)
+            if errorFlag==False:
+                pass
+            else:
+                pass
     if p_intent==2:
         # 行程
         if p_operate==1:
@@ -326,14 +330,14 @@ def Sentence(package):  #return bytearray
                 operate=p_operate
         elif p_operate==2:
             # 刪除
-            year,month,day,key,user,delAll,errorFlag=response_judge.cutSentence_del(p_sentence)
+            year,month,day,key,user,timeDel,errorFlag=response_judge.cutSentence_del(p_sentence)
             if errorFlag==False:
                 setSchedule=Schedule()
                 setSchedule.set_year(year)
                 setSchedule.set_month(month)
                 setSchedule.set_day(day)
                 setSchedule.set_user(user)
-                setSchedule.deleteByRobot(delAll)
+                setSchedule.deleteByRobot(timeDel)
                 fulfillment='已刪除'
                 intent=0
                 operate=0
@@ -346,7 +350,11 @@ def Sentence(package):  #return bytearray
             pass
         elif p_operate==4:
             # 查詢
-            pass
+            year,month,day,key,user,timeSelect,moneySelect,errorFlag,rangeJudge=response_judge.cutSentence_select(p_sentence)
+            if errorFlag==False:
+                pass
+            else:
+                pass
     if p_intent==3:
         # 猜意圖
         intent=p_intent
@@ -355,6 +363,7 @@ def Sentence(package):  #return bytearray
     send_package=bytes("sen", encoding='UTF-8')
     send_package+=intent.to_bytes(4,'big')
     send_package+=operate.to_bytes(4,'big')
+    # 分類
     send_package+=bytes(fulfillment ,encoding='UTF-8')
     send_package+=zero.to_bytes(fulfillment_size - (len(fulfillment.encode("UTF-8"))), 'big')
     return send_package
