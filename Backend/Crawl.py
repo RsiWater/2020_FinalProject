@@ -103,7 +103,7 @@ def writeData():
     buf_dictData = copy.deepcopy(dictData)
     crawlDone = False
 
-    while crawlDone == False:
+    while not crawlDone:
         crawlDone = True
         for key, value in dictData.items():
             if len(value) != WEATHER_DATA_LENGTH:
@@ -114,8 +114,10 @@ def writeData():
                     break
         if not crawlDone:
             buf_dictData = crawlWeather()
+            print("Crawl failed. restart crawling data. ")
         else:
-            print("Crawl failed.")
+            print("Crawl success.")
+                
 
     dictData["date"] = dt.now().day
     ret = json.dumps(dictData)
