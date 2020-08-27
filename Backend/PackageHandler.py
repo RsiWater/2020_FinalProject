@@ -332,8 +332,8 @@ def Sentence(package):  #return bytearray
                     selectData.set_key(data[9])
                     selectData.set_user(data[10])
                     select_package+=encodeAccountPackage(selectData)
-                intent=p_intent
-                operate=p_operate
+                intent=0
+                operate=0
             else:
                 select_package=bytes('',encoding='utf-8')
                 intent=p_intent
@@ -400,8 +400,8 @@ def Sentence(package):  #return bytearray
                     selectData.set_key(data[6])
                     selectData.set_user(data[7])
                     select_package+=encodeSchedulePackage(selectData)
-                intent=p_intent
-                operate=p_operate
+                intent=0
+                operate=0
             else:
                 select_package=bytes('',encoding='utf-8')
                 intent=p_intent
@@ -414,7 +414,7 @@ def Sentence(package):  #return bytearray
     send_package=bytes("sen", encoding='UTF-8')
     send_package+=intent.to_bytes(4,'big')
     send_package+=operate.to_bytes(4,'big')
-    if operate==4:
+    if select_package!=0:
         send_package+=select_package
     else:
         send_package+=bytes(fulfillment ,encoding='UTF-8')

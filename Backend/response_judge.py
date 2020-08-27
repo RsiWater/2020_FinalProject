@@ -947,7 +947,7 @@ def cutSentence_select(sentence):
             try:
                 if data[count]=='年':
                     year=int(word)
-                elif data[count]=='月':
+                elif data[count]=='月' or data[count]=='月份':
                     if year==0:
                         year=time.year
                         month=int(word)

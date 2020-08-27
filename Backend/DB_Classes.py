@@ -234,6 +234,7 @@ class Account:
         equalWords=['以']
         upWords=['上','大','多']
         downWords=['下','小','少']
+        data=[]
         equalFlag,upFlag,downFlag=False,False,False
 
         for word in equalWords:
@@ -328,15 +329,16 @@ class Account:
         
         self.findAll=data
     def selectByRobot(self,timeSelect):
+        data=[]
         if timeSelect==True:
             if self.year!=0 and self.month!=0 and self.day!=0:
-                data=self.con.execute('select * from schedule_record where 年={} and 月={} and 日={} and user="{}";'.format(self.year,self.month,self.day,self.user))
+                data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}";'.format(self.year,self.month,self.day,self.user))
             elif self.year!=0 and self.month!=0 and self.day==0:
-                data=self.con.execute('select * from schedule_record where 年={} and 月={} and user="{}";'.format(self.year,self.month,self.user))
+                data=self.con.execute('select * from record where 年={} and 月={} and user="{}";'.format(self.year,self.month,self.user))
             elif self.year!=0 and self.month==0 and self.day==0:
-                data=self.con.execute('select * from schedule_record where 年={} and user="{}";'.format(self.year,self.user))
+                data=self.con.execute('select * from record where 年={} and user="{}";'.format(self.year,self.user))
         else:
-            data=self.con.execute('select * from schedule_record where user="{}";'.format(self.user))
+            data=self.con.execute('select * from record where user="{}";'.format(self.user))
         
         self.findAll=data
                 
@@ -526,6 +528,7 @@ class Schedule:
                 self.con.execute('delete from schedule_record where 年={} and user="{}";'.format(self.year,self.user))
                 self.con.commit()
     def selectByRobot(self,timeSelect):
+        data=[]
         if timeSelect==True:
             if self.year!=0 and self.month!=0 and self.day!=0:
                 data=self.con.execute('select * from schedule_record where 年={} and 月={} and 日={} and user="{}";'.format(self.year,self.month,self.day,self.user))
