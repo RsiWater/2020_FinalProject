@@ -313,7 +313,10 @@ def Sentence(package):  #return bytearray
                 setAccount.set_day(day)
                 setAccount.set_user(user)
                 setAccount.set_money(money)
-                setAccount.selectByRobot(timeSelect,moneySelect,rangeJudge)
+                if moneySelect==True:
+                    setAccount.selectByRobot_money(timeSelect,rangeJudge)
+                else:
+                    setAccount.selectByRobot(timeSelect)
                 select_package=bytes('',encoding='utf-8')
                 selectData=Account()
                 for data in setAccount.findAll:

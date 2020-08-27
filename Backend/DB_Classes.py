@@ -230,166 +230,115 @@ class Account:
             elif self.year!=0 and self.month==0 and self.day==0:
                 self.con.execute('delete from record where 年={} and user="{}";'.format(self.year,self.user))
                 self.con.commit()
-    def selectByRobot(self,timeSelect,moneySelect,rangeJudge):
+    def selectByRobot_money(self,timeSelect,rangeJudge):
         equalWords=['以']
         upWords=['上','大','多']
         downWords=['下','小','少']
         equalFlag,upFlag,downFlag=False,False,False
+
+        for word in equalWords:
+            if len(rangeJudge)>=len(word):
+                if rangeJudge.find(word)!=-1:
+                    equalFlag=True
+                    break
+            else:
+                if word.find(rangeJudge)!=-1:
+                    equalFlag=True
+                    break
+        for word in upWords:
+            if len(rangeJudge)>=len(word):
+                if rangeJudge.find(word)!=-1:
+                    upFlag=True
+                    break
+            else:
+                if word.find(rangeJudge)!=-1:
+                    upFlag=True
+                    break
+        for word in downWords:
+            if len(rangeJudge)>=len(word):
+                if rangeJudge.find(word)!=-1:
+                    downFlag=True
+                    break
+            else:
+                if word.find(rangeJudge)!=-1:
+                    downFlag=True
+                    break
+
+
         if timeSelect==True:
-            if moneySelect==True:
-                for word in equalWords:
-                    if len(rangeJudge)>=len(word):
-                        if rangeJudge.find(word)!=-1:
-                            equalFlag=True
-                            break
-                    else:
-                        if word.find(rangeJudge)!=-1:
-                            equalFlag=True
-                            break
-                for word in upWords:
-                    if len(rangeJudge)>=len(word):
-                        if rangeJudge.find(word)!=-1:
-                            upFlag=True
-                            break
-                    else:
-                        if word.find(rangeJudge)!=-1:
-                            upFlag=True
-                            break
-                for word in downWords:
-                    if len(rangeJudge)>=len(word):
-                        if rangeJudge.find(word)!=-1:
-                            downFlag=True
-                            break
-                    else:
-                        if word.find(rangeJudge)!=-1:
-                            downFlag=True
-                            break
-                
-                if equalFlag==True:
-                    if upFlag==True and downFlag==False:
-                        if self.year!=0 and self.month!=0 and self.day!=0:
-                            data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}" and 金額>={};'.format(self.year,self.month,self.day,self.user,self.money))
-                            self.findAll=data
-                        elif self.year!=0 and self.month!=0 and self.day==0:
-                            data=self.con.execute('select * from record where 年={} and 月={} and user="{}" and 金額>={};'.format(self.year,self.month,self.user,self.money))
-                            self.findAll=data
-                        elif self.year!=0 and self.month==0 and self.day==0:
-                            data=self.con.execute('select * from record where 年={} and user="{}" and 金額>={};'.format(self.year,self.user,self.money))
-                            self.findAll=data
-                    elif upFlag==False and downFlag==True:
-                        if self.year!=0 and self.month!=0 and self.day!=0:
-                            data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}" and 金額<={};'.format(self.year,self.month,self.day,self.user,self.money))
-                            self.findAll=data
-                        elif self.year!=0 and self.month!=0 and self.day==0:
-                            data=self.con.execute('select * from record where 年={} and 月={} and user="{}" and 金額<={};'.format(self.year,self.month,self.user,self.money))
-                            self.findAll=data
-                        elif self.year!=0 and self.month==0 and self.day==0:
-                            data=self.con.execute('select * from record where 年={} and user="{}" and 金額<={};'.format(self.year,self.user,self.money))
-                            self.findAll=data
-                    else:
-                        if self.year!=0 and self.month!=0 and self.day!=0:
-                            data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}" and 金額={};'.format(self.year,self.month,self.day,self.user,self.money))
-                            self.findAll=data
-                        elif self.year!=0 and self.month!=0 and self.day==0:
-                            data=self.con.execute('select * from record where 年={} and 月={} and user="{}" and 金額={};'.format(self.year,self.month,self.user,self.money))
-                            self.findAll=data
-                        elif self.year!=0 and self.month==0 and self.day==0:
-                            data=self.con.execute('select * from record where 年={} and user="{}" and 金額={};'.format(self.year,self.user,self.money))
-                            self.findAll=data
+            if equalFlag==True:
+                if upFlag==True and downFlag==False:
+                    if self.year!=0 and self.month!=0 and self.day!=0:
+                        data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}" and 金額>={};'.format(self.year,self.month,self.day,self.user,self.money))
+                    elif self.year!=0 and self.month!=0 and self.day==0:
+                        data=self.con.execute('select * from record where 年={} and 月={} and user="{}" and 金額>={};'.format(self.year,self.month,self.user,self.money))
+                    elif self.year!=0 and self.month==0 and self.day==0:
+                        data=self.con.execute('select * from record where 年={} and user="{}" and 金額>={};'.format(self.year,self.user,self.money))
+                elif upFlag==False and downFlag==True:
+                    if self.year!=0 and self.month!=0 and self.day!=0:
+                        data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}" and 金額<={};'.format(self.year,self.month,self.day,self.user,self.money))
+                    elif self.year!=0 and self.month!=0 and self.day==0:
+                        data=self.con.execute('select * from record where 年={} and 月={} and user="{}" and 金額<={};'.format(self.year,self.month,self.user,self.money))
+                    elif self.year!=0 and self.month==0 and self.day==0:
+                        data=self.con.execute('select * from record where 年={} and user="{}" and 金額<={};'.format(self.year,self.user,self.money))
                 else:
-                    if upFlag==True and downFlag==False:
-                        if self.year!=0 and self.month!=0 and self.day!=0:
-                            data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}" and 金額>{};'.format(self.year,self.month,self.day,self.user,self.money))
-                            self.findAll=data
-                        elif self.year!=0 and self.month!=0 and self.day==0:
-                            data=self.con.execute('select * from record where 年={} and 月={} and user="{}" and 金額>{};'.format(self.year,self.month,self.user,self.money))
-                            self.findAll=data
-                        elif self.year!=0 and self.month==0 and self.day==0:
-                            data=self.con.execute('select * from record where 年={} and user="{}" and 金額>{};'.format(self.year,self.user,self.money))
-                            self.findAll=data
-                    elif upFlag==False and downFlag==True:
-                        if self.year!=0 and self.month!=0 and self.day!=0:
-                            data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}" and 金額<{};'.format(self.year,self.month,self.day,self.user,self.money))
-                            self.findAll=data
-                        elif self.year!=0 and self.month!=0 and self.day==0:
-                            data=self.con.execute('select * from record where 年={} and 月={} and user="{}" and 金額<{};'.format(self.year,self.month,self.user,self.money))
-                            self.findAll=data
-                        elif self.year!=0 and self.month==0 and self.day==0:
-                            data=self.con.execute('select * from record where 年={} and user="{}" and 金額<{};'.format(self.year,self.user,self.money))
-                            self.findAll=data
-                    else:
-                        if self.year!=0 and self.month!=0 and self.day!=0:
-                            data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}" and 金額={};'.format(self.year,self.month,self.day,self.user,self.money))
-                            self.findAll=data
-                        elif self.year!=0 and self.month!=0 and self.day==0:
-                            data=self.con.execute('select * from record where 年={} and 月={} and user="{}" and 金額={};'.format(self.year,self.month,self.user,self.money))
-                            self.findAll=data
-                        elif self.year!=0 and self.month==0 and self.day==0:
-                            data=self.con.execute('select * from record where 年={} and user="{}" and 金額={};'.format(self.year,self.user,self.money))
-                            self.findAll=data
+                    if self.year!=0 and self.month!=0 and self.day!=0:
+                        data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}" and 金額={};'.format(self.year,self.month,self.day,self.user,self.money))
+                    elif self.year!=0 and self.month!=0 and self.day==0:
+                        data=self.con.execute('select * from record where 年={} and 月={} and user="{}" and 金額={};'.format(self.year,self.month,self.user,self.money))
+                    elif self.year!=0 and self.month==0 and self.day==0:
+                        data=self.con.execute('select * from record where 年={} and user="{}" and 金額={};'.format(self.year,self.user,self.money))
             else:
-                if self.year!=0 and self.month!=0 and self.day!=0:
-                    data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}";'.format(self.year,self.month,self.day,self.user))
-                    self.findAll=data
-                elif self.year!=0 and self.month!=0 and self.day==0:
-                    data=self.con.execute('select * from record where 年={} and 月={} and user="{}";'.format(self.year,self.month,self.user))
-                    self.findAll=data
-                elif self.year!=0 and self.month==0 and self.day==0:
-                    data=self.con.execute('select * from record where 年={} and user="{}";'.format(self.year,self.user))
-                    self.findAll=data
+                if upFlag==True and downFlag==False:
+                    if self.year!=0 and self.month!=0 and self.day!=0:
+                        data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}" and 金額>{};'.format(self.year,self.month,self.day,self.user,self.money))
+                    elif self.year!=0 and self.month!=0 and self.day==0:
+                        data=self.con.execute('select * from record where 年={} and 月={} and user="{}" and 金額>{};'.format(self.year,self.month,self.user,self.money))
+                    elif self.year!=0 and self.month==0 and self.day==0:
+                        data=self.con.execute('select * from record where 年={} and user="{}" and 金額>{};'.format(self.year,self.user,self.money))
+                elif upFlag==False and downFlag==True:
+                    if self.year!=0 and self.month!=0 and self.day!=0:
+                        data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}" and 金額<{};'.format(self.year,self.month,self.day,self.user,self.money))
+                    elif self.year!=0 and self.month!=0 and self.day==0:
+                        data=self.con.execute('select * from record where 年={} and 月={} and user="{}" and 金額<{};'.format(self.year,self.month,self.user,self.money))
+                    elif self.year!=0 and self.month==0 and self.day==0:
+                        data=self.con.execute('select * from record where 年={} and user="{}" and 金額<{};'.format(self.year,self.user,self.money))
+                else:
+                    if self.year!=0 and self.month!=0 and self.day!=0:
+                        data=self.con.execute('select * from record where 年={} and 月={} and 日={} and user="{}" and 金額={};'.format(self.year,self.month,self.day,self.user,self.money))
+                    elif self.year!=0 and self.month!=0 and self.day==0:
+                        data=self.con.execute('select * from record where 年={} and 月={} and user="{}" and 金額={};'.format(self.year,self.month,self.user,self.money))
+                    elif self.year!=0 and self.month==0 and self.day==0:
+                        data=self.con.execute('select * from record where 年={} and user="{}" and 金額={};'.format(self.year,self.user,self.money))
         else:
-            if moneySelect==True:
-                for word in equalWords:
-                    if len(rangeJudge)>=len(word):
-                        if rangeJudge.find(word)!=-1:
-                            equalFlag=True
-                            break
-                    else:
-                        if word.find(rangeJudge)!=-1:
-                            equalFlag=True
-                            break
-                for word in upWords:
-                    if len(rangeJudge)>=len(word):
-                        if rangeJudge.find(word)!=-1:
-                            upFlag=True
-                            break
-                    else:
-                        if word.find(rangeJudge)!=-1:
-                            upFlag=True
-                            break
-                for word in downWords:
-                    if len(rangeJudge)>=len(word):
-                        if rangeJudge.find(word)!=-1:
-                            downFlag=True
-                            break
-                    else:
-                        if word.find(rangeJudge)!=-1:
-                            downFlag=True
-                            break
-                
-                if equalFlag==True:
-                    if upFlag==True and downFlag==False:
-                        data=self.con.execute('select * from record where user="{}" and 金額>={};'.format(self.user,self.money))
-                        self.findAll=data
-                    elif upFlag==False and downFlag==True:
-                        data=self.con.execute('select * from record where user="{}" and 金額<={};'.format(self.user,self.money))
-                        self.findAll=data
-                    else:
-                        data=self.con.execute('select * from record where user="{}" and 金額={};'.format(self.user,self.money))
-                        self.findAll=data
+            if equalFlag==True:
+                if upFlag==True and downFlag==False:
+                    data=self.con.execute('select * from record where user="{}" and 金額>={};'.format(self.user,self.money))
+                elif upFlag==False and downFlag==True:
+                    data=self.con.execute('select * from record where user="{}" and 金額<={};'.format(self.user,self.money))
                 else:
-                    if upFlag==True and downFlag==False:
-                        data=self.con.execute('select * from record where user="{}" and 金額>{};'.format(self.user,self.money))
-                        self.findAll=data
-                    elif upFlag==False and downFlag==True:
-                        data=self.con.execute('select * from record where user="{}" and 金額<{};'.format(self.user,self.money))
-                        self.findAll=data
-                    else:
-                        data=self.con.execute('select * from record where user="{}" and 金額={};'.format(self.user,self.money))
-                        self.findAll=data
+                    data=self.con.execute('select * from record where user="{}" and 金額={};'.format(self.user,self.money))
             else:
-                data=self.con.execute('select * from record where user="{}";'.format(self.user))
-                self.findAll=data
+                if upFlag==True and downFlag==False:
+                    data=self.con.execute('select * from record where user="{}" and 金額>{};'.format(self.user,self.money))
+                elif upFlag==False and downFlag==True:
+                    data=self.con.execute('select * from record where user="{}" and 金額<{};'.format(self.user,self.money))
+                else:
+                    data=self.con.execute('select * from record where user="{}" and 金額={};'.format(self.user,self.money))
+        
+        self.findAll=data
+    def selectByRobot(self,timeSelect):
+        if timeSelect==True:
+            if self.year!=0 and self.month!=0 and self.day!=0:
+                data=self.con.execute('select * from schedule_record where 年={} and 月={} and 日={} and user="{}";'.format(self.year,self.month,self.day,self.user))
+            elif self.year!=0 and self.month!=0 and self.day==0:
+                data=self.con.execute('select * from schedule_record where 年={} and 月={} and user="{}";'.format(self.year,self.month,self.user))
+            elif self.year!=0 and self.month==0 and self.day==0:
+                data=self.con.execute('select * from schedule_record where 年={} and user="{}";'.format(self.year,self.user))
+        else:
+            data=self.con.execute('select * from schedule_record where user="{}";'.format(self.user))
+        
+        self.findAll=data
                 
 
 
@@ -580,16 +529,14 @@ class Schedule:
         if timeSelect==True:
             if self.year!=0 and self.month!=0 and self.day!=0:
                 data=self.con.execute('select * from schedule_record where 年={} and 月={} and 日={} and user="{}";'.format(self.year,self.month,self.day,self.user))
-                self.findAll=data
             elif self.year!=0 and self.month!=0 and self.day==0:
                 data=self.con.execute('select * from schedule_record where 年={} and 月={} and user="{}";'.format(self.year,self.month,self.user))
-                self.findAll=data
             elif self.year!=0 and self.month==0 and self.day==0:
                 data=self.con.execute('select * from schedule_record where 年={} and user="{}";'.format(self.year,self.user))
-                self.findAll=data
         else:
             data=self.con.execute('select * from schedule_record where user="{}";'.format(self.user))
-            self.findAll=data
+            
+        self.findAll=data
 
 
 def dealWithDate(year, month, day):
