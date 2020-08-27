@@ -1040,7 +1040,7 @@ def cutSentence_select(sentence):
     if timeSelect==False and moneySelect==False and selectAll==False:
         errorFlag=True
     
-    return year,month,day,key,user,timeSelect,moneySelect,errorFlag,rangeJudge       
+    return year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge       
 
 
 

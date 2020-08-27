@@ -252,7 +252,7 @@ def encodeWeatherPackage(weatherClass):
 def Sentence(package):  #return bytearray
     fulfillment_size, zero = 90, 0
 
-    send_package,intent,operate,fulfillment=0,0,0,''
+    send_package,intent,operate,fulfillment,select_package=0,0,0,'',0
     p_intent,p_operate,p_sentence=int.from_bytes(package[:4], 'big'),int.from_bytes(package[4:8], 'big'),package[8:98].decode('utf-8').split('\x00', 1)[0]
     if p_intent==0:
         number=random.randint(0,1000)
@@ -305,11 +305,36 @@ def Sentence(package):  #return bytearray
             pass
         elif p_operate==4:
             # 查詢
-            year,month,day,key,user,timeSelect,moneySelect,errorFlag,rangeJudge=response_judge.cutSentence_select(p_sentence)
+            year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge=response_judge.cutSentence_select(p_sentence)
             if errorFlag==False:
-                pass
+                setAccount=Account()
+                setAccount.set_year(year)
+                setAccount.set_month(month)
+                setAccount.set_day(day)
+                setAccount.set_user(user)
+                setAccount.set_money(money)
+                setAccount.selectByRobot(timeSelect,moneySelect,rangeJudge)
+                select_package=bytes('',encoding='utf-8')
+                selectData=Account()
+                for data in setAccount.findAll:
+                    selectData.set_money(data[0])
+                    selectData.set_year(data[1])
+                    selectData.set_month(data[2])
+                    selectData.set_day(data[3])
+                    selectData.set_item(data[4])
+                    selectData.set_detail(data[5])
+                    selectData.set_receipt(data[6])
+                    selectData.set_note(data[7])
+                    selectData.set_status(data[8])
+                    selectData.set_key(data[9])
+                    selectData.set_user(data[10])
+                    select_package+=encodeAccountPackage(selectData)
+                intent=p_intent
+                operate=p_operate
             else:
-                pass
+                select_package=bytes('',encoding='utf-8')
+                intent=p_intent
+                operate=p_operate
     if p_intent==2:
         # 行程
         if p_operate==1:
@@ -352,11 +377,32 @@ def Sentence(package):  #return bytearray
             pass
         elif p_operate==4:
             # 查詢
-            year,month,day,key,user,timeSelect,moneySelect,errorFlag,rangeJudge=response_judge.cutSentence_select(p_sentence)
+            year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge=response_judge.cutSentence_select(p_sentence)
             if errorFlag==False:
-                pass
+                setSchedule=Schedule()
+                setSchedule.set_year(year)
+                setSchedule.set_month(month)
+                setSchedule.set_day(day)
+                setSchedule.set_user(user)
+                setSchedule.selectByRobot(timeSelect)
+                select_package=bytes('',encoding='utf-8')
+                selectData=Schedule()
+                for data in setSchedule.findAll:
+                    selectData.set_todo(data[0])
+                    selectData.set_year(data[1])
+                    selectData.set_month(data[2])
+                    selectData.set_day(data[3])
+                    selectData.set_start(data[4])
+                    selectData.set_end(data[5])
+                    selectData.set_key(data[6])
+                    selectData.set_user(data[7])
+                    select_package+=encodeSchedulePackage(selectData)
+                intent=p_intent
+                operate=p_operate
             else:
-                pass
+                select_package=bytes('',encoding='utf-8')
+                intent=p_intent
+                operate=p_operate
     if p_intent==3:
         # 猜意圖
         intent=p_intent
@@ -365,9 +411,11 @@ def Sentence(package):  #return bytearray
     send_package=bytes("sen", encoding='UTF-8')
     send_package+=intent.to_bytes(4,'big')
     send_package+=operate.to_bytes(4,'big')
-    # 分類
-    send_package+=bytes(fulfillment ,encoding='UTF-8')
-    send_package+=zero.to_bytes(fulfillment_size - (len(fulfillment.encode("UTF-8"))), 'big')
+    if operate==4:
+        send_package+=select_package
+    else:
+        send_package+=bytes(fulfillment ,encoding='UTF-8')
+        send_package+=zero.to_bytes(fulfillment_size - (len(fulfillment.encode("UTF-8"))), 'big')
     return send_package
 
 def encodeReceiptPackage(accountClass): # return bytearray
