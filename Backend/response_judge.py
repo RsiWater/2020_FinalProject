@@ -3,7 +3,7 @@ import datetime
 
 def judge(response,sentence):
     origin=[['新增','加','增加','加入','記','入'],['刪除','刪'],['修改','改'],['查詢','查','查看','看']]
-    timeName=['前天','昨天','今天','明天','後天','年','月','日','號','點','時','分','小時','天','上午','下午','中午','晚上','凌晨','早上','到','分到','整到','今天下午','天下','分鐘','半','整','後']
+    timeName=['前天','昨天','今天','明天','後天','年','月','日','號','點','時','分','小時','天','到','分到','整到','分鐘','半','整','後']
 
     intent,operate=0,0
     if response.query_result.intent.display_name=='request for account':
@@ -62,7 +62,8 @@ def judge(response,sentence):
             Score=[addScore,deleteScore,updateScore,searchScore]
             operate=Score.index(max(Score))+1
     else:
-        accountFlag,count,score=False,0,0
+        count,score=0,0
+        accountFlag=False
         cutwords=[]
         words=jieba.cut(sentence,cut_all=True)
         for word in words:
@@ -81,7 +82,7 @@ def judge(response,sentence):
                     if word==i:
                         score+=1
                         break
-            count+=1
+                count+=1
         
         if accountFlag==True:
             intent=1
