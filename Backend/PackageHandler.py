@@ -280,7 +280,7 @@ def Sentence(package):  #return bytearray
                 intent=0
                 operate=0
             else:
-                fulfillment='請重新輸入'
+                fulfillment=''
                 intent=p_intent
                 operate=p_operate
         elif p_operate==2:
@@ -297,7 +297,7 @@ def Sentence(package):  #return bytearray
                 intent=0
                 operate=0
             else:
-                fulfillment='請重新輸入'
+                fulfillment=''
                 intent=p_intent
                 operate=p_operate
         elif p_operate==3:
@@ -355,7 +355,7 @@ def Sentence(package):  #return bytearray
                 intent=0
                 operate=0
             else:
-                fulfillment='請重新輸入'
+                fulfillment=''
                 intent=p_intent
                 operate=p_operate
         elif p_operate==2:
@@ -372,7 +372,7 @@ def Sentence(package):  #return bytearray
                 intent=0
                 operate=0
             else:
-                fulfillment='請重新輸入'
+                fulfillment=''
                 intent=p_intent
                 operate=p_operate
         elif p_operate==3:
