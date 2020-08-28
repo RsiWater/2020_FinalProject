@@ -464,6 +464,7 @@ def encodeReceiptQRPackage(checkNumber):
 
     return package    
 
+# the function need to be fixed
 def receiptSearch(checkNumber,package):
     p_user=package[:20].decode('utf-8').split('\x00', 1)[0]
     checkAccount=Account()
