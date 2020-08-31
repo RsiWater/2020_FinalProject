@@ -83,9 +83,16 @@ def classifyPackage(package):
         print("login")        
         rcv_package = decodeLoginPackage(package[3:])
         
-        send_package = encodeLoginMessage(rcv_package)
+        send_package = encodeLoginPackage(rcv_package)
         return send_package
-    
+
+    elif packageType == 'reg':
+        print('reg')
+        rcv_package = decodeLoginPackage(package[3:])
+
+        send_package = encodeRegisterPackage(rcv_package)
+        return send_package
+
     else:
         print('none')
 
@@ -93,7 +100,7 @@ def classifyPackage(package):
     #     message = rcv_event.decode("UTF-8")
     #     print(message)
 
-def encodeLoginMessage(userClass):    
+def encodeLoginPackage(userClass):    
     zero, passSize, keySize = 0, 2, 64
 
     package = bytes("log", encoding="UTF-8")
@@ -110,6 +117,24 @@ def encodeLoginMessage(userClass):
             package += zero.to_bytes(keySize - (len("OK".encode('UTF-8'))), 'big')
         else:
             package += bytes(userClass.key, encoding="UTF-8")
+    else:
+        package += bytes("NO", encoding="UTF-8")
+        package += bytes(SHA256_encode("NULL"), encoding="UTF-8")
+    
+    return package
+
+def encodeRegisterPackage(userClass):    
+    zero, passSize, keySize = 0, 2, 64
+
+    package = bytes("reg", encoding="UTF-8")
+    checkPassAuthorization = False
+    
+    checkPassAuthorization = not userClass.checkName()
+            
+    if checkPassAuthorization:
+        userClass.insert()
+        package += bytes("OK", encoding="UTF-8")
+        package += bytes(userClass.key, encoding="UTF-8")
     else:
         package += bytes("NO", encoding="UTF-8")
         package += bytes(SHA256_encode("NULL"), encoding="UTF-8")

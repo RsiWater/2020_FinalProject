@@ -69,6 +69,21 @@ class UserAccount:
             break
         return ifExist
 
+    def checkName(self):
+        ifExist = False
+        data = self.con.execute('SELECT * FROM userAccount WHERE Name = "{}";'.format(self.name))
+        for ele in data:
+            ifExist = True
+            break
+        return ifExist    
+
+    def insert(self):
+        if (self.checkName()):
+            print("register account fail.")
+            return
+        self.con.execute('insert into userAccount(Name, Password)values("{}", "{}");'.format(self.name, self.password))
+        self.con.commit()
+
     def updateKey(self, key):
         self.con.execute("UPDATE userAccount SET key = ? WHERE Name = ?", (key, self.name))
         self.con.commit()
