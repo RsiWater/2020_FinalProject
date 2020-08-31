@@ -357,7 +357,7 @@ def Sentence(package):  #return bytearray
                 intent=0
                 operate=0
             else:
-                select_package=bytes('',encoding='utf-8')
+                select_package=bytes(operateName,encoding='utf-8')
                 intent=p_intent
                 operate=p_operate
     if p_intent==2:
