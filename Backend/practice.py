@@ -3,7 +3,7 @@ import datetime
 import response_judge
 
 data=[]
-sentence='8月份'
+sentence='7月份平均花了多少錢'
 # scheduleAdd
 # 7月29日到7月30日爬山@a123#456
 # 7月29日下午4點20分到7月30日早上8點爬山@a123#456

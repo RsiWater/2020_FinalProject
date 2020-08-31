@@ -930,15 +930,19 @@ def cutSentence_select(sentence):
     date=['年','月','日','號']
     moneyName=['元','塊']
     allName=['全部','全','全都','所有','現有']
+    operateWord=['平均','總共','總和','共','總額']
     data=[]
-    dateNameFlag,dateFlag,errorFlag,mouseFlag,moneyNameFlag,moneySelect,timeSelect,allNameFlag,selectAll=False,False,False,False,False,False,False,False,False
-    year,month,day,key,user,money,rangeJudge=0,0,0,0,'',0,''
+    dateNameFlag,dateFlag,errorFlag,mouseFlag,moneyNameFlag,moneySelect,timeSelect,allNameFlag,selectAll,operateWordFlag=False,False,False,False,False,False,False,False,False,False
+    year,month,day,key,user,money,rangeJudge,operateName=0,0,0,0,'',0,'',''
     count=0
     time=datetime.datetime.now()
 
     # jieba切詞
     jieba.add_word('後天',freq=None,tag=None)
     jieba.add_word('現有',freq=None,tag=None)
+    jieba.add_word('總共',freq=None,tag=None)
+    jieba.add_word('總和',freq=None,tag=None)
+    jieba.add_word('總額',freq=None,tag=None)
     words=jieba.cut(sentence,cut_all=True)
     for word in words:
         data.append(word)
@@ -1036,6 +1040,13 @@ def cutSentence_select(sentence):
                     break
             if allNameFlag==True:
                 allNameFlag=False
+                continue
+            for j in operateWord:
+                if word==j:
+                    operateWordFlag=True
+                    break
+            if operateWordFlag==True:
+                operateWordFlag=False
                 continue
             rangeJudge+=word
 
