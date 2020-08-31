@@ -12,12 +12,14 @@ def judge(response,sentence):
         intent=2
     elif response.query_result.intent.display_name=='request for service':
         intent=3
+    elif response.query_result.intent.display_name=='request for weather':
+        intent=4
     else:
         intent=0
 
-    if intent!=0:
+    if intent==1 or intent==2 or intent==3:
         addScore,deleteScore,updateScore,searchScore,find=0,0,0,0,False
-        if response.query_result.fulfillment_text!='哪一項服務' and intent!=3:
+        if response.query_result.fulfillment_text!='哪一項服務':
             for i in range(len(origin)):
                 for j in origin[i]:
                     if response.query_result.fulfillment_text==j:
@@ -61,6 +63,8 @@ def judge(response,sentence):
             
             Score=[addScore,deleteScore,updateScore,searchScore]
             operate=Score.index(max(Score))+1
+    elif intent==4:
+        operate=0
     else:
         count,score=0,0
         accountFlag=False

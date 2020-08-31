@@ -435,6 +435,10 @@ def Sentence(package):  #return bytearray
         # 猜意圖
         intent=p_intent
         operate=p_operate
+    if p_intent==4:
+        # 天氣
+        intent=p_intent
+        operate=p_operate
 
     send_package=bytes("sen", encoding='UTF-8')
     send_package+=intent.to_bytes(4,'big')
