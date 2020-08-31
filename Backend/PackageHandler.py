@@ -325,12 +325,9 @@ def Sentence(package):  #return bytearray
                 fulfillment=''
                 intent=p_intent
                 operate=p_operate
-        elif p_operate==3:
-            # 修改
-            pass
         elif p_operate==4:
             # 查詢
-            year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge=response_judge.cutSentence_select(p_sentence)
+            year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge,operateName=response_judge.cutSentence_select(p_sentence)
             if errorFlag==False:
                 setAccount=Account()
                 setAccount.set_year(year)
@@ -342,7 +339,7 @@ def Sentence(package):  #return bytearray
                     setAccount.selectByRobot_money(timeSelect,rangeJudge)
                 else:
                     setAccount.selectByRobot(timeSelect)
-                select_package=bytes('',encoding='utf-8')
+                select_package=bytes(operateName,encoding='utf-8')
                 selectData=Account()
                 for data in setAccount.findAll:
                     selectData.set_money(data[0])
@@ -400,12 +397,9 @@ def Sentence(package):  #return bytearray
                 fulfillment=''
                 intent=p_intent
                 operate=p_operate
-        elif p_operate==3:
-            # 修改
-            pass
         elif p_operate==4:
             # 查詢
-            year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge=response_judge.cutSentence_select(p_sentence)
+            year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge,operateName=response_judge.cutSentence_select(p_sentence)
             if errorFlag==False:
                 setSchedule=Schedule()
                 setSchedule.set_year(year)

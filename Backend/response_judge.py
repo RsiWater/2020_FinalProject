@@ -932,8 +932,8 @@ def cutSentence_select(sentence):
     allName=['全部','全','全都','所有','現有']
     operateWord=['平均','總共','總和','共','總額']
     data=[]
-    dateNameFlag,dateFlag,errorFlag,mouseFlag,moneyNameFlag,moneySelect,timeSelect,allNameFlag,selectAll,operateWordFlag=False,False,False,False,False,False,False,False,False,False
-    year,month,day,key,user,money,rangeJudge,operateName=0,0,0,0,'',0,'',''
+    dateNameFlag,dateFlag,errorFlag,mouseFlag,moneyNameFlag,moneySelect,timeSelect,allNameFlag,selectAll,operateWordFlag,avgFlag=False,False,False,False,False,False,False,False,False,False,False
+    year,month,day,key,user,money,rangeJudge,operateName=0,0,0,0,'',0,'','def'
     count=0
     time=datetime.datetime.now()
 
@@ -1044,6 +1044,11 @@ def cutSentence_select(sentence):
             for j in operateWord:
                 if word==j:
                     operateWordFlag=True
+                    if word=='平均':
+                        avgFlag=True
+                        operateName='avg'
+                    else:
+                        operateName='sum'
                     break
             if operateWordFlag==True:
                 operateWordFlag=False
@@ -1053,10 +1058,16 @@ def cutSentence_select(sentence):
     if year!=0 or month!=0 or day!=0:
         timeSelect=True
 
+    if avgFlag==True:
+        operateName='avg'
+
     if timeSelect==False and moneySelect==False and selectAll==False:
         errorFlag=True
     
-    return year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge       
+    if errorFlag==True and operateName!='def':
+        selectAll==True
+    
+    return year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge,operateName       
 
 
 
