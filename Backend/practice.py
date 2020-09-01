@@ -1,7 +1,7 @@
 import jieba
 import datetime
 import response_judge
-
+d={"20200506": ["03016191", "62474899", "33657726", "06142620", "66429962", "00000790"], "20200304": ["91911374", "08501338", "57161318", "23570653", "47332279", "00000519"]}
 data=[]
 sentence='7月份平均花了多少錢'
 # scheduleAdd
@@ -27,17 +27,23 @@ sentence='7月份平均花了多少錢'
 # 2020年@a123#456
 # 全部刪除@a123#456
 # 我要刪除@a123#456
-jieba.add_word('後天',freq=None,tag=None)
-jieba.add_word('小時',freq=None,tag=None)
-jieba.add_word('分鐘',freq=None,tag=None)
-jieba.add_word('現有',freq=None,tag=None)
-jieba.add_word('記帳',freq=None,tag=None)
-words=jieba.cut(sentence,cut_all=True)
-for word in words:
-    data.append(word)
+# jieba.add_word('後天',freq=None,tag=None)
+# jieba.add_word('小時',freq=None,tag=None)
+# jieba.add_word('分鐘',freq=None,tag=None)
+# jieba.add_word('現有',freq=None,tag=None)
+# jieba.add_word('記帳',freq=None,tag=None)
+# words=jieba.cut(sentence,cut_all=True)
+# for word in words:
+#     data.append(word)
 
-print(data)
+# print(data)
 # print(response_judge.cutSentence_select(sentence))
+
+
+key=list(d.keys())
+number=list(d.values())
+print(key[0])
+print(number[0])
 
     
     

@@ -68,8 +68,8 @@ def classifyPackage(package):
 
     elif packageType == 'rec':
         print('receipt')
-        checkNumber = Crawl.receiptCrawler()
-        send_package = receiptSearch(checkNumber,package[3:])
+        checkData = Crawl.readReceiptData()
+        send_package = receiptSearch(checkData,package[3:])
         return send_package
 
     elif packageType == "rqr":
@@ -446,22 +446,17 @@ def Sentence(package):  #return bytearray
 
 def encodeReceiptPackage(accountClass): # return bytearray
 
-    package, zero, itemSize, detailSize ,userSize = 0, 0, 18, 18, 20
+    package = bytes("", encoding="UTF-8")
+    zero, itemSize, detailSize ,receiptSize ,userSize = 0, 18, 18, 3, 20
     
-    package = bytes("rec", encoding='utf-8')
     package += accountClass.get_key().to_bytes(4, 'big')
     package += accountClass.get_money().to_bytes(4, 'big')
-    package += accountClass.get_year().to_bytes(1, 'big')
+    package += accountClass.get_year().to_bytes(4, 'big')
     package += accountClass.get_month().to_bytes(1, 'big')
     package += accountClass.get_day().to_bytes(1,'big')
-   
-    package += bytes(accountClass.get_item(), encoding = "UTF-8")
-    package += zero.to_bytes(itemSize - (len(accountClass.get_item().encode("UTF-8"))), 'big')
-    package += bytes(accountClass.get_detail(), encoding = "UTF-8")
-    package += zero.to_bytes(detailSize - (len(accountClass.get_detail()).encode("UTF-8")), 'big')
+    package += bytes(accountClass.get_receipt(), encoding = "UTF-8")
+    package += zero.to_bytes(receiptSize - (len(accountClass.get_receipt().encode('UTF-8'))), 'big')
     package += accountClass.get_status().to_bytes(1, 'big')
-    package += bytes(accountClass.get_user(),encoding='UTF-8')
-    package += zero.to_bytes(userSize - (len(accountClass.get_user())), 'big')
     
     # print(package)
     # for i in package:
@@ -487,33 +482,46 @@ def encodeReceiptQRPackage(checkNumber):
 
     return package    
 
-# the function need to be fixed
-def receiptSearch(checkNumber,package):
+def receiptSearch(checkData,package):
     p_user=package[:20].decode('utf-8').split('\x00', 1)[0]
     checkAccount=Account()
     checkAccount.set_user(p_user)
     checkAccount.select()
-    send_package=bytes('',encoding='utf-8')
+    send_package=bytes('rec',encoding='utf-8')
 
-    for i in checkNumber:
+    year,month=[],[]
+    keys=list(checkData.keys())
+    for i in range(len(keys)):
+        year.append(keys[i][:4])
+    for i in range(len(keys)):
+        if keys[i][4]=='0':
+            month.append(keys[i][5])
+        else:
+            month.append(keys[i][4:6])
+    numbers=list(checkData.values())
+    
+    hitAccount=Account()
+    for i in range(len(year)):
         for data in checkAccount.findAll:
-            if data[1]==i[len(i)-2]:
-                if data[2]==i[len(i)-1] or data[2]==i[len(i)-1]+1:
-                    for number in i[:len(i)-2]:
-                        if data[6]==number:
-                            checkAccount.set_money(data[0])
-                            checkAccount.set_year(data[1])
-                            checkAccount.set_month(data[2])
-                            checkAccount.set_day(data[3])
-                            checkAccount.set_item(data[4])
-                            checkAccount.set_detail(data[5])
-                            checkAccount.set_receipt(data[6])
-                            checkAccount.set_note(data[7])
-                            checkAccount.set_status(data[8])
-                            checkAccount.set_key(data[9])
-                            checkAccount.set_user(data[10])
-                            send_package+=encodeReceiptPackage(checkAccount)
-                            break
+            if data[1]==year[i]:
+                if data[2]==month[i] or data[2]==month[i]+1:
+                    for j in range(len(numbers[i])):
+                        if data[6]==number[i][j][5:8]:
+                            hitAccount.set_money(data[0])
+                            hitAccount.set_year(data[1])
+                            hitAccount.set_month(data[2])
+                            hitAccount.set_day(data[3])
+                            hitAccount.set_item(data[4])
+                            hitAccount.set_detail(data[5])
+                            hitAccount.set_receipt(data[6])
+                            hitAccount.set_note(data[7])
+                            hitAccount.set_status(data[8])
+                            hitAccount.set_key(data[9])
+                            hitAccount.set_user(data[10])
+                            s='#'+str(j)+'#'
+                            send_package+=bytes(s,encoding='utf-8')
+                            send_package+=encodeReceiptPackage(hitAccount)
+
     return send_package
 
 def SHA256_encode(mes):
