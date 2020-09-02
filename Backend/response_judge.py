@@ -1,5 +1,6 @@
 import jieba
 import datetime
+import json
 
 def judge(response,sentence):
     origin=[['新增','加','增加','加入','記','入'],['刪除','刪'],['修改','改'],['查詢','查','查看','看']]
@@ -235,7 +236,7 @@ def cutSentenceAccount(sentence):
         
         # 判斷細項
         if len(detail)!=0:
-            item=classifyDetail(detail)
+            item=classifyDetail(detail,user)
         else:
             detail='花費'
             item='其他雜項'
@@ -245,54 +246,63 @@ def cutSentenceAccount(sentence):
         return year,month,day,item,detail,money,status,key,user,errorFlag
 
 
-def classifyDetail(detail):
-    leisure=['上','去','游泳','健身房','遊樂園','展覽','電影','館','點卡','點數','遊戲','玩具','模型','球','漫畫','看']
-    transportation=['車','車票','火車','高鐵','坐','搭','公車','交通','運輸','捷運','加','油','大眾']
-    learn=['書','講義','補習','教材','課','上','看']
-    health=['病','醫','療','護','健康','保健','藥','看']
-    assurance=['保','保險','險','股票','股','賣']
-    food=['吃','喝','吃飯','飲料','飯','早餐','午餐','晚餐','餐','宵夜','點心','水','酒','食','餐廳','上','菜','肉','蛋','豆','魚']
+def classifyDetail(detail,user):
+    # leisure=['游泳','健身房','遊樂園','展覽','電影','點卡','點數','遊戲','玩具','模型','球','漫畫']
+    # transportation=['車','車票','火車','高鐵','坐','搭','公車','交通','運輸','捷運','大眾']
+    # learn=['書','講義','補習','教材','課']
+    # health=['病','醫','療','護','健康','保健','藥']
+    # assurance=['保','保險','險','股票','股']
+    # food=['吃','喝','吃飯','飲料','飯','早餐','午餐','晚餐','餐','宵夜','點心','水','酒','食','餐廳']
     otherScore,leisureScore,transportationScore,learnScore,healthScore,assuranceScore,foodScore=0,0,0,0,0,0,0
     item=''
+    detailBoard=dict()
+
+    f=user+'.json'
+    try:
+        with open(f,'r') as fp:
+            detailBoard=json.load(fp)
+    except:
+        with open('detail_default.json','r') as fp:
+            detailBoard=json.load(fp)
 
     words=jieba.cut(detail,cut_all=False)
     for word in words:
-        for data in leisure:
+        for data in detailBoard['leisure']:
             if len(word)>=len(data):
                 if word.find(data)!=-1:
                     leisureScore+=1
             else:
                 if data.find(word)!=-1:
                     leisureScore+=1
-        for data in transportation:
+        for data in detailBoard['transportation']:
             if len(word)>=len(data):
                 if word.find(data)!=-1:
                     transportationScore+=1
             else:
                 if data.find(word)!=-1:
                     transportationScore+=1
-        for data in learn:
+        for data in detailBoard['learn']:
             if len(word)>=len(data):
                 if word.find(data)!=-1:
                     learnScore+=1
             else:
                 if data.find(word)!=-1:
                     learnScore+=1
-        for data in health:
+        for data in detailBoard['health']:
             if len(word)>=len(data):
                 if word.find(data)!=-1:
                     healthScore+=1
             else:
                 if data.find(word)!=-1:
                     healthScore+=1
-        for data in assurance:
+        for data in detailBoard['assurance']:
             if len(word)>=len(data):
                 if word.find(data)!=-1:
                     assuranceScore+=1
             else:
                 if data.find(word)!=-1:
                     assuranceScore+=1
-        for data in food:
+        for data in detailBoard['food']:
             if len(word)>=len(data):
                 if word.find(data)!=-1:
                     foodScore+=1

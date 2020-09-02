@@ -1,5 +1,6 @@
 import random
 import sqlite3
+import json
 
 class Weather:
     def __init__(self):
@@ -162,8 +163,51 @@ class Account:
                 self.delete()
             print("delete success.")
         elif self.operationCode == 2: # 修改
+            stableDetail=['游泳','健身房','遊樂園','展覽','電影','點卡','點數','遊戲','玩具','模型','球','漫畫','車','車票','火車','高鐵','坐','搭','公車','交通','運輸','捷運','大眾','書','講義','補習','教材','課','病','醫','療','護','健康','保健','藥','保','保險','險','股票','股','吃','喝','吃飯','飲料','飯','早餐','午餐','晚餐','餐','宵夜','點心','水','酒','食','餐廳']
+            stableFlag,findFlag=False,False
+            userDetailBoard=dict()
+
             self.delete()
             self.insert()
+
+            self.selectForDetail()
+            for i in stableDetail:
+                if len(self.findAll[0][5])>=len(i):
+                    if self.findAll[0][5].find(i)!=-1:
+                        stableFlag=True
+                        break
+                else:
+                    if i.find(findAll[0][5])!=-1:
+                        stableFlag=True
+                        break
+            if stableFlag!=True:
+                f=self.get_user+'.json'
+                try:
+                    with open(f,'r') as fp:
+                        userDetailBoard=json.load(fp)
+                    keyName=list(userDetailBoard.keys())
+                    for key in keyName:
+                        for i in userDetailBoard[key]:
+                            if findAll[0][5]==i:
+                                if findAll[0][4]==key:
+                                    findFlag=True
+                                    break
+                                else:
+                                    userDetailBoard[key].remove(i)
+                                    userDetailBoard[findAll[0][4]].append(i)
+                                    findFlag=True
+                                    break
+                        if findFlag==True:
+                            break
+                    if findFlag==False:
+                        userDetailBoard[findAll[0][4]].append(findAll[0][5])
+                    
+                    changeUserDetailBoard = json.dumps(userDetailBoard)
+                    with open(f,'w') as fp:
+                        fp.write(changeUserDetailBoard)
+                except:
+                    print('no file!')
+
             print("modify success.")
         elif self.operationCode == 3: # 查詢
             # when id = 0, database select all of record rather than select by user.
@@ -221,6 +265,9 @@ class Account:
         data = self.con.execute('SELECT * from record')
         self.findAll = data
         print("select all success")
+    def selectForDetail(self):
+        data=self.con.execute('select * from record where user="{}" and id={};'.format(self.user,self.key))
+        self.findAll=data
     def checkKey(self):
         ifExist = False
         data = self.con.execute('SELECT * FROM record WHERE id = {}'.format(self.key))
