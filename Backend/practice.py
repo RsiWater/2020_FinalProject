@@ -40,10 +40,11 @@ sentence='7月份平均花了多少錢'
 # print(response_judge.cutSentence_select(sentence))
 
 
-key=list(d.keys())
-number=list(d.values())
-print(key[0])
-print(number[0])
+# key=list(d.keys())
+# number=list(d.values())
+d['20200506'].remove('03016191')
+print(d.values())
+# print(number[0])
 
     
     
