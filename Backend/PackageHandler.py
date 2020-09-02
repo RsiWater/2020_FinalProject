@@ -89,6 +89,7 @@ def classifyPackage(package):
     elif packageType == 'reg':
         print('reg')
         rcv_package = decodeLoginPackage(package[3:])
+        generateNewJson(rcv_package)
 
         send_package = encodeRegisterPackage(rcv_package)
         return send_package
@@ -447,13 +448,15 @@ def Sentence(package):  #return bytearray
 def encodeReceiptPackage(accountClass): # return bytearray
 
     package = bytes("", encoding="UTF-8")
-    zero, itemSize, detailSize ,receiptSize ,userSize = 0, 18, 18, 3, 20
+    zero, detailSize ,receiptSize = 0, 18, 3
     
     package += accountClass.get_key().to_bytes(4, 'big')
     package += accountClass.get_money().to_bytes(4, 'big')
     package += accountClass.get_year().to_bytes(4, 'big')
     package += accountClass.get_month().to_bytes(1, 'big')
     package += accountClass.get_day().to_bytes(1,'big')
+    package += bytes(accountClass.get_detail(), encoding = "UTF-8")
+    package += zero.to_bytes(detailSize - (len(accountClass.get_detail().encode('UTF-8'))), 'big')
     package += bytes(accountClass.get_receipt(), encoding = "UTF-8")
     package += zero.to_bytes(receiptSize - (len(accountClass.get_receipt().encode('UTF-8'))), 'big')
     package += accountClass.get_status().to_bytes(1, 'big')
@@ -523,6 +526,18 @@ def receiptSearch(checkData,package):
                             send_package+=encodeReceiptPackage(hitAccount)
 
     return send_package
+
+def generateNewJson(rcvUserAccount):
+    fileName = rcvUserAccount.name = ".json"
+    try:
+        with open(fileName, 'r') as fp:
+            print("Error! There has already a json file for this user!")
+    except IOError:
+        with open (fileName, 'w') as fp:
+            fp.write("")
+    except Exception:
+        print("Error! unexcepted error has occurred.")
+        print(Exception)
 
 def SHA256_encode(mes):
     s = hashlib.sha256()
