@@ -190,7 +190,7 @@ class Account:
                 folderDir = "../userTrainingData/"
                 f=self.get_user+'.json'
                 try:
-                    with open(f,'r') as fp:
+                    with open(os.path.join(scriptDir, folderDir + f),'r') as fp:
                         userDetailBoard=json.load(fp)
                     keyName=list(userDetailBoard.keys())
                     for key in keyName:
