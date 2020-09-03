@@ -247,15 +247,10 @@ def cutSentenceAccount(sentence):
 
 
 def classifyDetail(detail,user):
-    # leisure=['游泳','健身房','遊樂園','展覽','電影','點卡','點數','遊戲','玩具','模型','球','漫畫']
-    # transportation=['車','車票','火車','高鐵','坐','搭','公車','交通','運輸','捷運','大眾']
-    # learn=['書','講義','補習','教材','課']
-    # health=['病','醫','療','護','健康','保健','藥']
-    # assurance=['保','保險','險','股票','股']
-    # food=['吃','喝','吃飯','飲料','飯','早餐','午餐','晚餐','餐','宵夜','點心','水','酒','食','餐廳']
-    otherScore,leisureScore,transportationScore,learnScore,healthScore,assuranceScore,foodScore=0,0,0,0,0,0,0
+    score,check,maxScore=0,0,0
+    allZeroFlag=False
     item=''
-    detailBoard=dict()
+    detailBoard,scoreBoard=dict(),dict()
 
     f=user+'.json'
     try:
@@ -264,67 +259,38 @@ def classifyDetail(detail,user):
     except:
         with open('detail_default.json','r') as fp:
             detailBoard=json.load(fp)
+    keyName=list(detailBoard.keys())
 
     words=jieba.cut(detail,cut_all=False)
     for word in words:
-        for data in detailBoard['leisure']:
-            if len(word)>=len(data):
-                if word.find(data)!=-1:
-                    leisureScore+=1
-            else:
-                if data.find(word)!=-1:
-                    leisureScore+=1
-        for data in detailBoard['transportation']:
-            if len(word)>=len(data):
-                if word.find(data)!=-1:
-                    transportationScore+=1
-            else:
-                if data.find(word)!=-1:
-                    transportationScore+=1
-        for data in detailBoard['learn']:
-            if len(word)>=len(data):
-                if word.find(data)!=-1:
-                    learnScore+=1
-            else:
-                if data.find(word)!=-1:
-                    learnScore+=1
-        for data in detailBoard['health']:
-            if len(word)>=len(data):
-                if word.find(data)!=-1:
-                    healthScore+=1
-            else:
-                if data.find(word)!=-1:
-                    healthScore+=1
-        for data in detailBoard['assurance']:
-            if len(word)>=len(data):
-                if word.find(data)!=-1:
-                    assuranceScore+=1
-            else:
-                if data.find(word)!=-1:
-                    assuranceScore+=1
-        for data in detailBoard['food']:
-            if len(word)>=len(data):
-                if word.find(data)!=-1:
-                    foodScore+=1
-            else:
-                if data.find(word)!=-1:
-                    foodScore+=1
-        
-    Score=[otherScore,leisureScore,transportationScore,learnScore,healthScore,assuranceScore,foodScore]
-    if Score.index(max(Score))==0:
+        for key in keyName:
+            for data in detailBoard[key]:
+                if len(word)>=len(data):
+                    check=word.find(data)
+                else:
+                    check=data.find(word)
+                if check!=-1:
+                    score+=1
+            try:
+                scoreBoard[key]+=score
+            except:
+                scoreBoard.setdefault(key,score)
+            score=0
+    
+    for key in keyName:
+        if scoreBoard[key]==0:
+            allZeroFlag=True
+        else:
+            allZeroFlag=False
+            break
+    if allZeroFlag==False:
+        for key in keyName:
+            if scoreBoard[key]>maxScore:
+                maxScore=scoreBoard[key]
+                item=key
+    else:
         item='其他雜項'
-    elif Score.index(max(Score))==1:
-        item='休閒娛樂'
-    elif Score.index(max(Score))==2:
-        item='行車交通'
-    elif Score.index(max(Score))==3:
-        item='進修學習'
-    elif Score.index(max(Score))==4:
-        item='醫療保健'
-    elif Score.index(max(Score))==5:
-        item='金融保險'
-    elif Score.index(max(Score))==6:
-        item='食品酒水'
+        
     return item
 
 
