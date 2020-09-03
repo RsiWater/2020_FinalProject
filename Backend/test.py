@@ -19,7 +19,7 @@ import os
 test = "a123"
 
 scriptDir = os.path.dirname(__file__)
-dirP = "userTrainingData/"
+dirP = "../userTrainingData/"
 filePath = dirP + test + ".json"
 
 tempList = ["a123.json"]

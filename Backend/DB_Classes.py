@@ -1,6 +1,7 @@
 import random
 import sqlite3
 import json
+import os
 
 class Weather:
     def __init__(self):
@@ -185,6 +186,8 @@ class Account:
                     stableFlag=True
                     break
             if stableFlag!=True:
+                scriptDir = os.path.dirname(__file__)
+                folderDir = "../userTrainingData/"
                 f=self.get_user+'.json'
                 try:
                     with open(f,'r') as fp:
@@ -218,7 +221,7 @@ class Account:
                             userDetailBoard.setdefault(self.findAll[0][4],[self.findAll[0][5]])
                     
                     changeUserDetailBoard=json.dumps(userDetailBoard)
-                    with open(f,'w') as fp:
+                    with open(os.path.join(scriptDir, folderDir + f),'w') as fp:
                         fp.write(changeUserDetailBoard)
                 except:
                     print('no file!')
