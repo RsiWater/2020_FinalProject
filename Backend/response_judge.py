@@ -1,6 +1,7 @@
 import jieba
 import datetime
 import json
+import os
 
 def judge(response,sentence):
     origin=[['新增','加','增加','加入','記','入'],['刪除','刪'],['修改','改'],['查詢','查','查看','看']]
@@ -252,12 +253,15 @@ def classifyDetail(detail,user):
     item=''
     detailBoard,scoreBoard=dict(),dict()
 
+    scriptDir = os.path.dirname(__file__)
+    folderDir = "../userTrainingData/"
     f=user+'.json'
+
     try:
-        with open(f,'r') as fp:
+        with open(os.path.join(scriptDir, folderDir + f),'r') as fp:
             detailBoard=json.load(fp)
     except:
-        with open('detail_default.json','r') as fp:
+        with open(os.path.join(scriptDir, folderDir + 'detail_default.json','r')) as fp:
             detailBoard=json.load(fp)
     keyName=list(detailBoard.keys())
 
