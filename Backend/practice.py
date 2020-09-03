@@ -5,6 +5,8 @@ d={"20200506": ["03016191", "62474899", "33657726", "06142620", "66429962", "000
 score={'apple':1,'banana':2}
 data=[]
 sentence='7月份平均花了多少錢'
+detail='打籃球'
+print(response_judge.classifyDetail(detail,'1'))
 # scheduleAdd
 # 7月29日到7月30日爬山@a123#456
 # 7月29日下午4點20分到7月30日早上8點爬山@a123#456
@@ -47,8 +49,8 @@ sentence='7月份平均花了多少錢'
 # d.setdefault('20200708',['2'])
 # d['20200708'].append('3')
 # print(d['20200708'][1])
-score['cookie']+=1
-print(score['apple'])
+# score['cookie']+=1
+# print(score['apple'])
 
 
     
