@@ -2,6 +2,7 @@ import jieba
 import datetime
 import response_judge
 d={"20200506": ["03016191", "62474899", "33657726", "06142620", "66429962", "00000790"], "20200304": ["91911374", "08501338", "57161318", "23570653", "47332279", "00000519"]}
+score={'apple':1,'banana':2}
 data=[]
 sentence='7月份平均花了多少錢'
 # scheduleAdd
@@ -42,9 +43,13 @@ sentence='7月份平均花了多少錢'
 
 # key=list(d.keys())
 # number=list(d.values())
-d['20200506'].remove('03016191')
-print(d.values())
-# print(number[0])
+# d['20200506'].remove('03016191')
+# d.setdefault('20200708',['2'])
+# d['20200708'].append('3')
+# print(d['20200708'][1])
+score['cookie']+=1
+print(score['apple'])
+
 
     
     
