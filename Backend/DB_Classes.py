@@ -190,7 +190,7 @@ class Account:
                 folderDir = "../userTrainingData/"
                 f=self.get_user+'.json'
                 try:
-                    with open(os.path.join(scriptDir, folderDir + f),'r') as fp:
+                    with open(os.path.join(scriptDir, folderDir + f),'r',encoding='utf-8') as fp:
                         userDetailBoard=json.load(fp)
                     keyName=list(userDetailBoard.keys())
                     for key in keyName:
@@ -221,7 +221,7 @@ class Account:
                             userDetailBoard.setdefault(self.findAll[0][4],[self.findAll[0][5]])
                     
                     changeUserDetailBoard=json.dumps(userDetailBoard)
-                    with open(os.path.join(scriptDir, folderDir + f),'w') as fp:
+                    with open(os.path.join(scriptDir, folderDir + f),'w',encoding='utf-8') as fp:
                         fp.write(changeUserDetailBoard)
                 except:
                     print('no file!')

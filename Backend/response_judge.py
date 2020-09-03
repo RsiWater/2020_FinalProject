@@ -248,7 +248,8 @@ def cutSentenceAccount(sentence):
 
 
 def classifyDetail(detail,user):
-    score,check,maxScore=0,0,0
+    check=0
+    score,maxScore=0.0,0.0
     allZeroFlag=False
     item=''
     detailBoard,scoreBoard=dict(),dict()
@@ -258,10 +259,10 @@ def classifyDetail(detail,user):
     f=user+'.json'
 
     try:
-        with open(os.path.join(scriptDir, folderDir + f),'r') as fp:
+        with open(os.path.join(scriptDir, folderDir + f),'r',encoding='utf-8') as fp:
             detailBoard=json.load(fp)
     except:
-        with open(os.path.join(scriptDir, folderDir + 'detail_default.json','r')) as fp:
+        with open(os.path.join(scriptDir, folderDir + 'detail_default.json'),'r',encoding='utf-8') as fp:
             detailBoard=json.load(fp)
     keyName=list(detailBoard.keys())
 
@@ -274,15 +275,15 @@ def classifyDetail(detail,user):
                 else:
                     check=data.find(word)
                 if check!=-1:
-                    score+=1
+                    score+=(len(word)/len(data))
             try:
                 scoreBoard[key]+=score
             except:
                 scoreBoard.setdefault(key,score)
-            score=0
+            score=0.0
     
     for key in keyName:
-        if scoreBoard[key]==0:
+        if scoreBoard[key]==0.0:
             allZeroFlag=True
         else:
             allZeroFlag=False
