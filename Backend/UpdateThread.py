@@ -3,6 +3,7 @@ import time
 import Crawl
 import DB_Classes
 import os
+import json
 from datetime import datetime as dt
 from DB_Classes import *
 
@@ -85,13 +86,15 @@ class UpdateThread(threading.Thread):
             else:
                 print("User: " + accountData[0] + " does not exist. Recreating the user's training data.")
                 with open(os.path.join(scriptDir, folderDir + accountFileName), 'w') as fp:
-                    fp.write("")
+                    defaultContent = json.load(fp)
+                    fp.write(json.dumps(defaultContent))
+    
+        fileNameList.remove("detail_default.json")
 
-            
         for fileName in fileNameList:
             print(fileName + " is redundant. Deleting the file.")
             os.remove(os.path.join(scriptDir, folderDir + fileName))
-            
+                
         print("The operation of checking user training data has completed. ")        
             
 
