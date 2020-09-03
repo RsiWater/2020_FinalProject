@@ -1,6 +1,8 @@
 import threading
 import time
 import Crawl
+import DB_Classes
+import os
 from datetime import datetime as dt
 from DB_Classes import *
 
@@ -17,7 +19,11 @@ class UpdateThread(threading.Thread):
 
         print("Update Thread ready.")
 
+        print("Start checking weather data.")
         Crawl.checkDate()
+        print("Weather data updated.")
+
+        self.checkUserTrainingData()
 
         while True:
             if dt.now().minute > self.updateClockAtMinute:
@@ -58,6 +64,35 @@ class UpdateThread(threading.Thread):
                         break
         
         return hitList
+
+    def checkUserTrainingData(self):
+        scriptDir = os.path.dirname(__file__)
+        folderDir = "../userTrainingData/"
+
+        userAccountClass = DB_Classes.UserAccount()
+        accoutDataList = userAccountClass.selectAll()
+
+        print("Start checking user training data.")
+
+        relFilePath = os.path.join(scriptDir, folderDir)
+        fileNameList = os.listdir(relFilePath)
+
+        for accountData in accoutDataList:
+            accountFileName = accountData[0] + ".json"
+            if accountFileName in fileNameList:
+                print("User: " + accountData[0] + " Exists.")
+                fileNameList.remove(accountFileName)
+            else:
+                print("User: " + accountData[0] + " does not exist. Recreating the user's training data.")
+                with open(os.path.join(scriptDir, folderDir + accountFileName), 'w') as fp:
+                    fp.write("")
+
+            
+        for fileName in fileNameList:
+            print(fileName + " is redundant. Deleting the file.")
+            os.remove(os.path.join(scriptDir, folderDir + fileName))
+            
+        print("The operation of checking user training data has completed. ")        
             
 
 

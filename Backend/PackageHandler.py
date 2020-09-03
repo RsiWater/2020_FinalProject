@@ -3,6 +3,7 @@ from dialogflow_f import *
 import Crawl
 import response_judge
 import hashlib
+import os
 
 def classifyPackage(package):
     packageType = package[:3].decode("utf-8")
@@ -485,6 +486,7 @@ def encodeReceiptQRPackage(checkNumber):
 
     return package    
 
+# dropped.
 def receiptSearch(checkData,package):
     p_user=package[:20].decode('utf-8').split('\x00', 1)[0]
     checkAccount=Account()
@@ -509,7 +511,7 @@ def receiptSearch(checkData,package):
             if data[1]==year[i]:
                 if data[2]==month[i] or data[2]==month[i]+1:
                     for j in range(len(numbers[i])):
-                        if data[6]==number[i][j][5:8]:
+                        if data[6]==numbers[i][j][5:8]:
                             hitAccount.set_money(data[0])
                             hitAccount.set_year(data[1])
                             hitAccount.set_month(data[2])
@@ -528,13 +530,16 @@ def receiptSearch(checkData,package):
     return send_package
 
 def generateNewJson(rcvUserAccount):
-    fileName = rcvUserAccount.name = ".json"
+    scriptDir = os.path.dirname(__file__)
+    dir = "../userTrainingData/"
+    filePath = dir + rcvUserAccount.name + ".json"
     try:
-        with open(fileName, 'r') as fp:
+        with open(os.path.join(scriptDir, filePath), 'r') as fp:
             print("Error! There has already a json file for this user!")
     except IOError:
-        with open (fileName, 'w') as fp:
+        with open(os.path.join(scriptDir, filePath), 'w') as fp:
             fp.write("")
+        print("The operation of creating user: " + rcvUserAccount.name + " has completed.")
     except Exception:
         print("Error! unexcepted error has occurred.")
         print(Exception)

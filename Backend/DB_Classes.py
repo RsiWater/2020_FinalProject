@@ -89,6 +89,10 @@ class UserAccount:
         self.con.execute("UPDATE userAccount SET key = ? WHERE Name = ?", (key, self.name))
         self.con.commit()
 
+    def selectAll(self):
+        data = self.con.execute("SELECT * FROM userAccount")
+        return data
+
 class Account:
     item,detail,receipt,note,dbfile,query,user='','','','','','',''
     year,month,day,money,status,key,con,selectnum,operationCode=0,0,0,0,0,0,0,0,0
