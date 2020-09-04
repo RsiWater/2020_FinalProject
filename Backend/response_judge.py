@@ -102,6 +102,68 @@ def judge(response,sentence):
 
     return intent,operate
 
+def originJudge(response):
+    origin=[['新增','加','增加','加入','記','入'],['刪除','刪'],['修改','改'],['查詢','查','查看','看']]
+    originIntent,originOperate=0,0
+
+    if response.query_result.intent.display_name=='request for account':
+        originIntent=1
+    elif response.query_result.intent.display_name=='request for schedule':
+        originIntent=2
+    elif response.query_result.intent.display_name=='request for service':
+        originIntent=3
+    elif response.query_result.intent.display_name=='request for weather':
+        originIntent=4
+
+    if originIntent==1 or originIntent==2 or originIntent==3:
+        addScore,deleteScore,updateScore,searchScore,find=0,0,0,0,False
+        if response.query_result.fulfillment_text!='哪一項服務':
+            for i in range(len(origin)):
+                for j in origin[i]:
+                    if response.query_result.fulfillment_text==j:
+                        originOperate=i+1
+                        find=True
+                        break
+                if find==True:
+                    break
+        else:
+            jieba.add_word('記帳',freq=None,tag=None)
+            words=jieba.cut(response.query_result.query_text,cut_all=True)
+            for word in words:
+                for data in origin[0]:
+                    if len(word)>=len(data):
+                        if word.find(data)!=-1:
+                            addScore+=1
+                    else:
+                        if data.find(word)!=-1:
+                            addScore+=1
+                for data in origin[1]:
+                    if len(word)>=len(data):
+                        if word.find(data)!=-1:
+                            deleteScore+=1
+                    else:
+                        if data.find(word)!=-1:
+                            deleteScore+=1
+                for data in origin[2]:
+                    if len(word)>=len(data):
+                        if word.find(data)!=-1:
+                            updateScore+=1
+                    else:
+                        if data.find(word)!=-1:
+                            updateScore+=1
+                for data in origin[3]:
+                    if len(word)>=len(data):
+                        if word.find(data)!=-1:
+                            searchScore+=1
+                    else:
+                        if data.find(word)!=-1:
+                            searchScore+=1
+            
+            Score=[addScore,deleteScore,updateScore,searchScore]
+            originOperate=Score.index(max(Score))+1
+    
+    return originIntent,originOperate
+
 def cutSentenceAccount(sentence):
     dateName=['前天','昨天','今天','明天','後天']
     statusName=['收入','支出']
@@ -1046,7 +1108,7 @@ def cutSentence_select(sentence):
         errorFlag=True
     
     if errorFlag==True and operateName!='def':
-        selectAll==True
+        errorFlag=False
     
     return year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge,operateName
 
