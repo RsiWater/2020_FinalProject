@@ -433,8 +433,15 @@ def Sentence(package):  #return bytearray
         operate=p_operate
     if p_intent==4:
         # 天氣
-        intent=p_intent
-        operate=p_operate
+        errorFlag,distance=response_judge.cutSentence_weather(p_sentence)
+        if errorFlag==False:
+            fulfillment=str(distance)
+            intent=p_intent
+            operate=p_operate
+        else:
+            fulfillment='無法查詢'
+            intent=0
+            operate=0
 
     send_package=bytes("sen", encoding='UTF-8')
     send_package+=intent.to_bytes(4,'big')

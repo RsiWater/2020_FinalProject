@@ -1048,7 +1048,90 @@ def cutSentence_select(sentence):
     if errorFlag==True and operateName!='def':
         selectAll==True
     
-    return year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge,operateName       
+    return year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge,operateName
+
+def cutSentence_weather(sentence):
+    dateName=['今天','明天','後天']
+    date=['年','月','日','號']
+    data=[]
+    dateNameFlag,dateFlag,errorFlag,mouseFlag=False,False,False,False
+    year,month,day,key,user=0,0,0,0,''
+    count,distance=0,0
+    time=datetime.datetime.now()
+
+    # jieba切詞
+    jieba.add_word('後天',freq=None,tag=None)
+    words=jieba.cut(sentence,cut_all=True)
+    for word in words:
+        data.append(word)
+
+    # 剔除不要的文字，留下時間、key、user
+    for word in data:
+        count=count+1   #計算詞的位置
+        try:
+            print(int(word))
+            try:
+                if data[count]=='年':
+                    year=int(word)
+                elif data[count]=='月':
+                    if year==0:
+                        year=time.year
+                    month=int(word)
+                elif data[count]=='日' or data[count]=='號' or data[count-2]=='月':
+                    if year==0 and month==0:
+                        year=time.year
+                        month=time.month
+                    elif year!=0 and month==0:
+                        month=time.month
+                    elif year==0 and month!=0:
+                        year=time.year
+                    day=int(word)
+            except:
+                key=int(word)
+        except:
+            if word=='@':
+                mouseFlag=True
+                continue
+            if word=='#':
+                continue
+            if mouseFlag==True:
+                user=word
+                mouseFlag=False
+                continue
+
+            for j in dateName:
+                if word==j:
+                    if word=='今天':
+                        year=time.year
+                        month=time.month
+                        day=time.day
+                    elif word=='明天':
+                        year=time.year
+                        month=time.month
+                        day=time.day+1
+                    elif word=='後天':
+                        year=time.year
+                        month=time.month
+                        day=time.day+2
+                    dateNameFlag=True
+                    break
+            if dateNameFlag==True:
+                dateNameFlag=False
+                continue
+            for j in date:
+                if word==j:
+                    dateFlag=True
+                    break
+            if dateFlag==True:
+                dateFlag=False
+                continue
+
+    distance=day-time.day
+    if (year==0 and month==0 and day==0) or (year!=time.year) or (month!=time.month) or (distance<0 or distance>6):
+        errorFlag=True
+    
+    return errorFlag,distance
+
 
 
 
