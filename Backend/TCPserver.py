@@ -17,11 +17,11 @@ addr = (hostname,port)
 srv = socket.socket() #建立一個socket
 srv.bind(addr)
 srv.listen(5)
-print("Waitting the connection.")
 
 updateThread = UpdateThread()
 updateThread.start()
 
+print("Waitting the connection.")
 while True:
     connect_socket, client_addr = srv.accept()
     print(client_addr)

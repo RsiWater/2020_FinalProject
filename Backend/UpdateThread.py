@@ -18,11 +18,13 @@ class UpdateThread(threading.Thread):
         self.currentDay = dt.now().day
         updateInterval = 0
 
-        print("Update Thread ready.")
+        print("Update Thread starting.")
 
         print("Start checking weather data.")
         Crawl.checkDate()
         print("Weather data updated.")
+
+        print("Update operation has already completed..")
 
         self.checkUserTrainingData()
 
@@ -86,8 +88,9 @@ class UpdateThread(threading.Thread):
             else:
                 print("User: " + accountData[0] + " does not exist. Recreating the user's training data.")
                 with open(os.path.join(scriptDir, folderDir + accountFileName), 'w') as fp:
-                    defaultContent = json.load(fp)
-                    fp.write(json.dumps(defaultContent))
+                    dfp = open(os.path.join(scriptDir, folderDir + "detail_default.json"), 'r', encoding = "UTF-8")
+                    tempDict = json.load(dfp)
+                    fp.write(json.dumps(tempDict))
     
         fileNameList.remove("detail_default.json")
 

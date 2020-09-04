@@ -540,12 +540,17 @@ def generateNewJson(rcvUserAccount):
     scriptDir = os.path.dirname(__file__)
     dir = "../userTrainingData/"
     filePath = dir + rcvUserAccount.name + ".json"
+    defaultFilePath = dir + "detail_default.json"
+
     try:
         with open(os.path.join(scriptDir, filePath), 'r') as fp:
             print("Error! There has already a json file for this user!")
     except IOError:
         with open(os.path.join(scriptDir, filePath), 'w') as fp:
-            fp.write("")
+            dfp = open(os.path.join(scriptDir, defaultFilePath), 'r', encoding = "UTF-8")
+
+            tempDict = json.load(dfp)
+            fp.write(json.dump(tempDict))
         print("The operation of creating user: " + rcvUserAccount.name + " has completed.")
     except Exception:
         print("Error! unexcepted error has occurred.")
