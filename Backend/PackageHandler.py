@@ -281,9 +281,11 @@ def Sentence(package):  #return bytearray
 
     send_package,intent,operate,fulfillment,select_package=0,0,0,'',0
     p_intent,p_operate,p_sentence=int.from_bytes(package[:4], 'big'),int.from_bytes(package[4:8], 'big'),package[8:98].decode('utf-8').split('\x00', 1)[0]
+    number=random.randint(0,1000)
+    response=detect_texts('life-nxuajt',str(number),p_sentence,'zh-TW')
+    originIntent,originOperate=response_judge.originJudge(response)
+
     if p_intent==0:
-        number=random.randint(0,1000)
-        response=detect_texts('life-nxuajt',str(number),p_sentence,'zh-TW')
         p_intent,p_operate=response_judge.judge(response, p_sentence)
         fulfillment=response.query_result.fulfillment_text
     if p_intent==1:
@@ -308,8 +310,8 @@ def Sentence(package):  #return bytearray
                 operate=0
             else:
                 fulfillment=''
-                intent=p_intent
-                operate=p_operate
+                intent=originIntent
+                operate=originOperate
         elif p_operate==2:
             # 刪除
             year,month,day,key,user,timeDel,errorFlag=response_judge.cutSentence_del(p_sentence)
@@ -325,8 +327,8 @@ def Sentence(package):  #return bytearray
                 operate=0
             else:
                 fulfillment=''
-                intent=p_intent
-                operate=p_operate
+                intent=originIntent
+                operate=originOperate
         elif p_operate==4:
             # 查詢
             year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge,operateName=response_judge.cutSentence_select(p_sentence)
@@ -360,8 +362,8 @@ def Sentence(package):  #return bytearray
                 operate=0
             else:
                 select_package=bytes(operateName,encoding='utf-8')
-                intent=p_intent
-                operate=p_operate
+                intent=originIntent
+                operate=originOperate
     if p_intent==2:
         # 行程
         if p_operate==1:
@@ -380,8 +382,8 @@ def Sentence(package):  #return bytearray
                 operate=0
             else:
                 fulfillment=''
-                intent=p_intent
-                operate=p_operate
+                intent=originIntent
+                operate=originOperate
         elif p_operate==2:
             # 刪除
             year,month,day,key,user,timeDel,errorFlag=response_judge.cutSentence_del(p_sentence)
@@ -397,8 +399,8 @@ def Sentence(package):  #return bytearray
                 operate=0
             else:
                 fulfillment=''
-                intent=p_intent
-                operate=p_operate
+                intent=originIntent
+                operate=originOperate
         elif p_operate==4:
             # 查詢
             year,month,day,key,user,money,timeSelect,moneySelect,errorFlag,rangeJudge,operateName=response_judge.cutSentence_select(p_sentence)
@@ -425,8 +427,8 @@ def Sentence(package):  #return bytearray
                 operate=0
             else:
                 select_package=bytes('',encoding='utf-8')
-                intent=p_intent
-                operate=p_operate
+                intent=originIntent
+                operate=originOperate
     if p_intent==3:
         # 猜意圖
         intent=p_intent
