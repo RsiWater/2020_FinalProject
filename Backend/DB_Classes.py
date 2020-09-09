@@ -172,16 +172,19 @@ class Account:
             stableFlag,findFlag=False,False
             check=0
             userDetailBoard=dict()
+            findData=[]
 
             self.delete()
             self.insert()
 
             self.selectForDetail()
+            for data in self.findAll:
+                findData=data
             for i in stableDetail:
-                if len(self.findAll[0][5])>=len(i):
-                    check=self.findAll[0][5].find(i)
+                if len(findData[5])>=len(i):
+                    check=findData[5].find(i)
                 else:
-                    check=i.find(self.findAll[0][5])
+                    check=i.find(findData[5])
                 if check!=-1:
                     stableFlag=True
                     break
@@ -195,30 +198,30 @@ class Account:
                     keyName=list(userDetailBoard.keys())
                     for key in keyName:
                         for i in userDetailBoard[key]:
-                            if len(self.findAll[0][5])>=len(i):
-                                check=self.findAll[0][5].find(i)
+                            if len(findData[5])>=len(i):
+                                check=findData[5].find(i)
                             else:
-                                check=i.find(self.findAll[0][5])
+                                check=i.find(findData[5])
 
                             if check!=-1:
-                                if self.findAll[0][4]==key:
+                                if findData[4]==key:
                                     findFlag=True
                                     break
                                 else:
                                     userDetailBoard[key].remove(i)
                                     try:
-                                        userDetailBoard[self.findAll[0][4]].append(self.findAll[0][5])
+                                        userDetailBoard[findData[4]].append(findData[5])
                                     except:
-                                        userDetailBoard.setdefault(self.findAll[0][4],[self.findAll[0][5]])
+                                        userDetailBoard.setdefault(findData[4],[findData[5]])
                                     findFlag=True
                                     break  
                         if findFlag==True:
                             break
                     if findFlag==False:
                         try:
-                            userDetailBoard[self.findAll[0][4]].append(self.findAll[0][5])
+                            userDetailBoard[findData[4]].append(findData[5])
                         except:
-                            userDetailBoard.setdefault(self.findAll[0][4],[self.findAll[0][5]])
+                            userDetailBoard.setdefault(findData[4],[findData[5]])
                     
                     changeUserDetailBoard=json.dumps(userDetailBoard)
                     with open(os.path.join(scriptDir, folderDir + f),'w',encoding='utf-8') as fp:
