@@ -340,7 +340,16 @@ def classifyDetail(detail,user):
     
     scoreTable=vector.vector_model(data,query)
     print(scoreTable)
-    item=keyName[scoreTable.index(max(scoreTable))]
+    for score in scoreTable:
+        if score==0.0:
+            allZeroFlag=True
+        else:
+            allZeroFlag=False
+            break
+    if allZeroFlag==True:
+        item='其他雜項'
+    else:
+        item=keyName[scoreTable.index(max(scoreTable))]
 
     # words=jieba.cut(detail,cut_all=False)
     # for word in words:
@@ -1132,7 +1141,7 @@ def cutSentence_weather(sentence):
     data=[]
     dateNameFlag,dateFlag,errorFlag,mouseFlag=False,False,False,False
     year,month,day,key,user=0,0,0,0,''
-    count,distance=0,0
+    count=0
     time=datetime.datetime.now()
 
     # jieba切詞
@@ -1202,11 +1211,18 @@ def cutSentence_weather(sentence):
                 dateFlag=False
                 continue
 
-    distance=day-time.day
-    if (year==0 and month==0 and day==0) or (year!=time.year) or (month!=time.month) or (distance<0 or distance>6):
+    if year==0 and month==0 and day==0:
+        year=time.year
+        month=time.month
+        day=time.day
+    
+    start_date=datetime.date(time.year,time.month,time.day)
+    end_date=datetime.date(year,month,day)
+    distance=end_date-start_date
+    if distance.days<0 or distance.days>6:
         errorFlag=True
     
-    return errorFlag,distance
+    return errorFlag,distance.days
 
 
 
