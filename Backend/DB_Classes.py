@@ -191,7 +191,7 @@ class Account:
             if stableFlag!=True:
                 scriptDir = os.path.dirname(__file__)
                 folderDir = "../userTrainingData/"
-                f=self.get_user+'.json'
+                f=self.get_user()+'.json'
                 try:
                     with open(os.path.join(scriptDir, folderDir + f),'r',encoding='utf-8') as fp:
                         userDetailBoard=json.load(fp)

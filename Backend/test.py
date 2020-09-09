@@ -20,11 +20,12 @@ test = "a123"
 
 scriptDir = os.path.dirname(__file__)
 dirP = "../userTrainingData/"
-filePath = dirP + test + ".json"
+filePath = test + ".json"
 
-tempList = ["a123.json"]
+# tempList = ["a123.json"]
 
-for fileName in os.listdir(os.path.join(scriptDir, dirP)):
-    if fileName in tempList:
-        print("wow!!")
-    print(fileName)
+with open(os.path.join(scriptDir, dirP + filePath),'r',encoding='utf-8') as fp:
+    print("~~~")
+    userDetailBoard=json.load(fp)
+    print("!!!")
+print("...")

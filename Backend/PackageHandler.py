@@ -552,7 +552,7 @@ def generateNewJson(rcvUserAccount):
             dfp = open(os.path.join(scriptDir, defaultFilePath), 'r', encoding = "UTF-8")
 
             tempDict = json.load(dfp)
-            fp.write(json.dump(tempDict))
+            fp.write(json.dumps(tempDict))
         print("The operation of creating user: " + rcvUserAccount.name + " has completed.")
     except Exception:
         print("Error! unexcepted error has occurred.")
