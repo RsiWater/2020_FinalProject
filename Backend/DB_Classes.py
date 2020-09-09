@@ -159,6 +159,12 @@ class Account:
     def operateAction(self):
         if self.operationCode == 0: # 新增
             self.insert()
+
+            self.selectForDetail()
+            for data in self.findAll:
+                findData=data
+            self.renewDetailBoard(findData)
+            
             print("insert success.")
         elif self.operationCode == 1: # 刪除
             # When id = 0, database delete by user rather than id.
@@ -168,66 +174,13 @@ class Account:
                 self.delete()
             print("delete success.")
         elif self.operationCode == 2: # 修改
-            stableDetail=['游泳','健身房','遊樂園','展覽','電影','點卡','點數','遊戲','玩具','模型','球','漫畫','車','車票','火車','高鐵','坐','搭','公車','交通','運輸','捷運','大眾','書','講義','補習','教材','課','病','醫','療','護','健康','保健','藥','保','保險','險','股票','股','吃','喝','吃飯','飲料','飯','早餐','午餐','晚餐','餐','宵夜','點心','水','酒','食','餐廳']
-            stableFlag,findFlag=False,False
-            check=0
-            userDetailBoard=dict()
-            findData=[]
-
             self.delete()
             self.insert()
 
             self.selectForDetail()
             for data in self.findAll:
                 findData=data
-            for i in stableDetail:
-                if len(findData[5])>=len(i):
-                    check=findData[5].find(i)
-                else:
-                    check=i.find(findData[5])
-                if check!=-1:
-                    stableFlag=True
-                    break
-            if stableFlag!=True:
-                scriptDir = os.path.dirname(__file__)
-                folderDir = "../userTrainingData/"
-                f=self.get_user()+'.json'
-                try:
-                    with open(os.path.join(scriptDir, folderDir + f),'r',encoding='utf-8') as fp:
-                        userDetailBoard=json.load(fp)
-                    keyName=list(userDetailBoard.keys())
-                    for key in keyName:
-                        for i in userDetailBoard[key]:
-                            if len(findData[5])>=len(i):
-                                check=findData[5].find(i)
-                            else:
-                                check=i.find(findData[5])
-
-                            if check!=-1:
-                                if findData[4]==key:
-                                    findFlag=True
-                                    break
-                                else:
-                                    userDetailBoard[key].remove(i)
-                                    try:
-                                        userDetailBoard[findData[4]].append(findData[5])
-                                    except:
-                                        userDetailBoard.setdefault(findData[4],[findData[5]])
-                                    findFlag=True
-                                    break  
-                        if findFlag==True:
-                            break
-                    if findFlag==False:
-                        try:
-                            userDetailBoard[findData[4]].append(findData[5])
-                        except:
-                            userDetailBoard.setdefault(findData[4],[findData[5]])
-                    
-                    changeUserDetailBoard=json.dumps(userDetailBoard)
-                    with open(os.path.join(scriptDir, folderDir + f),'w',encoding='utf-8') as fp:
-                        fp.write(changeUserDetailBoard)
-                except:
-                    print('no file!')
+            self.renewDetailBoard(findData)
 
             print("modify success.")
         elif self.operationCode == 3: # 查詢
@@ -424,9 +377,62 @@ class Account:
             data=self.con.execute('select * from record where user="{}";'.format(self.user))
         
         self.findAll=data
+    def renewDetailBoard(self,findData):
+        stableDetail=['游泳','健身房','遊樂園','展覽','電影','點卡','點數','遊戲','玩具','模型','球','漫畫','車','車票','火車','高鐵','坐','搭','公車','交通','運輸','捷運','大眾','書','講義','補習','教材','課','病','醫','療','護','健康','保健','藥','保','保險','險','股票','股','吃','喝','吃飯','飲料','飯','早餐','午餐','晚餐','餐','宵夜','點心','水','酒','食','餐廳']
+        stableFlag,findFlag=False,False
+        userDetailBoard=dict()
+
+        for i in stableDetail:
+            if len(findData[5])>=len(i):
+                check=findData[5].find(i)
+            else:
+                check=i.find(findData[5])
+            if check!=-1:
+                stableFlag=True
+                break
+        if stableFlag!=True:
+            scriptDir = os.path.dirname(__file__)
+            folderDir = "../userTrainingData/"
+            f=self.get_user()+'.json'
+            try:
+                with open(os.path.join(scriptDir, folderDir + f),'r',encoding='utf-8') as fp:
+                    userDetailBoard=json.load(fp)
+                keyName=list(userDetailBoard.keys())
+                for key in keyName:
+                    for i in userDetailBoard[key]:
+                        if len(findData[5])>=len(i):
+                            check=findData[5].find(i)
+                        else:
+                            check=i.find(findData[5])
+
+                        if check!=-1:
+                            if findData[4]==key:
+                                findFlag=True
+                                break
+                            else:
+                                userDetailBoard[key].remove(i)
+                                try:
+                                    userDetailBoard[findData[4]].append(findData[5])
+                                except:
+                                    userDetailBoard.setdefault(findData[4],[findData[5]])
+                                findFlag=True
+                                break  
+                    if findFlag==True:
+                        break
+                if findFlag==False:
+                    try:
+                        userDetailBoard[findData[4]].append(findData[5])
+                    except:
+                        userDetailBoard.setdefault(findData[4],[findData[5]])
                 
+                changeUserDetailBoard=json.dumps(userDetailBoard)
+                with open(os.path.join(scriptDir, folderDir + f),'w',encoding='utf-8') as fp:
+                    fp.write(changeUserDetailBoard)
+            except:
+                print('no file!')
 
 
+                
 class Schedule:
     todo,dbfile,query,user='','','',''
     year,month,day,con,key,operationCode=0,0,0,0,0,0
