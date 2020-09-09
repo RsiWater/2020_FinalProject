@@ -284,10 +284,10 @@ def Sentence(package):  #return bytearray
     number=random.randint(0,1000)
     response=detect_texts('life-nxuajt',str(number),p_sentence,'zh-TW')
     originIntent,originOperate=response_judge.originJudge(response)
+    fulfillment=response.query_result.fulfillment_text
 
     if p_intent==0:
         p_intent,p_operate=response_judge.judge(response, p_sentence)
-        fulfillment=response.query_result.fulfillment_text
     if p_intent==1:
         # 記帳
         if p_operate==1:
@@ -309,7 +309,6 @@ def Sentence(package):  #return bytearray
                 intent=0
                 operate=0
             else:
-                fulfillment=''
                 intent=originIntent
                 operate=originOperate
         elif p_operate==2:
@@ -326,7 +325,6 @@ def Sentence(package):  #return bytearray
                 intent=0
                 operate=0
             else:
-                fulfillment=''
                 intent=originIntent
                 operate=originOperate
         elif p_operate==4:
@@ -381,7 +379,6 @@ def Sentence(package):  #return bytearray
                 intent=0
                 operate=0
             else:
-                fulfillment=''
                 intent=originIntent
                 operate=originOperate
         elif p_operate==2:
@@ -398,7 +395,6 @@ def Sentence(package):  #return bytearray
                 intent=0
                 operate=0
             else:
-                fulfillment=''
                 intent=originIntent
                 operate=originOperate
         elif p_operate==4:
