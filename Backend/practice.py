@@ -5,7 +5,7 @@ d={"20200506": ["03016191", "62474899", "33657726", "06142620", "66429962", "000
 score={'apple':1,'banana':2}
 data=[]
 sentence='7月份平均花了多少錢'
-detail='打籃球'
+detail='吃早餐和讀書'
 print(response_judge.classifyDetail(detail,'1'))
 # scheduleAdd
 # 7月29日到7月30日爬山@a123#456

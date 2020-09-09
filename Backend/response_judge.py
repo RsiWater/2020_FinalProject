@@ -2,6 +2,7 @@ import jieba
 import datetime
 import json
 import os
+import vector
 
 def judge(response,sentence):
     origin=[['新增','加','增加','加入','記','入'],['刪除','刪'],['修改','改'],['查詢','查','查看','看']]
@@ -328,35 +329,48 @@ def classifyDetail(detail,user):
             detailBoard=json.load(fp)
     keyName=list(detailBoard.keys())
 
+    data=[]
+    for key in keyName:
+        data.append(detailBoard[key])
+    
+    query=[]
     words=jieba.cut(detail,cut_all=False)
     for word in words:
-        for key in keyName:
-            for data in detailBoard[key]:
-                if len(word)>=len(data):
-                    check=word.find(data)
-                else:
-                    check=data.find(word)
-                if check!=-1:
-                    score+=(len(word)/len(data))
-            try:
-                scoreBoard[key]+=score
-            except:
-                scoreBoard.setdefault(key,score)
-            score=0.0
+        query.append(word)
     
-    for key in keyName:
-        if scoreBoard[key]==0.0:
-            allZeroFlag=True
-        else:
-            allZeroFlag=False
-            break
-    if allZeroFlag==False:
-        for key in keyName:
-            if scoreBoard[key]>maxScore:
-                maxScore=scoreBoard[key]
-                item=key
-    else:
-        item='其他雜項'
+    scoreTable=vector.vector_model(data,query)
+    print(scoreTable)
+    item=keyName[scoreTable.index(max(scoreTable))]
+
+    # words=jieba.cut(detail,cut_all=False)
+    # for word in words:
+    #     for key in keyName:
+    #         for data in detailBoard[key]:
+    #             if len(word)>=len(data):
+    #                 check=word.find(data)
+    #             else:
+    #                 check=data.find(word)
+    #             if check!=-1:
+    #                 score+=(len(word)/len(data))
+    #         try:
+    #             scoreBoard[key]+=score
+    #         except:
+    #             scoreBoard.setdefault(key,score)
+    #         score=0.0
+    
+    # for key in keyName:
+    #     if scoreBoard[key]==0.0:
+    #         allZeroFlag=True
+    #     else:
+    #         allZeroFlag=False
+    #         break
+    # if allZeroFlag==False:
+    #     for key in keyName:
+    #         if scoreBoard[key]>maxScore:
+    #             maxScore=scoreBoard[key]
+    #             item=key
+    # else:
+    #     item='其他雜項'
         
     return item
 
