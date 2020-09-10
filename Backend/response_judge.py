@@ -1010,6 +1010,7 @@ def cutSentence_select(sentence):
     jieba.add_word('總共',freq=None,tag=None)
     jieba.add_word('總和',freq=None,tag=None)
     jieba.add_word('總額',freq=None,tag=None)
+    jieba.add_word("加總",freq=None,tag=None)
     words=jieba.cut(sentence,cut_all=True)
     for word in words:
         data.append(word)
