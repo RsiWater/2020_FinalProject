@@ -155,7 +155,7 @@ def decodeLoginPackage(package):
 
 def encodeAccountPackage(accountClass): # return bytearray
 
-    package, zero, itemSize, detailSize, receiptSize, noteSize, userSize = 0, 0, 18, 18, 3, 90, 20
+    package, zero, itemSize, detailSize, receiptSize, noteSize, userSize = 0, 0, 18, 30, 3, 90, 20
     
     package = bytes("acc", encoding='utf-8')
     package += accountClass.get_key().to_bytes(4, 'big')
@@ -190,8 +190,8 @@ def decodeAccountPackage(package): # return AccountClass
     resultAccount = Account()
     
     p_id, p_money, p_year , p_month= int.from_bytes(package[:4], 'big'), int.from_bytes(package[4:8],'big'), int.from_bytes(package[8:12], 'big'), package[12]
-    p_day, p_item, p_detail, p_receipt, p_note, p_status = package[13], package[14:32].decode('utf-8').split('\x00', 1)[0], package[32:50].decode('utf-8').split('\x00', 1)[0], package[50:53].decode('utf-8').split('\x00', 1)[0], package[53:143].decode('utf-8').split('\x00', 1)[0], package[143]
-    p_operationCode, p_user = package[144], package[145:165].decode('utf-8').split('\x00', 1)[0]
+    p_day, p_item, p_detail, p_receipt, p_note, p_status = package[13], package[14:32].decode('utf-8').split('\x00', 1)[0], package[32:62].decode('utf-8').split('\x00', 1)[0], package[62:65].decode('utf-8').split('\x00', 1)[0], package[65:155].decode('utf-8').split('\x00', 1)[0], package[155]
+    p_operationCode, p_user = package[156], package[157:177].decode('utf-8').split('\x00', 1)[0]
 
     resultAccount.set_key(p_id)
     resultAccount.set_money(p_money)
@@ -454,7 +454,7 @@ def Sentence(package):  #return bytearray
 def encodeReceiptPackage(accountClass): # return bytearray
 
     package = bytes("", encoding="UTF-8")
-    zero, detailSize ,receiptSize = 0, 18, 3
+    zero, detailSize ,receiptSize = 0, 30, 3
     
     package += accountClass.get_key().to_bytes(4, 'big')
     package += accountClass.get_money().to_bytes(4, 'big')

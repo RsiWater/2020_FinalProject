@@ -33,6 +33,7 @@ def judge(response,sentence):
                     break
         else:
             jieba.add_word('記帳',freq=None,tag=None)
+            jieba.add_word('加總',freq=None,tag=None)
             words=jieba.cut(response.query_result.query_text,cut_all=True)
             for word in words:
                 for data in origin[0]:
@@ -996,7 +997,7 @@ def cutSentence_select(sentence):
     date=['年','月','日','號']
     moneyName=['元','塊']
     allName=['全部','全','全都','所有','現有']
-    operateWord=['平均','總共','總和','共','總額']
+    operateWord=['平均','總共','總和','共','總額', '加總']
     data=[]
     dateNameFlag,dateFlag,errorFlag,mouseFlag,moneyNameFlag,moneySelect,timeSelect,allNameFlag,selectAll,operateWordFlag,avgFlag=False,False,False,False,False,False,False,False,False,False,False
     year,month,day,key,user,money,rangeJudge,operateName=0,0,0,0,'',0,'','def'
