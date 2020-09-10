@@ -6,15 +6,15 @@ d={"20200506": ["03016191", "62474899", "33657726", "06142620", "66429962", "000
 score={'apple':1,'banana':2}
 data=[]
 sentence='7月份平均花了多少錢'
-detail='吃飯和讀書'
-time=datetime.datetime.now()
-start_date=datetime.date(time.year,time.month,time.day)
-end_date=datetime.date(2020,8,31)
-distance=end_date-start_date
-print(distance.days)
+detail='吃飯'
+# time=datetime.datetime.now()
+# start_date=datetime.date(time.year,time.month,time.day)
+# end_date=datetime.date(2020,8,31)
+# distance=end_date-start_date
+# print(distance.days)
 
 # classify
-# print(response_judge.classifyDetail(detail,'1'))
+print(response_judge.classifyDetail(detail,'1'))
 
 # scheduleAdd
 # 7月29日到7月30日爬山@a123#456
