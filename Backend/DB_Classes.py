@@ -99,6 +99,8 @@ class Account:
     year,month,day,money,status,key,con,selectnum,operationCode=0,0,0,0,0,0,0,0,0
     findAll ,idList = list(), list()
 
+    PACKAGE_SIZE = 180
+
     def set_item(self, item):  #set分類
         self.item=item
     def get_item(self):
@@ -174,13 +176,17 @@ class Account:
                 self.delete()
             print("delete success.")
         elif self.operationCode == 2: # 修改
-            self.delete()
-            self.insert()
+            # When id = 0, database
+            if self.key == 0:
+                pass
+            else:
+                self.delete()
+                self.insert()
 
-            self.selectForDetail()
-            for data in self.findAll:
-                findData=data
-            self.renewDetailBoard(findData)
+                self.selectForDetail()
+                for data in self.findAll:
+                    findData=data
+                self.renewDetailBoard(findData)
 
             print("modify success.")
         elif self.operationCode == 3: # 查詢

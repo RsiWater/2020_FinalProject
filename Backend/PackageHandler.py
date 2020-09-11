@@ -11,22 +11,26 @@ def classifyPackage(package):
     if packageType == 'acc':
         print("account")
         send_package=bytes('',encoding='utf-8')
-        rcv_package = decodeAccountPackage(package[3:])
-        rcv_package.operateAction()
-        if rcv_package.operationCode==3:
-            for data in rcv_package.findAll:
-                rcv_package.set_money(data[0])
-                rcv_package.set_year(data[1])
-                rcv_package.set_month(data[2])
-                rcv_package.set_day(data[3])
-                rcv_package.set_item(data[4])
-                rcv_package.set_detail(data[5])
-                rcv_package.set_receipt(data[6])
-                rcv_package.set_note(data[7])
-                rcv_package.set_status(data[8])
-                rcv_package.set_key(data[9])
-                rcv_package.set_user(data[10])
-                send_package+=encodeAccountPackage(rcv_package)
+        
+        for i in range((int) (len(package) / Account.PACKAGE_SIZE)):
+            ptr = i * Account.PACKAGE_SIZE
+            rcv_package = decodeAccountPackage(package[3 + ptr : (i + 1) * Account.PACKAGE_SIZE])
+            rcv_package.operateAction()
+            if rcv_package.operationCode==3:
+                for data in rcv_package.findAll:
+                    rcv_package.set_money(data[0])
+                    rcv_package.set_year(data[1])
+                    rcv_package.set_month(data[2])
+                    rcv_package.set_day(data[3])
+                    rcv_package.set_item(data[4])
+                    rcv_package.set_detail(data[5])
+                    rcv_package.set_receipt(data[6])
+                    rcv_package.set_note(data[7])
+                    rcv_package.set_status(data[8])
+                    rcv_package.set_key(data[9])
+                    rcv_package.set_user(data[10])
+                    send_package+=encodeAccountPackage(rcv_package)
+
             return send_package
 
         # connect_socket.send(encodeAccountPackage(account))
