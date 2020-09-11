@@ -2,16 +2,9 @@ import jieba
 import datetime
 import response_judge
 import datetime
-d={"20200506": ["03016191", "62474899", "33657726", "06142620", "66429962", "00000790"], "20200304": ["91911374", "08501338", "57161318", "23570653", "47332279", "00000519"]}
-score={'apple':1,'banana':2}
 data=[]
 sentence='7月份平均花了多少錢'
 detail='吃早餐和看書'
-# time=datetime.datetime.now()
-# start_date=datetime.date(time.year,time.month,time.day)
-# end_date=datetime.date(2020,8,31)
-# distance=end_date-start_date
-# print(distance.days)
 
 # classify
 print(response_judge.classifyDetail(detail,'1'))
@@ -47,20 +40,8 @@ print(response_judge.classifyDetail(detail,'1'))
 # words=jieba.cut(sentence,cut_all=True)
 # for word in words:
 #     data.append(word)
-
 # print(data)
 # print(response_judge.cutSentence_select(sentence))
-
-
-# key=list(d.keys())
-# number=list(d.values())
-# d['20200506'].remove('03016191')
-# d.setdefault('20200708',['2'])
-# d['20200708'].append('3')
-# print(d['20200708'][1])
-# score['cookie']+=1
-# print(score['apple'])
-
 
     
     

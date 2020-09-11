@@ -318,7 +318,7 @@ def cutSentenceAccount(sentence):
 
 def classifyDetail(detail,user):
     check=0
-    score,maxScore=0.0,0.0
+    # score,maxScore=0.0,0.0
     allZeroFlag=False
     item=''
     detailBoard,scoreBoard=dict(),dict()
