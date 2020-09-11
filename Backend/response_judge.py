@@ -111,6 +111,7 @@ def judge(response,sentence):
 
 def originJudge(response):
     origin=[['新增','加','增加','加入','記','入'],['刪除','刪'],['修改','改'],['查詢','查','查看','看']]
+    query=[]
     originIntent,originOperate=0,0
 
     if response.query_result.intent.display_name=='request for account':
@@ -137,37 +138,41 @@ def originJudge(response):
             jieba.add_word('記帳',freq=None,tag=None)
             words=jieba.cut(response.query_result.query_text,cut_all=True)
             for word in words:
-                for data in origin[0]:
-                    if len(word)>=len(data):
-                        if word.find(data)!=-1:
-                            addScore+=1
-                    else:
-                        if data.find(word)!=-1:
-                            addScore+=1
-                for data in origin[1]:
-                    if len(word)>=len(data):
-                        if word.find(data)!=-1:
-                            deleteScore+=1
-                    else:
-                        if data.find(word)!=-1:
-                            deleteScore+=1
-                for data in origin[2]:
-                    if len(word)>=len(data):
-                        if word.find(data)!=-1:
-                            updateScore+=1
-                    else:
-                        if data.find(word)!=-1:
-                            updateScore+=1
-                for data in origin[3]:
-                    if len(word)>=len(data):
-                        if word.find(data)!=-1:
-                            searchScore+=1
-                    else:
-                        if data.find(word)!=-1:
-                            searchScore+=1
+                query.append(word)
+            scoreTable=vector.vector_model(origin,query)
+            originOperate=scoreTable.index(max(scoreTable))+1
+            # for word in words:
+            #     for data in origin[0]:
+            #         if len(word)>=len(data):
+            #             if word.find(data)!=-1:
+            #                 addScore+=1
+            #         else:
+            #             if data.find(word)!=-1:
+            #                 addScore+=1
+            #     for data in origin[1]:
+            #         if len(word)>=len(data):
+            #             if word.find(data)!=-1:
+            #                 deleteScore+=1
+            #         else:
+            #             if data.find(word)!=-1:
+            #                 deleteScore+=1
+            #     for data in origin[2]:
+            #         if len(word)>=len(data):
+            #             if word.find(data)!=-1:
+            #                 updateScore+=1
+            #         else:
+            #             if data.find(word)!=-1:
+            #                 updateScore+=1
+            #     for data in origin[3]:
+            #         if len(word)>=len(data):
+            #             if word.find(data)!=-1:
+            #                 searchScore+=1
+            #         else:
+            #             if data.find(word)!=-1:
+            #                 searchScore+=1
             
-            Score=[addScore,deleteScore,updateScore,searchScore]
-            originOperate=Score.index(max(Score))+1
+            # Score=[addScore,deleteScore,updateScore,searchScore]
+            # originOperate=Score.index(max(Score))+1
     
     return originIntent,originOperate
 
@@ -318,7 +323,7 @@ def cutSentenceAccount(sentence):
 
 def classifyDetail(detail,user):
     check=0
-    score,maxScore=0.0,0.0
+    # score,maxScore=0.0,0.0
     allZeroFlag=False
     item=''
     detailBoard,scoreBoard=dict(),dict()
