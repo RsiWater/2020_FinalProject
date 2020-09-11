@@ -14,7 +14,7 @@ def classifyPackage(package):
         
         for i in range((int) (len(package) / Account.PACKAGE_SIZE)):
             ptr = i * Account.PACKAGE_SIZE
-            rcv_package = decodeAccountPackage(package[3 + ptr : (i + 1) * Account.PACKAGE_SIZE])
+            rcv_package = decodeAccountPackage(package[ptr + 3 : (i + 1) * Account.PACKAGE_SIZE])
             rcv_package.operateAction()
             if rcv_package.operationCode==3:
                 for data in rcv_package.findAll:
@@ -38,20 +38,24 @@ def classifyPackage(package):
     elif packageType == 'sch':
         print('schedule')
         send_package=bytes('',encoding='utf-8')
-        rcv_package = decodeSchedulePackage(package[3:])
-        rcv_package.operateAction()
-        if rcv_package.operationCode==3:
-            for data in rcv_package.findAll:
-                rcv_package.set_todo(data[0])
-                rcv_package.set_year(data[1])
-                rcv_package.set_month(data[2])
-                rcv_package.set_day(data[3])
-                rcv_package.set_start(data[4])
-                rcv_package.set_end(data[5])
-                rcv_package.set_key(data[6])
-                rcv_package.set_user(data[7])
-                send_package+=encodeSchedulePackage(rcv_package)
-            return send_package
+
+        for i in range((int) (len(package) / Schedule.PACKAGE_SIZE)):
+            ptr = i * Schedule.PACKAGE_SIZE
+            rcv_package = decodeSchedulePackage(package[ptr + 3 : (i + 1) * Schedule.PACKAGE_SIZE])
+            rcv_package.operateAction()
+            if rcv_package.operationCode==3:
+                for data in rcv_package.findAll:
+                    rcv_package.set_todo(data[0])
+                    rcv_package.set_year(data[1])
+                    rcv_package.set_month(data[2])
+                    rcv_package.set_day(data[3])
+                    rcv_package.set_start(data[4])
+                    rcv_package.set_end(data[5])
+                    rcv_package.set_key(data[6])
+                    rcv_package.set_user(data[7])
+                    send_package+=encodeSchedulePackage(rcv_package)
+
+        return send_package
 
         # print(rcv_package.get_todo())
         # connect_socket.send(encodeSchedulePackage(schedule))

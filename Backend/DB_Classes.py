@@ -445,6 +445,7 @@ class Schedule:
     start,end=0.0,0.0
     findAll=[]
 
+    PACKAGE_SIZE = 78
 
     def set_todo(self, todo):  #set事情
         self.todo=todo
@@ -569,7 +570,12 @@ class Schedule:
             self.insert()
             print("insert success.")
         elif self.operationCode == 1: # 刪除
-            self.delete()
+            # When id = 0, delete by user.
+            if self.key == 0:
+                self.delete_by_user()
+            else:
+                self.delete()
+
             print("delete success.")
         elif self.operationCode == 2: # 修改
             self.delete()
@@ -590,6 +596,9 @@ class Schedule:
         self.con.commit()
     def delete(self):
         self.con.execute('delete from schedule_record where id={};'.format(self.key))
+        self.con.commit()
+    def delete_by_user(self, user):
+        self.con.execute('delete from schedule_record where user = {}'.format(self.user))
         self.con.commit()
     def update(self):
         self.con.execute('delete from schedule_record where id={};'.format(self.key))
