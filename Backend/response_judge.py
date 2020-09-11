@@ -7,6 +7,7 @@ import vector
 def judge(response,sentence):
     origin=[['新增','加','增加','加入','記','入'],['刪除','刪'],['修改','改'],['查詢','查','查看','看']]
     timeName=['前天','昨天','今天','明天','後天','年','月','日','號','點','時','分','小時','天','到','分到','整到','分鐘','半','整','後']
+    query=[]
 
     intent,operate=0,0
     if response.query_result.intent.display_name=='request for account':
@@ -36,37 +37,41 @@ def judge(response,sentence):
             jieba.add_word('加總',freq=None,tag=None)
             words=jieba.cut(response.query_result.query_text,cut_all=True)
             for word in words:
-                for data in origin[0]:
-                    if len(word)>=len(data):
-                        if word.find(data)!=-1:
-                            addScore+=1
-                    else:
-                        if data.find(word)!=-1:
-                            addScore+=1
-                for data in origin[1]:
-                    if len(word)>=len(data):
-                        if word.find(data)!=-1:
-                            deleteScore+=1
-                    else:
-                        if data.find(word)!=-1:
-                            deleteScore+=1
-                for data in origin[2]:
-                    if len(word)>=len(data):
-                        if word.find(data)!=-1:
-                            updateScore+=1
-                    else:
-                        if data.find(word)!=-1:
-                            updateScore+=1
-                for data in origin[3]:
-                    if len(word)>=len(data):
-                        if word.find(data)!=-1:
-                            searchScore+=1
-                    else:
-                        if data.find(word)!=-1:
-                            searchScore+=1
+                query.append(word)
+            scoreTable=vector.vector_model(origin,query)
+            operate=scoreTable.index(max(scoreTable))+1
+            # for word in words:
+            #     for data in origin[0]:
+            #         if len(word)>=len(data):
+            #             if word.find(data)!=-1:
+            #                 addScore+=1
+            #         else:
+            #             if data.find(word)!=-1:
+            #                 addScore+=1
+            #     for data in origin[1]:
+            #         if len(word)>=len(data):
+            #             if word.find(data)!=-1:
+            #                 deleteScore+=1
+            #         else:
+            #             if data.find(word)!=-1:
+            #                 deleteScore+=1
+            #     for data in origin[2]:
+            #         if len(word)>=len(data):
+            #             if word.find(data)!=-1:
+            #                 updateScore+=1
+            #         else:
+            #             if data.find(word)!=-1:
+            #                 updateScore+=1
+            #     for data in origin[3]:
+            #         if len(word)>=len(data):
+            #             if word.find(data)!=-1:
+            #                 searchScore+=1
+            #         else:
+            #             if data.find(word)!=-1:
+            #                 searchScore+=1
             
-            Score=[addScore,deleteScore,updateScore,searchScore]
-            operate=Score.index(max(Score))+1
+            # Score=[addScore,deleteScore,updateScore,searchScore]
+            # operate=Score.index(max(Score))+1
     elif intent==4:
         operate=0
     else:

@@ -61,6 +61,8 @@ def vector_model(data,query):
 
         # sum_cross
         for word in query:
+            if query_weight[word]==0:
+                continue
             for key in list(seg.keys()):
                 if len(word)>=len(key):
                     check=word.find(key)
@@ -72,6 +74,8 @@ def vector_model(data,query):
         
         # sum_query
         for word in query:
+            if query_weight[word]==0:
+                continue
             sum_query=sum_query+query_weight[word]**2
         
         # sum_data
