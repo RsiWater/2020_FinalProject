@@ -1146,78 +1146,120 @@ def cutSentence_select(sentence):
 def cutSentence_weather(sentence):
     dateName=['今天','明天','後天']
     date=['年','月','日','號']
+    week=['星期','禮拜']
+    weekday=['一','二','三','四','五','六','日']
     data=[]
-    dateNameFlag,dateFlag,errorFlag,mouseFlag=False,False,False,False
-    year,month,day,key,user=0,0,0,0,''
+    dateNameFlag,dateFlag,errorFlag,mouseFlag,weekFlag,otherDayFlag=False,False,False,False,False,False
+    year,month,day,key,user,dayNumber=0,0,0,0,'',0
     count=0
     time=datetime.datetime.now()
 
-    # jieba切詞
-    jieba.add_word('後天',freq=None,tag=None)
-    words=jieba.cut(sentence,cut_all=True)
-    for word in words:
-        data.append(word)
+    # 先判斷是否為星期幾的語法
+    for word in week:
+        if sentence.find(word)!=-1:
+            weekFlag=True
+    
+    if weekFlag==True:
+        for word in weekday:
+            if sentence.find(word)!=-1:
+                if word=='一':
+                    dayNumber=1
+                    otherDayFlag=True
+                elif word=='二':
+                    dayNumber=2
+                    otherDayFlag=True
+                elif word=='三':
+                    dayNumber=3
+                    otherDayFlag=True
+                elif word=='四':
+                    dayNumber=4
+                    otherDayFlag=True
+                elif word=='五':
+                    dayNumber=5
+                    otherDayFlag=True
+                elif word=='六':
+                    dayNumber=6
+                    otherDayFlag=True
+                elif word=='天':
+                    dayNumber=7
+                    otherDayFlag=True
+        if otherDayFlag==False and sentence.find('天')!=-1:
+            dayNumber=7
+        
+        num=time.isoweekday()
+        if num>dayNumber:
+            dayNumber=dayNumber+7
+        weekDate=(time+datetime.timedelta(days=dayNumber-num)).strftime('%Y/%m/%d').split('/')
+        year=int(weekDate[0])
+        month=int(weekDate[1])
+        day=int(weekDate[2])
+    else:
+        # jieba切詞
+        jieba.add_word('後天',freq=None,tag=None)
+        words=jieba.cut(sentence,cut_all=True)
+        for word in words:
+            data.append(word)
 
-    # 剔除不要的文字，留下時間、key、user
-    for word in data:
-        count=count+1   #計算詞的位置
-        try:
-            print(int(word))
+        # 剔除不要的文字，留下時間、key、user
+        for word in data:
+            count=count+1   #計算詞的位置
             try:
-                if data[count]=='年':
-                    year=int(word)
-                elif data[count]=='月':
-                    if year==0:
-                        year=time.year
-                    month=int(word)
-                elif data[count]=='日' or data[count]=='號' or data[count-2]=='月':
-                    if year==0 and month==0:
-                        year=time.year
-                        month=time.month
-                    elif year!=0 and month==0:
-                        month=time.month
-                    elif year==0 and month!=0:
-                        year=time.year
-                    day=int(word)
+                print(int(word))
+                try:
+                    if data[count]=='年':
+                        year=int(word)
+                    elif data[count]=='月':
+                        if year==0:
+                            year=time.year
+                        month=int(word)
+                    elif data[count]=='日' or data[count]=='號' or data[count-2]=='月':
+                        if year==0 and month==0:
+                            year=time.year
+                            month=time.month
+                        elif year!=0 and month==0:
+                            month=time.month
+                        elif year==0 and month!=0:
+                            year=time.year
+                        day=int(word)
+                except:
+                    key=int(word)
             except:
-                key=int(word)
-        except:
-            if word=='@':
-                mouseFlag=True
-                continue
-            if word=='#':
-                continue
-            if mouseFlag==True:
-                user=word
-                mouseFlag=False
-                continue
+                if word=='@':
+                    mouseFlag=True
+                    continue
+                if word=='#':
+                    continue
+                if mouseFlag==True:
+                    user=word
+                    mouseFlag=False
+                    continue
 
-            for j in dateName:
-                if word==j:
-                    if word=='今天':
-                        year=time.year
-                        month=time.month
-                        day=time.day
-                    elif word=='明天':
-                        year=time.year
-                        month=time.month
-                        day=time.day+1
-                    elif word=='後天':
-                        year=time.year
-                        month=time.month
-                        day=time.day+2
-                    dateNameFlag=True
-                    break
-            if dateNameFlag==True:
-                dateNameFlag=False
-                continue
-            for j in date:
-                if word==j:
-                    dateFlag=True
-                    break
-            if dateFlag==True:
-                dateFlag=False
-                continue
+                for j in dateName:
+                    if word==j:
+                        if word=='今天':
+                            year=time.year
+                            month=time.month
+                            day=time.day
+                        elif word=='明天':
+                            year=time.year
+                            month=time.month
+                            day=time.day+1
+                        elif word=='後天':
+                            year=time.year
+                            month=time.month
+                            day=time.day+2
+                        dateNameFlag=True
+                        break
+                if dateNameFlag==True:
+                    dateNameFlag=False
+                    continue
+                for j in date:
+                    if word==j:
+                        dateFlag=True
+                        break
+                if dateFlag==True:
+                    dateFlag=False
+                    continue
 
     if year==0 and month==0 and day==0:
         year=time.year
