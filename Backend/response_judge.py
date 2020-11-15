@@ -1147,7 +1147,7 @@ def cutSentence_weather(sentence):
     dateName=['今天','明天','後天']
     date=['年','月','日','號']
     week=['星期','禮拜']
-    weekday=['一','二','三','四','五','六','日']
+    weekday=['1','2','3','4','5','6','日']
     data=[]
     dateNameFlag,dateFlag,errorFlag,mouseFlag,weekFlag,otherDayFlag=False,False,False,False,False,False
     year,month,day,key,user,dayNumber=0,0,0,0,'',0
@@ -1159,28 +1159,29 @@ def cutSentence_weather(sentence):
         if sentence.find(word)!=-1:
             weekFlag=True
     
+    sentence = sentence.split("@")[0]
     if weekFlag==True:
         for word in weekday:
             if sentence.find(word)!=-1:
-                if word=='一':
+                if word=='1':
                     dayNumber=1
                     otherDayFlag=True
-                elif word=='二':
+                elif word=='2':
                     dayNumber=2
                     otherDayFlag=True
-                elif word=='三':
+                elif word=="3":
                     dayNumber=3
                     otherDayFlag=True
-                elif word=='四':
+                elif word=='4':
                     dayNumber=4
                     otherDayFlag=True
-                elif word=='五':
+                elif word=='5':
                     dayNumber=5
                     otherDayFlag=True
-                elif word=='六':
+                elif word=='6':
                     dayNumber=6
                     otherDayFlag=True
-                elif word=='天':
+                elif word=='日':
                     dayNumber=7
                     otherDayFlag=True
         if otherDayFlag==False and sentence.find('天')!=-1:
