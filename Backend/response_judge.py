@@ -320,7 +320,6 @@ def cutSentenceAccount(sentence):
     except:
         return year,month,day,item,detail,money,status,key,user,errorFlag
 
-
 def classifyDetail(detail,user):
     check=0
     # score,maxScore=0.0,0.0
@@ -393,7 +392,6 @@ def classifyDetail(detail,user):
     #     item='其他雜項'
         
     return item
-
 
 def cutSentenceSchedule_add(sentence):
     dateName=['前天','昨天','今天','明天','後天']
@@ -890,7 +888,6 @@ def cutSentenceSchedule_add(sentence):
 
     return todo,key,user,yearList,monthList,dayList,h,m,errorFlag
 
-
 def cutSentence_del(sentence):
     dateName=['前天','昨天','今天','明天','後天']
     date=['年','月','日','號']
@@ -1000,7 +997,6 @@ def cutSentence_del(sentence):
         errorFlag=True
     
     return year,month,day,key,user,timeDel,errorFlag
-
 
 def cutSentence_select(sentence):
     dateName=['前天','昨天','今天','明天','後天']

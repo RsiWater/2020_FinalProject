@@ -597,7 +597,7 @@ class Schedule:
     def delete(self):
         self.con.execute('delete from schedule_record where id={};'.format(self.key))
         self.con.commit()
-    def delete_by_user(self, user):
+    def delete_by_user(self):
         self.con.execute('delete from schedule_record where user = {}'.format(self.user))
         self.con.commit()
     def update(self):

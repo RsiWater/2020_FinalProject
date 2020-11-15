@@ -8,13 +8,11 @@ from ProgressThread import *
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS']='life-8c6775870f64.json'
 
-# Crawl.checkDate()
-# Crawl.writeData()
-
-hostname = "192.168.203.112" #設定主機名
-port = 6666  #設定埠號 要確保這個埠號沒有被使用，可以在cmd裡面檢視
+# hostname = "192.168.203.112"
+hostname = "192.168.203.101"
+port = 6666  
 addr = (hostname,port)
-srv = socket.socket() #建立一個socket
+srv = socket.socket()
 srv.bind(addr)
 srv.listen(5)
 

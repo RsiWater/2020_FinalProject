@@ -159,7 +159,6 @@ def getWeatherData():
     result = dictData2WeatherClass(weatherData)
     return result
 
-
 def receiptCrawler():
     main_url='https://www.etax.nat.gov.tw'
     url = 'https://www.etax.nat.gov.tw/etw-main/web/ETW183W1'

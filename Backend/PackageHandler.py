@@ -415,7 +415,7 @@ def Sentence(package):  #return bytearray
                 setSchedule.set_day(day)
                 setSchedule.set_user(user)
                 setSchedule.selectByRobot(timeSelect)
-                select_package=bytes('',encoding='utf-8')
+                select_package=bytes(operateName, encoding='utf-8')
                 selectData=Schedule()
                 for data in setSchedule.findAll:
                     selectData.set_todo(data[0])
