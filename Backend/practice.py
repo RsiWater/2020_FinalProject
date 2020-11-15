@@ -3,11 +3,18 @@ import datetime
 import response_judge
 import datetime
 data=[]
-sentence='7月份平均花了多少錢'
+sentence='禮拜天天氣如何'
 detail='吃早餐和看書'
 
 # classify
-print(response_judge.classifyDetail(detail,'1'))
+# print(response_judge.classifyDetail(detail,'1'))
+# d=datetime.datetime.now()
+# num=d.isoweekday()
+# print(type(num))
+# print(d.isoweekday())
+# print((datetime.datetime.now()+datetime.timedelta(days=16)).strftime('%Y/%m/%d'))
+print(response_judge.cutSentence_weather(sentence))
+
 
 # scheduleAdd
 # 7月29日到7月30日爬山@a123#456
@@ -37,7 +44,10 @@ print(response_judge.classifyDetail(detail,'1'))
 # jieba.add_word('分鐘',freq=None,tag=None)
 # jieba.add_word('現有',freq=None,tag=None)
 # jieba.add_word('記帳',freq=None,tag=None)
-# words=jieba.cut(sentence,cut_all=True)
+# jieba.add_word('禮拜',freq=None,tag=None)
+# jieba.add_word('後天',freq=None,tag=None)
+# jieba.add_word('天氣',freq=None,tag=None)
+# words=jieba.cut(sentence,cut_all=None)
 # for word in words:
 #     data.append(word)
 # print(data)
