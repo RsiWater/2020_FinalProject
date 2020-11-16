@@ -351,22 +351,23 @@ def Sentence(package):  #return bytearray
                     setAccount.selectByRobot(timeSelect)
                 select_package=bytes(operateName,encoding='utf-8')
                 selectData=Account()
-                if len(setAccount.findAll)==0:
+                haveFlag=False
+                for data in setAccount.findAll:
+                    haveFlag=True
+                    selectData.set_money(data[0])
+                    selectData.set_year(data[1])
+                    selectData.set_month(data[2])
+                    selectData.set_day(data[3])
+                    selectData.set_item(data[4])
+                    selectData.set_detail(data[5])
+                    selectData.set_receipt(data[6])
+                    selectData.set_note(data[7])
+                    selectData.set_status(data[8])
+                    selectData.set_key(data[9])
+                    selectData.set_user(data[10])
+                    select_package+=encodeAccountPackage(selectData)
+                if haveFlag==False:
                     select_package+=bytes('null package',encoding='utf-8')
-                else:
-                    for data in setAccount.findAll:
-                        selectData.set_money(data[0])
-                        selectData.set_year(data[1])
-                        selectData.set_month(data[2])
-                        selectData.set_day(data[3])
-                        selectData.set_item(data[4])
-                        selectData.set_detail(data[5])
-                        selectData.set_receipt(data[6])
-                        selectData.set_note(data[7])
-                        selectData.set_status(data[8])
-                        selectData.set_key(data[9])
-                        selectData.set_user(data[10])
-                        select_package+=encodeAccountPackage(selectData)
                 intent=0
                 operate=0
             else:
@@ -421,19 +422,20 @@ def Sentence(package):  #return bytearray
                 setSchedule.selectByRobot(timeSelect)
                 select_package=bytes(operateName, encoding='utf-8')
                 selectData=Schedule()
-                if len(setSchedule.findAll)==0:
+                haveFlag=False
+                for data in setSchedule.findAll:
+                    haveFlag=True
+                    selectData.set_todo(data[0])
+                    selectData.set_year(data[1])
+                    selectData.set_month(data[2])
+                    selectData.set_day(data[3])
+                    selectData.set_start(data[4])
+                    selectData.set_end(data[5])
+                    selectData.set_key(data[6])
+                    selectData.set_user(data[7])
+                    select_package+=encodeSchedulePackage(selectData)
+                if haveFlag==False:
                     select_package+=bytes('null package',encoding='utf-8')
-                else:
-                    for data in setSchedule.findAll:
-                        selectData.set_todo(data[0])
-                        selectData.set_year(data[1])
-                        selectData.set_month(data[2])
-                        selectData.set_day(data[3])
-                        selectData.set_start(data[4])
-                        selectData.set_end(data[5])
-                        selectData.set_key(data[6])
-                        selectData.set_user(data[7])
-                        select_package+=encodeSchedulePackage(selectData)
                 intent=0
                 operate=0
             else:
