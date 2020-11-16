@@ -54,6 +54,7 @@ class UserAccount:
         self.name = ''
         self.password = ''
         self.key = ''
+        self.version = ''
     
     def check(self):
         ifExist = False
@@ -93,6 +94,16 @@ class UserAccount:
     def selectAll(self):
         data = self.con.execute("SELECT * FROM userAccount")
         return data
+
+    def selectByName(self):
+        data = self.con.execute('SELECT * FROM userAccount WHERE Name = "{}";'.format(self.name))
+        result = ''
+        for ele in data:
+            result = ele
+        self.name = result[0]
+        self.password = result[1]
+        self.key = result[2]
+        self.version = result[3]
 
 class Account:
     item,detail,receipt,note,dbfile,query,user='','','','','','',''

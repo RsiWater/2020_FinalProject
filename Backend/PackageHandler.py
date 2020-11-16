@@ -103,12 +103,38 @@ def classifyPackage(package):
         send_package = encodeRegisterPackage(rcv_package)
         return send_package
 
+    elif packageType == 'ver': #version control.
+        print("ver")
+        serverUserAccount = decodeVersionPackage(package[3:])
+        serverUserAccount.selectByName()
+
+        send_package = encodeVersionPackage(serverUserAccount)
+        return send_package
+
     else:
         print('none')
 
+    
     # elif packageType == 'deb':
     #     message = rcv_event.decode("UTF-8")
     #     print(message)
+
+def decodeVersionPackage(package):
+    resultUserAccount = UserAccount()
+
+    resultUserAccount.version = int.from_bytes(package[:4], 'big')
+    resultUserAccount.name = package[4:].decode("utf-8").split('\x00', 1)[0]
+    return resultUserAccount
+
+def encodeVersionPackage(userClass):
+    package, zero, VERSION_SIZE, NAME_SIZE = 0, 0, 4, 20
+    
+    package = bytes("ver", encoding="UTF-8")
+    package += userClass.version.to_bytes(4, 'big')
+    package += bytes(userClass.name, encoding="utf-8")
+    package += zero.to_bytes(NAME_SIZE - (len(userClass.name.encode('UTF-8'))), 'big')
+
+    return package
 
 def encodeLoginPackage(userClass):    
     zero, passSize, keySize = 0, 2, 64
@@ -223,7 +249,6 @@ def decodeAccountPackage(package): # return AccountClass
     # update resultAccount.
 
     return resultAccount
-
 
 def encodeSchedulePackage(scheduleClass): # return bytearray
 
@@ -367,7 +392,7 @@ def Sentence(package):  #return bytearray
                     selectData.set_user(data[10])
                     select_package+=encodeAccountPackage(selectData)
                 if haveFlag==False:
-                    select_package+=bytes('null package',encoding='utf-8')
+                    select_package+=bytes('null_package',encoding='utf-8')
                 intent=0
                 operate=0
             else:
@@ -435,7 +460,7 @@ def Sentence(package):  #return bytearray
                     selectData.set_user(data[7])
                     select_package+=encodeSchedulePackage(selectData)
                 if haveFlag==False:
-                    select_package+=bytes('null package',encoding='utf-8')
+                    select_package+=bytes('null_package',encoding='utf-8')
                 intent=0
                 operate=0
             else:

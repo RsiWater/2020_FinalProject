@@ -16,16 +16,20 @@ import os
 # temp = UpdateThread()
 # print(temp.checkAccountInvoice())
 
-test = "a123"
+# test = "a123"
 
-scriptDir = os.path.dirname(__file__)
-dirP = "../userTrainingData/"
-filePath = test + ".json"
+# scriptDir = os.path.dirname(__file__)
+# dirP = "../userTrainingData/"
+# filePath = test + ".json"
 
-# tempList = ["a123.json"]
+# # tempList = ["a123.json"]
 
-with open(os.path.join(scriptDir, dirP + filePath),'r',encoding='utf-8') as fp:
-    print("~~~")
-    userDetailBoard=json.load(fp)
-    print("!!!")
-print("...")
+# with open(os.path.join(scriptDir, dirP + filePath),'r',encoding='utf-8') as fp:
+#     print("~~~")
+#     userDetailBoard=json.load(fp)
+#     print("!!!")
+# print("...")
+
+temp = UserAccount()
+temp.name = 'a123'
+temp.versionValidation()
