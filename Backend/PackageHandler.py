@@ -368,6 +368,7 @@ def Sentence(package):  #return bytearray
                 operate=0
             else:
                 select_package=bytes(operateName,encoding='utf-8')
+                select_package+=bytes('null package',encoding='utf-8')
                 intent=originIntent
                 operate=originOperate
     if p_intent==2:
@@ -430,7 +431,8 @@ def Sentence(package):  #return bytearray
                 intent=0
                 operate=0
             else:
-                select_package=bytes('',encoding='utf-8')
+                select_package=bytes(operateName, encoding='utf-8')
+                select_package+=bytes('null package',encoding='utf-8')
                 intent=originIntent
                 operate=originOperate
     if p_intent==3:
