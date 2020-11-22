@@ -105,8 +105,12 @@ def classifyPackage(package):
 
     elif packageType == 'ver': #version control.
         print("ver")
-        serverUserAccount = decodeVersionPackage(package[3:])
+        rcvUserAccount = decodeVersionPackage(package[3:])
+        serverUserAccount = UserAccount()
+        serverUserAccount.name = rcvUserAccount.name
         serverUserAccount.selectByName()
+        if rcvUserAccount.version > serverUserAccount.version and rcvUserAccount.version <= 65535 and serverUserAccount.version <= 65535:
+            serverUserAccount.updateVersion(rcvUserAccount.version)
 
         send_package = encodeVersionPackage(serverUserAccount)
         return send_package
@@ -130,7 +134,7 @@ def encodeVersionPackage(userClass):
     package, zero, VERSION_SIZE, NAME_SIZE = 0, 0, 4, 20
     
     package = bytes("ver", encoding="UTF-8")
-    package += userClass.version.to_bytes(4, 'big')
+    package += userClass.version.to_bytes(VERSION_SIZE, 'big')
     package += bytes(userClass.name, encoding="utf-8")
     package += zero.to_bytes(NAME_SIZE - (len(userClass.name.encode('UTF-8'))), 'big')
 

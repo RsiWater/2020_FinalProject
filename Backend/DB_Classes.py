@@ -105,6 +105,11 @@ class UserAccount:
         self.key = result[2]
         self.version = result[3]
 
+    def updateVersion(self, versionCode):
+        self.con.execute('UPDATE userAccount SET Version = "{}" WHERE Name = "{}"'.format(versionCode, self.name))
+        self.con.commit()
+        
+
 class Account:
     item,detail,receipt,note,dbfile,query,user='','','','','','',''
     year,month,day,money,status,key,con,selectnum,operationCode=0,0,0,0,0,0,0,0,0

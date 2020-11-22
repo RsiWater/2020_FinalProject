@@ -8,7 +8,7 @@ from ProgressThread import *
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS']='life-8c6775870f64.json'
 
-# hostname = "192.168.203.112"
+# hostname = "localhost"
 hostname = "192.168.203.101"
 port = 6666  
 addr = (hostname,port)

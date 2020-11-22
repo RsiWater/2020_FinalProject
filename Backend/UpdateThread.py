@@ -14,7 +14,7 @@ class UpdateThread(threading.Thread):
         self.currentDay = 0
 
     def run(self):
-        # Crawl.writeReceiptData()
+        Crawl.writeReceiptData()
         self.currentDay = dt.now().day
         updateInterval = 0
 
