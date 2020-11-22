@@ -409,6 +409,7 @@ def cutSentenceSchedule_add(sentence):
     jieba.add_word('後天',freq=None,tag=None)
     jieba.add_word('小時',freq=None,tag=None)
     jieba.add_word('分鐘',freq=None,tag=None)
+    jieba.add_word('遊行',freq=None,tag=None)
     words=jieba.cut(sentence,cut_all=True)
     for word in words:
         data.append(word)
