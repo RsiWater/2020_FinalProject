@@ -396,7 +396,7 @@ def Sentence(package):  #return bytearray
                     selectData.set_user(data[10])
                     select_package+=encodeAccountPackage(selectData)
                 if haveFlag==False:
-                    select_package+=bytes('null_package',encoding='utf-8')
+                    select_package+=bytes('null package',encoding='utf-8')
                 intent=0
                 operate=0
             else:
@@ -464,7 +464,7 @@ def Sentence(package):  #return bytearray
                     selectData.set_user(data[7])
                     select_package+=encodeSchedulePackage(selectData)
                 if haveFlag==False:
-                    select_package+=bytes('null_package',encoding='utf-8')
+                    select_package+=bytes('null package',encoding='utf-8')
                 intent=0
                 operate=0
             else:
