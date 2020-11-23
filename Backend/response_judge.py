@@ -914,13 +914,13 @@ def cutSentence_del(sentence):
             try:
                 if data[count]=='年':
                     year=int(word)
-                elif data[count]=='月':
+                elif data[count]=='月' or data[count]=='月份':
                     if year==0:
                         year=time.year
                         month=int(word)
                     else:
                         month=int(word)
-                elif data[count]=='日' or data[count]=='號' or data[count-2]=='月':
+                elif data[count]=='日' or data[count]=='號' or data[count-2]=='月' or data[count-2]=='月份':
                     if year==0 and month==0:
                         year=time.year
                         month=time.month
@@ -1036,7 +1036,7 @@ def cutSentence_select(sentence):
                         month=int(word)
                     else:
                         month=int(word)
-                elif data[count]=='日' or data[count]=='號' or data[count-2]=='月':
+                elif data[count]=='日' or data[count]=='號' or data[count-2]=='月' or data[count-2]=='月份':
                     if year==0 and month==0:
                         year=time.year
                         month=time.month
