@@ -43,7 +43,7 @@ def judge(response,sentence):
                 if find==True:
                     break
             if find!=True:
-                intent=1
+                operate=1
         else:
             jieba.add_word('記帳',freq=None,tag=None)
             jieba.add_word('加總',freq=None,tag=None)

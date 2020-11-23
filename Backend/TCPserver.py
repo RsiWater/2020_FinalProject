@@ -9,7 +9,8 @@ from ProgressThread import *
 os.environ['GOOGLE_APPLICATION_CREDENTIALS']='life-8c6775870f64.json'
 
 # hostname = "localhost"
-hostname = "192.168.203.101"
+hostname = "172.20.10.8"
+# hostname = "192.168.203.101"
 port = 6666  
 addr = (hostname,port)
 srv = socket.socket()

@@ -614,8 +614,13 @@ class Schedule:
         self.con.execute('delete from schedule_record where id={};'.format(self.key))
         self.con.commit()
     def delete_by_user(self):
-        self.con.execute('delete from schedule_record where user = {}'.format(self.user))
-        self.con.commit()
+        try:
+            self.con.execute('delete from schedule_record where user = "{}"'.format(self.user))
+            self.con.commit()
+        except sqlite3.OperationalError as e:
+            print("there is no data of", self.user)
+        except Exception as e:
+            raise Exception(e)
     def update(self):
         self.con.execute('delete from schedule_record where id={};'.format(self.key))
         self.con.execute('insert into schedule_record(事情,年,月,日,開始時間,結束時間,id,user)values("{}",{},{},{},{},{},{},"{}");'.format(self.todo,self.year,self.month,self.day,self.start,self.end,self.key,self.user))
