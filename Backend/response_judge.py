@@ -15,7 +15,17 @@ def judge(response,sentence):
     elif response.query_result.intent.display_name=='request for schedule':
         intent=2
     elif response.query_result.intent.display_name=='request for service':
-        intent=3
+        if sentence.find('看')!=-1:
+            try:
+                print(sentence[sentence.find('看')+1])
+                if sentence.find('元')!=-1 or sentence.find('塊')!=-1:
+                    intent=1
+                else:
+                    intent=2
+            except:
+                intent=3
+        else:
+            intent=3
     elif response.query_result.intent.display_name=='request for weather':
         intent=4
     else:
