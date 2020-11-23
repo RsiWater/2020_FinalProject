@@ -109,8 +109,9 @@ def classifyPackage(package):
         serverUserAccount = UserAccount()
         serverUserAccount.name = rcvUserAccount.name
         serverUserAccount.selectByName()
-        if rcvUserAccount.version > serverUserAccount.version and rcvUserAccount.version <= 65535 and serverUserAccount.version <= 65535:
+        if (rcvUserAccount.version > serverUserAccount.version and rcvUserAccount.version <= 65535 and serverUserAccount.version <= 65535) or (rcvUserAccount.version == 0 and serverUserAccount.version == 65535):
             serverUserAccount.updateVersion(rcvUserAccount.version)
+
 
         send_package = encodeVersionPackage(serverUserAccount)
         return send_package
