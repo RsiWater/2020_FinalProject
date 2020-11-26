@@ -190,7 +190,7 @@ def originJudge(response):
 
 def cutSentenceAccount(sentence):
     dateName=['前天','昨天','今天','明天','後天']
-    statusName=['收入','支出']
+    statusName=['收入','支出','賺']
     date=['年','月','日','號']
     moneyName=['元','塊']
     otherWords=['記帳','我','想','要','想要','新增','加','增加','加入','記','入']
@@ -260,7 +260,7 @@ def cutSentenceAccount(sentence):
             for j in statusName:
                 if i==j:
                     statusFlag=True
-                    if i=='收入':
+                    if i=='收入' or i=='賺':
                         status=0
                     break
             if statusFlag==True:
