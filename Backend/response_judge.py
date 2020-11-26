@@ -194,7 +194,8 @@ def cutSentenceAccount(sentence):
     date=['年','月','日','號']
     moneyName=['元','塊']
     otherWords=['記帳','我','想','要','想要','新增','加','增加','加入','記','入']
-    dateNameFlag,dateFlag,moneyFlag,statusFlag,errorFlag,mouseFlag,otherWordsFlag=False,False,False,False,False,False,False
+    tooMuchWords=['今天下午','天下','下午']
+    dateNameFlag,dateFlag,moneyFlag,statusFlag,errorFlag,mouseFlag,otherWordsFlag,tooMuchFlag=False,False,False,False,False,False,False,False
     date_name,year,month,day,item,detail,money,status,key,user='',0,0,0,'','',0,1,0,''
     time=datetime.datetime.now()
     data=[]
@@ -276,6 +277,13 @@ def cutSentenceAccount(sentence):
                         break
             if otherWordsFlag==True:
                 otherWordsFlag=False
+                continue
+            for j in tooMuchWords:
+                if i==j:
+                    tooMuchFlag=True
+                    break
+            if tooMuchFlag==True:
+                tooMuchFlag=False
                 continue
             # 一段式
             detail+=i
