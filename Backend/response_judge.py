@@ -25,7 +25,10 @@ def judge(response,sentence):
             except:
                 intent=3
         else:
-            intent=3
+            if sentence.find('加總')!=-1:
+                intent=1
+            else:
+                intent=3
     elif response.query_result.intent.display_name=='request for weather':
         intent=4
     else:
@@ -43,7 +46,10 @@ def judge(response,sentence):
                 if find==True:
                     break
             if find!=True:
-                operate=1
+                if sentence.find('加總')!=-1:
+                    operate=4
+                else:
+                    operate=1
         else:
             jieba.add_word('記帳',freq=None,tag=None)
             jieba.add_word('加總',freq=None,tag=None)
