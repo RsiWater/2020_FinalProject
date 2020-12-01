@@ -216,7 +216,7 @@ def originJudge(response):
 
 def cutSentenceAccount(sentence):
     dateName=['前天','昨天','今天','明天','後天']
-    statusName=['收入','支出','賺']
+    statusName=['收入','支出','賺','發票','中獎']
     date=['年','月','日','號']
     moneyName=['元','塊']
     otherWords=['記帳','我','想','要','想要','新增','加','增加','加入','記','入']
@@ -228,6 +228,8 @@ def cutSentenceAccount(sentence):
 
     jieba.add_word('後天',freq=None,tag=None)
     jieba.add_word('記帳',freq=None,tag=None)
+    jieba.add_word('發票',freq=None,tag=None)
+    jieba.add_word('中獎',freq=None,tag=None)
     words=jieba.cut(sentence,cut_all=True)
     for word in words:
         data.append(word)
