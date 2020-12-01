@@ -92,8 +92,15 @@ def judge(response,sentence):
             
             # Score=[addScore,deleteScore,updateScore,searchScore]
             # operate=Score.index(max(Score))+1
-    elif intent==4 or intent==5:
+    elif intent==4:
         operate=0
+    elif intent==5:
+        if sentence.find('QR')!=-1:
+            operate=2
+        elif sentence.find('幫')!=-1:
+            operate=1
+        else:
+            operate=0
     else:
         count,score=0,0
         accountFlag=False

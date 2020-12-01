@@ -3,7 +3,7 @@ import datetime
 import response_judge
 import datetime
 data=[]
-sentence='禮拜天天氣如何'
+sentence='對發票QR code'
 detail='吃早餐和看書'
 
 # classify
@@ -13,7 +13,7 @@ detail='吃早餐和看書'
 # print(type(num))
 # print(d.isoweekday())
 # print((datetime.datetime.now()+datetime.timedelta(days=16)).strftime('%Y/%m/%d'))
-print(response_judge.cutSentence_weather(sentence))
+# print(response_judge.cutSentence_weather(sentence))
 
 
 # scheduleAdd
@@ -47,10 +47,10 @@ print(response_judge.cutSentence_weather(sentence))
 # jieba.add_word('禮拜',freq=None,tag=None)
 # jieba.add_word('後天',freq=None,tag=None)
 # jieba.add_word('天氣',freq=None,tag=None)
-# words=jieba.cut(sentence,cut_all=None)
-# for word in words:
-#     data.append(word)
-# print(data)
+words=jieba.cut(sentence,cut_all=None)
+for word in words:
+    data.append(word)
+print(data)
 # print(response_judge.cutSentence_select(sentence))
 
     
