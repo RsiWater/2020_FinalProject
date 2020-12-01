@@ -32,7 +32,10 @@ def judge(response,sentence):
     elif response.query_result.intent.display_name=='request for weather':
         intent=4
     elif response.query_result.intent.display_name=='request for receipt':
-        intent=5
+        if sentence.find('元')!=-1 or sentence.find('塊')!=-1:
+            intent=1
+        else:
+            intent=5
     else:
         intent=0
 
@@ -97,7 +100,7 @@ def judge(response,sentence):
     elif intent==5:
         if sentence.find('QR')!=-1:
             operate=2
-        elif sentence.find('幫')!=-1:
+        elif sentence.find('幫')!=-1 or sentence.find('自動')!=-1:
             operate=1
         else:
             operate=0
@@ -150,7 +153,10 @@ def originJudge(response):
     elif response.query_result.intent.display_name=='request for weather':
         originIntent=4
     elif response.query_result.intent.display_name=='request for receipt':
-        originIntent=5
+        if response.query_result.query_text.find('元')!=-1 or response.query_result.query_text.find('塊')!=-1:
+            originIntent=1
+        else:
+            originIntent=5
         
 
     if originIntent==1 or originIntent==2 or originIntent==3:
@@ -164,6 +170,8 @@ def originJudge(response):
                         break
                 if find==True:
                     break
+            if find==False:
+                originOperate=1
         else:
             jieba.add_word('記帳',freq=None,tag=None)
             words=jieba.cut(response.query_result.query_text,cut_all=True)
