@@ -31,6 +31,8 @@ def judge(response,sentence):
                 intent=3
     elif response.query_result.intent.display_name=='request for weather':
         intent=4
+    elif response.query_result.intent.display_name=='request for receipt':
+        intent=5
     else:
         intent=0
 
@@ -90,7 +92,7 @@ def judge(response,sentence):
             
             # Score=[addScore,deleteScore,updateScore,searchScore]
             # operate=Score.index(max(Score))+1
-    elif intent==4:
+    elif intent==4 or intent==5:
         operate=0
     else:
         count,score=0,0
@@ -140,6 +142,9 @@ def originJudge(response):
         originIntent=3
     elif response.query_result.intent.display_name=='request for weather':
         originIntent=4
+    elif response.query_result.intent.display_name=='request for receipt':
+        originIntent=5
+        
 
     if originIntent==1 or originIntent==2 or originIntent==3:
         addScore,deleteScore,updateScore,searchScore,find=0,0,0,0,False

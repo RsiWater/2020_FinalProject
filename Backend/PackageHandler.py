@@ -488,6 +488,10 @@ def Sentence(package):  #return bytearray
             fulfillment='無法查詢'
             intent=0
             operate=0
+    if p_intent==5:
+        # 發票
+        intent=p_intent
+        operate=p_operate
 
     send_package=bytes("sen", encoding='UTF-8')
     send_package+=intent.to_bytes(4,'big')
