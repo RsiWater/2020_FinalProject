@@ -240,6 +240,8 @@ class Account:
         self.year = correctedDate[0]
         self.month = correctedDate[1]
         self.day = correctedDate[2]
+        if len(self.detail.encode("UTF-8")) > 30: # length of detail  
+            self.detail = self.detail[:10]
 
         self.con.execute('insert into record(金額,年,月,日,分類,細項,發票,備註,收支屬性,id,user)values({},{},{},{},"{}","{}","{}","{}",{},{},"{}");'.format(self.money,self.year,self.month,self.day,self.item,self.detail,self.receipt,self.note,self.status,self.key,self.user))
         self.con.commit()
@@ -608,6 +610,9 @@ class Schedule:
     def insert(self):
         while(not self.checkKey()):
             self.key = random.randint(1, 100000)
+
+        if len(self.todo.encode("UTF-8")) > 36: # length of todo
+            self.todo = self.todo[:12]
         self.con.execute('insert into schedule_record(事情,年,月,日,開始時間,結束時間,id,user)values("{}",{},{},{},{},{},{},"{}");'.format(self.todo,self.year,self.month,self.day,self.start,self.end,self.key,self.user))
         self.con.commit()
     def delete(self):

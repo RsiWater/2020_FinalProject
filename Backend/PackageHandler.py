@@ -205,6 +205,8 @@ def encodeAccountPackage(accountClass): # return bytearray
    
     package += bytes(accountClass.get_item(), encoding = "UTF-8")
     package += zero.to_bytes(itemSize - (len(accountClass.get_item().encode('UTF-8'))), 'big')
+    if len(accountClass.get_detail().encode("UTF-8")) > detailSize:
+        accountClass.set_detail(accountClass.get_detail()[:int(detailSize/3)])
     package += bytes(accountClass.get_detail(), encoding = "UTF-8")
     package += zero.to_bytes(detailSize - (len(accountClass.get_detail().encode('UTF-8'))), 'big')
     
@@ -261,6 +263,8 @@ def encodeSchedulePackage(scheduleClass): # return bytearray
     
     package = bytes("sch", encoding='utf-8')
     package += scheduleClass.get_key().to_bytes(4,'big')
+    if len(scheduleClass.get_todo().encode('UTF-8')) > todo_size:
+        scheduleClass.set_tode(scheduleClass.get_todo()[:int(todo_size/3)])
     package += bytes(scheduleClass.get_todo(), encoding='UTF-8')
     package += zero.to_bytes(todo_size - (len(scheduleClass.get_todo().encode('UTF-8'))), 'big')
     package += scheduleClass.get_year().to_bytes(4, 'big')
