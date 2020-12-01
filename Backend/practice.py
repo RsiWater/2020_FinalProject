@@ -3,7 +3,7 @@ import datetime
 import response_judge
 import datetime
 data=[]
-sentence='對發票QR code'
+sentence='發票中獎1000元'
 detail='吃早餐和看書'
 
 # classify

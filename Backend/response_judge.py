@@ -286,7 +286,7 @@ def cutSentenceAccount(sentence):
             for j in statusName:
                 if i==j:
                     statusFlag=True
-                    if i=='收入' or i=='賺':
+                    if i=='收入' or i=='賺' or i=='發票' or i=='中獎':
                         status=0
                     break
             if statusFlag==True:
