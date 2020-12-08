@@ -175,6 +175,10 @@ class Account:
     #     return self.selectnum
 
     def operateAction(self):
+        # if self.user == 'Null':
+        #     print("Null user!")
+        #     return
+
         if self.operationCode == 0: # 新增
             self.insert()
 
@@ -584,6 +588,10 @@ class Schedule:
         return self.user
 
     def operateAction(self):
+        # if self.user == 'Null':
+        #     print("Null user!")
+        #     return
+
         if self.operationCode == 0: # 新增
             self.insert()
             print("insert success.")
